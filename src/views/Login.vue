@@ -1,0 +1,282 @@
+<template>
+
+	<!-- <v-container class="mx-auto xy-height"> -->
+	<v-img :src='bg' lazy-src height="100vh" position="left bottom">
+
+		<v-container class="mx-auto xy-height">
+			<v-row align="start" justify="center" style="height: 100%;">
+				<v-col :lg="3" :md="6" :sm="6" :xs="6">
+					<v-card flat outlined style="background:#f7f7f7;border: 1px solid #f7f7f7;">
+						<div class=" fill-height loginTitle py-5">
+							<v-avatar>
+								<img :src="logo">
+							</v-avatar>
+							<span style="font-size: 30px;margin-left: 3px;">量化大师</span>
+
+						</div>
+						<div class="grey--text lighten-2 text-center" style="font-size: 20px;">
+							{{type==1?'登陆':'注册'}}
+						</div>
+
+						<v-card-text v-if="type==1">
+							<v-form ref="form" v-model="valid" lazy-validation>
+								<v-text-field v-model="name" :rules="nameRules" label="用户名" required prepend-icon="mdi-account"></v-text-field>
+								<v-text-field v-model="password" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1"
+								 prepend-icon="mdi-key" label="密码" hint="至少6个字符">
+									</v-text-field>
+									<template v-slot:append>
+										<v-fade-transition leave-absolute>
+											<img width="24" height="24" :src="show1?show_icon:hide_icon" alt="" style="cursor: pointer;" @click="show1 = !show1">
+										</v-fade-transition>
+									</template>
+								</v-text-field>
+								<div class="d-flex justify-space-between pt-3">
+									<div class="blue--text lighten-2 pointer">忘记密码</div>
+									<div class="blue--text lighten-4 pointer" @click="type=2">我要注册</div>
+								</div>
+
+								<v-btn color="primary" @click.native.stop="login" style="width: 100%;color: white;">
+									登陆
+								</v-btn>
+
+							</v-form>
+						</v-card-text>
+
+						<!--注册-->
+						<v-card-text v-if="type==2">
+							<v-form ref="form" v-model="valid" lazy-validation>
+								<v-text-field v-model="name" :rules="nameRules" label="用户名" required prepend-icon="mdi-account"></v-text-field>
+								<v-text-field v-model="password" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1"
+								 prepend-icon="mdi-key" label="密码" hint="至少6个字符">
+									</>
+									<template v-slot:append>
+										<v-fade-transition leave-absolute>
+											<img width="24" height="24" :src="show1?show_icon:hide_icon" alt="" style="cursor: pointer;" @click="show1 = !show1">
+										</v-fade-transition>
+									</template>
+								</v-text-field>
+								<v-text-field v-model="email" :rules="[rules.email]" label="邮箱"></v-text-field>
+								<div class="d-flex justify-space-between pt-3">
+									<div class="blue--text lighten-2 pointer" @click="type=1">返回登陆</div>
+								</div>
+								<v-btn color="primary" @click="register" style="width: 100%;color: white;">
+									注册
+								</v-btn>
+							</v-form>
+						</v-card-text>
+
+						<!-- <v-card-actions class="d-flex justify-center">
+									</v-card-actions> -->
+					</v-card>
+
+					<v-dialog v-model="dialog" persistent width="500">
+						<v-card>
+							<v-card-title class="headline grey lighten-2" primary-title>
+								激活账号
+							</v-card-title>
+
+							<v-card-text>
+								<v-text-field v-model="code" label="激活码"></v-text-field>
+							</v-card-text>
+
+							<v-card-actions>
+								<div class="flex-grow-1"></div>
+								<v-btn color="primary" text @click="toJH">
+									确定
+								</v-btn>
+							</v-card-actions>
+						</v-card>
+					</v-dialog>
+				</v-col>
+			</v-row>
+		</v-container>
+
+
+	</v-img>
+
+	<!-- </v-container> -->
+
+</template>
+
+<script>
+	import {
+		mapActions
+	} from 'vuex';
+	import img from '@/img/logo.png'
+	import bgImg from '@/img/body.svg'
+	import showIcon from '@/img/show.svg'
+	import hideIcon from '@/img/hide.svg'
+	export default {
+
+		data() { //数据
+			return {
+				errorText: {},
+				snackbar: false,
+				code: '',
+				dialog: false, //对话框
+				logo: img,
+				show_icon: showIcon,
+				hide_icon: hideIcon,
+				bg: bgImg,
+				type: 1, //1登陆2忘记3注册
+				valid: true,
+				show1: false,
+				name: '',
+				password: '',
+				email: '',
+				nameRules: [
+					v => !!v || '必填',
+					v => (v && v.length >= 2) || '名称至少两个字',
+				],
+				rules: {
+					required: value => !!value || '必填.',
+					min: v => v.length >= 6 || '最少六个字符',
+					email: value => {
+						const pattern =
+							/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+						return pattern.test(value) || 'Invalid e-mail.'
+					},
+				},
+			}
+		},
+
+		components: { //模板
+
+		},
+
+		methods: { //方法
+			...mapActions(['changeLay', 'changeSnack']),
+
+			login() { //登陆
+				this.changeLay(true);
+
+				let list = {
+					account: this.name,
+					password: this.password
+				};
+				$ax.getAjaxData('/EasWebUser/login', list, (res) => {
+
+					this.changeLay(false);
+
+					if (res.code == 1) {
+						sessionStorage.token = res.token;
+						if (res.accState == 0) { //已过期
+
+							this.dialog = true;
+
+						} else { //未过期
+							let msg = {
+								state: true,
+								errorText: {
+									type: 'green',
+									text: '登陆成功'
+								}
+							}
+							this.changeSnack(msg);
+
+							let userData = {
+								name: this.name,
+								email: res.email,
+								endTime: res.endTime
+							}
+
+							sessionStorage.showBar = true;
+							this.$store.state.showBar = true;
+							sessionStorage.userData = JSON.stringify(userData);
+							this.$router.push({
+								path: '/dashboard'
+							});
+
+						}
+
+					}
+				});
+
+			},
+
+			register() { //注册
+				if (this.$refs.form.validate()) {
+					let list = {
+						account: this.name,
+						password: this.password,
+						email: this.email
+					}
+					this.changeLay(true);
+					$ax.getAjaxData('/EasWebUser/register', list, (res) => {
+
+						if (res.code == 1) {
+							this.changeLay(false);
+							let msg = {
+								state: true,
+								errorText: {
+									type: 'green',
+									text: '注册成功'
+								}
+							}
+							this.changeSnack(msg);
+							sessionStorage.userName = this.name;
+							this.type = 1;
+						} else {
+							this.changeLay(false);
+						}
+					});
+				};
+			},
+
+			toJH() { //激活
+				let list = {
+					// account:sessionStorage.userName,
+					code: this.code
+				}
+				this.changeLay(true);
+				$ax.getAjaxData('/EasWebUser/recharge', list, (res) => {
+
+					this.changeLay(false);
+
+					if (res.code == 1) {
+						this.dialog = false;
+
+						this.login();
+
+					}
+
+				}, {
+					hasToken: true
+				});
+
+			}
+		},
+
+		//-----------生命周期--------------------------------------
+
+		created() { //应用程序加载前触发。多个页面会调用多次
+
+		},
+
+		mounted() { //页面渲染完成后触发
+
+		}
+
+
+	}
+</script>
+
+<style scoped="scoped">
+	.loginTitle {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	/* 	.v-text-field {
+    padding-top: 6px;
+    margin-top: 4px;
+} */
+	.pointer {
+		cursor: pointer;
+	}
+
+	.xy-height {
+		height: 100vh;
+	}
+</style>

@@ -1,0 +1,45 @@
+
+/*自定义表格*/
+.xy-tableItem {
+  border: 1px solid #ccc;
+  border-top: none;
+}
+ .xy-tableItem:hover{
+	  background: #EEEEEE;
+  }
+  .xy-border-circle{
+  	border-top-left-radius: 3px; 
+  	border-top-right-radius: 3px;
+  }
+  
+  
+ /*回到顶部-悬浮按钮样式*/
+  .xy-suspend{
+	  background: #4CAF50;
+	  position: fixed;
+	  right: 10px;
+	  bottom: 10px;
+	  z-index: 2;
+  }
+
+/*自定义输入框*/
+.xy-input {
+	width: 100px!important;
+	border: 1px solid;
+	border-radius: 3px;
+	background: none;
+	padding: 4px 4px 4px 10px;
+}
+
+.xy-input:focus {
+	outline: 0;
+}
+
+.xy-input-disable{
+	width: 100px!important;
+	border-radius: 3px;
+	background: none;
+	padding: 4px 4px 4px 10px;
+	border: 1px solid #D7CCC8;
+	color:#D7CCC8;
+}

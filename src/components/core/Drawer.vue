@@ -1,0 +1,166 @@
+<template>
+  <v-navigation-drawer
+    id="app-drawer"
+    v-model="inputValue"
+    app
+    dark 
+    floating
+    persistent
+    mobile-break-point="991"
+    width="260"
+  >
+   <v-list  style="background: none;">
+     <v-list-item>
+	   <v-img
+	     :src="logo"
+	     height="34"
+		 width="34"
+	     style="background: none;margin-right: 15px;"
+	   />
+       <v-list-item-title class="title">
+         量化大师
+       </v-list-item-title>
+     </v-list-item>
+     <v-divider class="my-2" />
+     <v-list-item
+       v-for="(link, i) in links"
+       :key="i"
+       :to="link.to"
+	   color="green"
+       class="v-list-item my-0"
+     >
+       <v-list-item-action>
+		   <Avatar :src="iconArr[link.icon]" />
+         <!-- <v-icon>{{ link.icon }}</v-icon> -->
+       </v-list-item-action>
+	   
+       <v-list-item-title
+         v-text="link.text"
+       />
+     </v-list-item>
+   </v-list>
+   <v-footer
+	  absolute
+         class="font-weight-medium py-2 grey darken-3"
+       >
+         <v-col
+           class="text-center grey--text darken-2"
+           cols="12"
+         >
+           版本：v1.0.1
+         </v-col>
+       </v-footer>
+   
+  </v-navigation-drawer>
+</template>
+
+<script>
+// Utilities
+import {
+  mapMutations,
+  mapState
+} from 'vuex'
+
+import img from '@/img/logo.png'
+import indexBg from '@/img/index.svg'
+import personBg from '@/img/person.svg'
+import detailBg from '@/img/detail.svg'
+import orderBg from '@/img/order.svg'
+import ruleBg from '@/img/rule.svg'
+import createBg from '@/img/create.svg'
+export default {
+  data: () => ({
+    logo: img,
+    barImg:img,
+	iconArr:[indexBg,personBg,detailBg,orderBg,ruleBg,createBg],
+    links: [
+      {
+        to: '/dashboard',
+        icon: 0,
+        text: '首页'
+      },
+      {
+        to: '/user',
+        icon: 1,
+        text: '个人中心'
+      },
+      {
+        to: '/table-list',
+        icon: 2,
+        text: '详细数据'
+      },
+      {
+        to: '/order-list',
+        icon: 3,
+        text: '下单数据'
+      },
+      {
+        to: '/rule',
+        icon: 4,
+        text: '规则策略'
+      },
+	  {
+		to: '/dem',
+		icon: 5,
+		text:'托管数据'
+	  }
+    ],
+    responsive: false
+  }),
+  computed: {
+    ...mapState('app', ['image', 'color']),
+    inputValue: {
+      get () {
+        return this.$store.state.app.drawer
+      },
+      set (val) {
+        this.setDrawer(val)
+      }
+    },
+    items () {
+      return this.$t('Layout.View.items')
+    }
+  },
+  mounted () {
+    this.onResponsiveInverted()
+    window.addEventListener('resize', this.onResponsiveInverted)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.onResponsiveInverted)
+  },
+  methods: {
+    ...mapMutations('app', ['setDrawer', 'toggleDrawer']),
+    onResponsiveInverted () {
+      if (window.innerWidth < 991) {
+        this.responsive = true
+      } else {
+        this.responsive = false
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+  #app-drawer {
+    .v-list__tile {
+      border-radius: 4px;
+
+      &--buy {
+        margin-top: auto;
+        margin-bottom: 17px;
+      }
+    }
+
+    .v-image__image--contain {
+      top: 9px;
+      height: 60%;
+    }
+
+    .search-input {
+      margin-bottom: 30px !important;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+</style>
