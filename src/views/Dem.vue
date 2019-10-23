@@ -560,8 +560,15 @@
 
 			onPosition(item){ //平仓/建仓-单个
 				this.$Modal.confirm({
-					title: item.isBuy==0?'建仓?':'平仓',
-					content:item.isBuy==0?'确定建仓吗?':'确定平仓吗?',
+					render: (h) => {
+						return h('div', [
+							h('p',{
+								style:{
+									fontWeight:'700'
+								}
+							},item.isBuy==0?'确定建仓吗?':'确定平仓吗?'),
+						])
+					},
 					onOk: () => {
 						let send = {
 							data:[{id:item.id}],
@@ -589,8 +596,15 @@
 			onRemove(item){//删除单个托管			
 
 				this.$Modal.confirm({
-					title: '删除托管',
-					content:item.isBuy==1?'<span style="color:red;">交易对有持仓,确定要删除吗?</span>':'确定删除吗?',
+					render: (h) => {
+						return h('div', [
+							h('p',{
+								style:{
+									fontWeight:'700'
+								}
+							},item.isBuy==1?'交易对有持仓,确定要删除吗?':'确定删除吗?'),
+						])
+					},
 					onOk: () => {
 						let send = {
 							data:[{id:item.id}],
@@ -616,8 +630,15 @@
 			allEnd(){//全部停止
 				if(this.items.length>0){
 					this.$Modal.confirm({
-						title: '交易托管',
-						content: '是否全部停止?',
+						render: (h) => {
+							return h('div', [
+								h('p',{
+									style:{
+										fontWeight:'700'
+									}
+								},'是否全部停止?'),
+							])
+						},
 						onOk: () => {
 							let json = JSON.stringify({code:1003});
 							this.$sock.websocketsend(json);
@@ -630,8 +651,15 @@
 			allStart(){//全部启动
 				if(this.items.length>0){
 					this.$Modal.confirm({
-						title: '交易托管',
-						content: '是否全部启动?',
+						render: (h) => {
+							return h('div', [
+								h('p',{
+									style:{
+										fontWeight:'700'
+									}
+								},'是否全部启动?'),
+							])
+						},
 						onOk: () => {
 							let code = JSON.stringify({code:1002});
 							this.$sock.websocketsend(code);

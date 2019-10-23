@@ -2,36 +2,13 @@
 	<!--fill-height-->
 	<v-container fluid grid-list-xl flat>
 		<v-layout justify-center wrap flex-column>
-			<v-row class="px-4" id="vRow">
-				<v-col cols="12" lg="2" md="3" sm="5" xs="12" class="px-2">
-					<p class="mb-2">开始时间：</p>
-					 <DatePicker type="datetime" format="yyyy-MM-dd HH:mm" 
-					placeholder="点击选择" style="width: 100%"
-					:value="startTime"
-					:options="timeOptions"
-					:clearable="false"
-					:editable="false"
-					@on-change="startTimeChange">
-					</DatePicker>
-
-				</v-col>
-				<v-col cols="12" lg="2" md="3" sm="5" xs="12" class="px-2">
-					<p class="mb-2">结束时间：</p>
-					 <DatePicker type="datetime" format="yyyy-MM-dd HH:mm" 
-					placeholder="点击选择" style="width: 100%"
-					:value="endTime"
-					:options="timeOptions"
-					:clearable="false"
-					:editable="false"
-					@on-change="endTimeChange"></DatePicker>
-
-				</v-col>
-
-				<v-col cols="12" lg="3" md="3" sm="2" class="d-flex align-end pl-2">
-
-					<v-btn color="green" outlined @click="search" class="my-0 px-10">查询</v-btn>
-				</v-col>
-			</v-row>
+			<v-flex class="px-4 d-flex align-center justify-start flex-wrap" id="vRow">
+				<date-pickers :value="startTime" slotText="开始" @changeTime="startTimeChange" class="mr-2 my-1"></date-pickers>
+				<date-pickers :value="endTime" slotText="结束" @changeTime="endTimeChange" class="mr-2 my-1"></date-pickers>
+				<v-chip color="green" outlined label class="mr-2 my-1" @click="search">
+					查询
+				</v-chip>
+			</v-flex>
 			
 			<v-flex  class="d-flex flex-column" >
 				<div class=" pa-5 my-0 green white--text d-flex flex-column justify-start align-start xy-border-circle">
@@ -120,10 +97,14 @@
 
 <script>
 	import upSvg from '@/img/up.svg'
+	import datePickers from '@/components/datePickers.vue'
 	import {
 		mapActions
 	} from 'vuex';
 	export default {
+		components: {
+			datePickers
+		},
 		data: () => ({
 			timeOptions:{ //时间选择器的限制
 				disabledDate (date) {
@@ -185,9 +166,7 @@
 			},
 			
 			endTimeChange(time) {
-				let arr = time.split(' ');
-				arr[1] = '23:59';
-				this.endTime = arr.join(' ');
+				this.endTime = time;
 			},
 
 			search() { //搜索下单列表

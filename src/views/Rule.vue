@@ -196,8 +196,15 @@
 			
 			delRule(id, index) { //删除规则
 				this.$Modal.confirm({
-					title: '删除',
-					content: '<p>确定删除吗？该操作不可撤销</p>',
+					render: (h) => {
+						return h('div', [
+							h('p',{
+								style:{
+									fontWeight:'700'
+								}
+							},'确定删除吗? 该操作不可撤销'),
+						])
+					},
 					onOk: () => {
 						this.changeLay(true);
 						

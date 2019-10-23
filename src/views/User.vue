@@ -455,8 +455,15 @@
 
 			delApi(item){
 				this.$Modal.confirm({
-					title: '删除',
-					content: '<p>确定删除吗？该操作不可撤销</p>',
+					render: (h) => {
+						return h('div', [
+							h('p',{
+								style:{
+									fontWeight:'700'
+								}
+							},'确定删除吗? 该操作不可撤销'),
+						])
+					},
 					onOk: () => {
 						
 						this.changeLay(true);
@@ -636,8 +643,15 @@
 
 			exit() {
 				this.$Modal.confirm({
-                    title: '退出登录',
-                    content: '<p>确定退出吗？</p>',
+                    render: (h) => {
+                    	return h('div', [
+                    		h('p',{
+                    			style:{
+                    				fontWeight:'700'
+                    			}
+                    		},'确定退出吗 ?'),
+                    	])
+                    },
                     onOk: () => {
 						sessionStorage.clear();
 						this.$store.state.showBar = false;

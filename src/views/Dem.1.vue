@@ -448,8 +448,15 @@
 			
 			allEnd(){//全部停止
 				this.$Modal.confirm({
-					title: '交易托管',
-					content: '<p>是否全部停止?</p>',
+					render: (h) => {
+						return h('div', [
+							h('p',{
+								style:{
+									fontWeight:'700'
+								}
+							},'是否停止全部 ?'),
+						])
+					},
 					onOk: () => {
 						let json = JSON.stringify({code:1003});
 						this.websocketsend(json);
@@ -459,8 +466,15 @@
 			
 			allStart(){//全部启动
 				this.$Modal.confirm({
-					title: '交易托管',
-					content: '<p>是否全部启动?</p>',
+					render: (h) => {
+						return h('div', [
+							h('p',{
+								style:{
+									fontWeight:'700'
+								}
+							},'是否全部启动 ?'),
+						])
+					},
 					onOk: () => {
 						let code = JSON.stringify({code:1002});
 						this.websocketsend(code);
