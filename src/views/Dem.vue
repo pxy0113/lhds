@@ -1,7 +1,7 @@
 <template>
 	<v-container fluid grid-list-xl flat>
 		
-		<v-flex class="d-flex flex-column">
+		<v-flex class="d-flex flex-column" id="vRow">
 			<div class=" px-5 py-2 my-0 green white--text d-flex justify-space-between align-center flex-wrap xy-border-circle">
 				<span style="font-size: 18px;" v-once>托管列表</span>
 				<span style="min-width: 260px;" v-if="usable">
@@ -26,7 +26,7 @@
 						<p class="text-center" style="width: 100%;">{{tips}}</p>
 					</v-list-item>
 					
-					<div v-for="(item,index) in items" :key="index" v-else>
+					<div v-for="(item,index) in items" :key="index" v-else >
 						<v-list-item three-line class="xy-tableItem">
 							<v-list-item-content class="align-self-start">
 								<v-list-item-title class=" mb-2">
@@ -100,11 +100,16 @@
 						</v-list-item>
 					
 					</div>
+					<v-fab-transition>
+						<Avatar :src="upIcon" v-if="items.length>=5" class="xy-suspend" @click.stop.native="$vuetify.goTo(target, options)">
+						</Avatar>
+					
+					</v-fab-transition>
 				</div>
 				
 				  
 			</component>
-
+		
 		</v-flex>
 		
 		<v-dialog v-model="showAddRule" fullscreen hide-overlay transition="dialog-bottom-transition">

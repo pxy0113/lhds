@@ -473,7 +473,8 @@
 			}
 		},
 
-		methods: {		
+		methods: {
+
 			listenState(name) {
 				this.jData.R19 = name;
 				name == true ? '' : this.jData.R20 = false;

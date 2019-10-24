@@ -231,7 +231,10 @@
 				</v-card-title>
 
 				<v-card-text>
-					<v-text-field v-model="code" label="激活码"></v-text-field>
+					<v-form ref="codeForm" v-model="codeValid" lazy-validation>
+						<v-text-field v-model="code" label="激活码" :rules="[rules.not,rules.required,rules.isEmpty]"></v-text-field>
+					</v-form>
+					
 				</v-card-text>
 
 				<v-card-actions>
@@ -259,6 +262,8 @@
 	import banner from '@/img/user.jpg'
 	export default {
 		data: () => ({
+			codeValid:true,
+			
 			transition: 'scale-transition',
 			
 			loading:true,//控制骨架屏 true表示显示
@@ -351,6 +356,7 @@
 			rules: {
 				required: v => !!v || '必填',
 				length: v =>  (v&&v.length <= 68) || '超出长度',
+				size: v => v > 0 || '必须大于0',
 				isEmpty: v => /\S/.test(v) || '不可为空',
 				not: v => !/[\u4E00-\u9FA5]/g.test(v) || '不能是中文'
 			},
@@ -592,7 +598,7 @@
 			},
 
 			postCode() {
-				if (this.code !== '') {
+				if (this.$refs.codeForm.validate()) {
 					this.changeLay(true);
 					$ax.getAjaxData('/EasWebUser/recharge', {
 						code: this.code
@@ -629,15 +635,6 @@
 					}, {
 						hasToken: true
 					});
-				} else {
-					let msg = {
-						state: true,
-						errorText: {
-							type: 'error',
-							text: '激活码不可为空'
-						}
-					}
-					this.changeSnack(msg);
 				}
 			},
 
