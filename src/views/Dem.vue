@@ -1,6 +1,6 @@
 <template>
-	<v-container fluid grid-list-xl flat>
-		
+	<!-- <v-container fluid grid-list-xl flat> -->
+	<div :class="[$store.state.currentType=='Mobile' ? '' : 'px-4','pt-2']">
 		<v-flex class="d-flex flex-column" id="vRow">
 			<div class=" px-5 py-2 my-0 green white--text d-flex justify-space-between align-center flex-wrap xy-border-circle">
 				<span style="font-size: 18px;" v-once>托管列表</span>
@@ -239,7 +239,8 @@
 		
 		<setting-dialog v-if="showSetDialog" :list="settingData" :settingModal="showSetDialog" @closeSetting="closeSetting"></setting-dialog>
 		
-	</v-container>
+	<!-- </v-container> -->
+	</div>
 </template>
 
 <script>

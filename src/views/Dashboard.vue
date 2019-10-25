@@ -1,11 +1,10 @@
 <template>
 	 <v-container
-	   class="pa-2"
+	   class="pa-2 pt-0"
 	   fluid
-
 	 >
-	   <v-row style="max-height: 600px;" class="pa-3">
-	     <v-col xm12 cols="12">
+	   <v-row style="max-height: 600px;"  :class="[$store.state.currentType=='Mobile' ? '' : 'pa-3']">
+	     <v-col xm12 cols="12" :class="[$store.state.currentType=='Mobile' ? '' : 'pa-3']">
 	      <material-chart-card 
 		  :data="dataCompletedTasksChart.data" 
 		  :options="dataCompletedTasksChart.options" 

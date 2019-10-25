@@ -14,15 +14,33 @@ import Router from 'vue-router'
 import vuex from '../store/index'
 // Routes
 import paths from './paths'
+import mPaths from './mPaths'
+
+const detectDeviceType = () =>
+/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+? 'Mobile'
+: 'Desktop';
+let type = detectDeviceType();
+
+let testPaths = type=='Mobile'?mPaths:paths;
 
 function route(path, view, name) {
-    return {
-        name: name || view,
-        path,
-        component: (resovle) => import(
-            `@/views/${view}.vue`
-        ).then(resovle)
-    }
+	return {
+		name:name,
+		path,
+		component: (resolve) => import (
+			`@/views/${view}.vue`
+		).then(resolve)
+	}
+
+// 	return {
+// 		name: name || view,
+// 		path,
+// 		component: (resovle) => import(
+// 			`@/views/${view}.vue`
+// 		).then(resovle)
+// 	}
+// 
 }
 
 Vue.use(Router)
@@ -31,7 +49,7 @@ Vue.use(Router)
 const router = new Router({
     // mode: 'history',
     // base:'/dist/',
-    routes: paths.map(path => route(path.path, path.view, path.name)).concat([{
+    routes: testPaths.map(path => route(path.path, path.view, path.name)).concat([{
         path: '*',
         redirect: '/dashboard'
     }]),

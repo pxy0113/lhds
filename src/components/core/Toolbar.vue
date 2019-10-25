@@ -19,11 +19,11 @@
 		</v-flex>
 	</v-card> -->
 	
-     <v-toolbar dense :min-height="70">
+     <v-toolbar dense :min-height="70" style="position: fixed;top: 0;width: 100vw;z-index: 2;">
        <v-toolbar-title class=" font-weight-bold " style="color: #2c2c2c;">
 
 		  <v-icon color="#2c2c2c" v-if="responsive" @click.stop="onClickBtn">mdi-view-list</v-icon>
-          {{ title }}
+          {{ responsive?title:''}}
       </v-toolbar-title>
 
       <v-spacer></v-spacer>

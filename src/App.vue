@@ -25,7 +25,7 @@
 
     <core-drawer v-if="showBar" />
 
-    <core-view  />
+    <core-view style="margin-top: 65px;" />
 <!-- </v-img> -->
 
   </v-app>
@@ -38,10 +38,24 @@
 
 				}
 			},
+			mounted() {
+				this.resize();
+			},
 			methods:{
-				...mapActions(['changeSnack']),
-				closeSnackbar(){
+				...mapActions(['changeSnack','deviceType']),
+				closeSnackbar(){ //关闭提示
 					this.snackbar = false;
+				},
+				
+				resize(){//窗口大小改变时判断当前浏览器环境
+					const detectDeviceType = () =>
+					  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+					    ? 'Mobile'
+					    : 'Desktop';
+					let type = detectDeviceType();
+
+					this.deviceType(type);
+					
 				}
 				
 			},

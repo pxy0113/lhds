@@ -5,12 +5,13 @@
 			<v-flex class="px-4 d-flex align-center justify-start flex-wrap" id="vRow">
 				<date-pickers :value="startTime" slotText="开始" @changeTime="startTimeChange" class="mr-2 my-1"></date-pickers>
 				<date-pickers :value="endTime" slotText="结束" @changeTime="endTimeChange" class="mr-2 my-1"></date-pickers>
-				<v-chip color="green" outlined label class="mr-2 my-1" @click="search">
+				<v-chip color="green" outlined label class="mr-2 my-1 px-6" @click="search">
 					查询
 				</v-chip>
 			</v-flex>
 			
-			<v-flex  class="d-flex flex-column" >
+			<div :class="[$store.state.currentType=='Mobile' ? '' : 'px-4','d-flex','flex-column']"
+			 style="border-radius: 3px;">
 				<div class=" pa-5 my-0 green white--text d-flex flex-column justify-start align-start xy-border-circle">
 					<span style="font-size:18px;" v-once>下单记录</span>
 					<span>{{searchStartTime?searchStartTime+' 至 ':''}}{{searchEndTime}}</span>
@@ -85,11 +86,11 @@
 				  >
 				  </Avatar>
 				</v-fab-transition>
-			</v-flex>
+			</div>
 			
 			
 		</v-layout>
-		<div class="text-center">
+		<div class="text-center my-4">
 			<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="7"></v-pagination>
 		</div>
 	</v-container>

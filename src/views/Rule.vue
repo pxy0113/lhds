@@ -1,5 +1,6 @@
 <template>
-	<v-container fluid grid-list-xl>
+	<!-- <v-container fluid grid-list-xl> -->
+	<div :class="[$store.state.currentType=='Mobile' ? '' : 'px-4','pt-2']">
 		<v-card v-if="!showAddRule" outlined  id="vRow">
 			<div class=" px-5 py-2 my-0 green white--text d-flex justify-space-between align-center">
 				<span style="font-size: 18px;" v-once>规则列表</span>
@@ -104,7 +105,7 @@
 
 		</v-fab-transition>
 		<add-rule v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" ref="AR" :edit="editType"></add-rule>
-	</v-container>
+	</div>
 </template>
 
 <script>

@@ -8,4 +8,7 @@ export default {
   changeSnack({ commit },data) {
       commit('changeSnackBar',data);
   },
+  deviceType({commit},data) {
+	  commit('changeDeviceType',data)
+  }
 }

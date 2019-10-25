@@ -1,10 +1,10 @@
 <template>
-	<v-container  fluid grid-list-xl>
-		<v-layout justify-center wrap  >
-			<v-flex xs12 md11 lg11 sm11 cols="12" class="py-0">
+	<!-- <v-container  fluid grid-list-xl> -->
+		<v-layout justify-center wrap  :class="[$store.state.currentType=='Mobile' ? '' : 'mx-2','mt-2']">
+			<v-flex xs12 md11 lg11 sm11 cols="12" class="pa-0">
 
-				<v-card class="mx-auto" style="border: 1px solid #BDBDBD;" outlined id="vRow">
-					<v-card outlined :img="bannerImg" style="border: none;">
+				<v-card class="mx-auto" outlined id="vRow">
+					<v-card outlined :img="bannerImg" style="border: none;" tile>
 						<v-list-item three-line>
 								<v-list-item-avatar tile :size="100" class="white  d-none d-sm-flex" >
 									<v-img :src="bg" />
@@ -35,7 +35,7 @@
 							<v-icon size="20">mdi-power</v-icon>
 						</v-btn>
 					</v-card>
-					<p class="px-2 mb-0" style="border:1px solid #ccc"><v-btn color="green"  outlined @click="addDialog= true" small>添加API</v-btn></p>
+					<p class="px-2 mb-0" style="border-bottom:1px solid #ccc"><v-btn color="green"  outlined @click="addDialog= true" small>添加API</v-btn></p>
 					<!-- <v-card outlined> -->
 						
 						
@@ -119,137 +119,140 @@
 					</Avatar>
 		
 			</v-flex>
+			
+					<v-dialog v-model="addDialog" width="500" persistent>
+						<v-card>
+							<v-card-title class="headline grey lighten-2" primary-title>
+								添加账户
+							</v-card-title>
+					
+							<v-card-text>
+									<v-form    
+									ref="form"
+									v-model="valid"
+									lazy-validation>
+										<v-select
+											v-model="place"
+											:rules="[v => !!v || '必填']"
+											:items="items"
+											item-text="exc"
+											item-value="exc"
+											color="green"
+											item-color="green"
+											label="交易所"
+											single-line>
+											<template v-slot:label>
+												<span style="font-size: 14px;">交易所</span>
+											</template>
+										 
+										 </v-select>
+										 
+										<v-text-field
+										   v-model="news.A1"
+										   label="账户备注名称"
+										   :rules="[rules.required,rules.isEmpty]"
+										   required
+										   color="green"
+										 ></v-text-field>
+										 
+										<v-text-field
+										v-model="news.A2"
+										:rules="[rules.required,rules.isEmpty,rules.not]"
+										required
+										color="green"
+										label="API_KEY"
+										></v-text-field>
+										  
+										<v-text-field
+										 v-model="news.A3"
+										 :rules="[rules.required,rules.isEmpty,rules.not,rules.length]"
+										 required
+										 color="green"
+										 label="API_SECRET"
+										></v-text-field>
+											
+										<v-row>
+											<v-col cols="6">
+												<v-text-field
+												   v-model="news.A4"
+												   label="买入费率(%)"
+												   min="0"
+												   step="0.1"
+												   :rules="[v => (!!v&&v>=0) || '必填且不是负数']"
+												   required
+												   color="green"
+												   type="number"
+												 ></v-text-field>
+											</v-col>
+											<v-col cols="6">
+												<v-text-field
+												   v-model="news.A5"
+												   label="卖出费率(%)"
+												   min="0"
+												   step="0.1"
+												   color="green"
+												   :rules="[v => (!!v&&v>=0) || '必填且不是负数']"
+												   required
+												   type="number"
+												 ></v-text-field>
+											</v-col>
+										</v-row>
+										
+										<v-text-field
+											v-if="place=='OKEx'"
+										   v-model="newsPassword"
+										   :rules="[rules.required,rules.isEmpty,rules.not]"
+										   required
+										   color="green"
+										   label="PASSPHPASE"
+										   type="password"
+										 ></v-text-field>
+									</v-form>
+								 
+							</v-card-text>
+					
+							<v-card-actions>
+								<div class="flex-grow-1"></div>
+								<v-btn color="green" text @click="closeAccount">
+									关闭
+								</v-btn>
+								<v-btn color="green" text @click="addOneAccount">
+									确定
+								</v-btn>
+							</v-card-actions>
+						</v-card>
+					</v-dialog>
+					
+					<v-dialog v-model="dialog" width="500" persistent>
+						<v-card>
+							<v-card-title class="headline grey lighten-2" primary-title>
+								激活账号
+							</v-card-title>
+			
+							<v-card-text>
+								<v-form ref="codeForm" v-model="codeValid" lazy-validation>
+									<v-text-field v-model="code" label="激活码" :rules="[rules.not,rules.required,rules.isEmpty]"></v-text-field>
+								</v-form>
+								
+							</v-card-text>
+			
+							<v-card-actions>
+								<div class="flex-grow-1"></div>
+								<v-btn color="primary" text @click="cancelDialog">
+									关闭
+								</v-btn>
+								<v-btn color="primary" text @click="postCode">
+									确定
+								</v-btn>
+							</v-card-actions>
+						</v-card>
+					</v-dialog>
+			
 		</v-layout>
 		
-		<v-dialog v-model="addDialog" width="500" persistent>
-			<v-card>
-				<v-card-title class="headline grey lighten-2" primary-title>
-					添加账户
-				</v-card-title>
-		
-				<v-card-text>
-						<v-form    
-						ref="form"
-						v-model="valid"
-						lazy-validation>
-							<v-select
-								v-model="place"
-								:rules="[v => !!v || '必填']"
-								:items="items"
-								item-text="exc"
-								item-value="exc"
-								color="green"
-								item-color="green"
-								label="交易所"
-								single-line>
-								<template v-slot:label>
-									<span style="font-size: 14px;">交易所</span>
-								</template>
-							 
-							 </v-select>
-							 
-							<v-text-field
-							   v-model="news.A1"
-							   label="账户备注名称"
-							   :rules="[rules.required,rules.isEmpty]"
-							   required
-							   color="green"
-							 ></v-text-field>
-							 
-							<v-text-field
-							v-model="news.A2"
-							:rules="[rules.required,rules.isEmpty,rules.not]"
-							required
-							color="green"
-							label="API_KEY"
-							></v-text-field>
-							  
-							<v-text-field
-							 v-model="news.A3"
-							 :rules="[rules.required,rules.isEmpty,rules.not,rules.length]"
-							 required
-							 color="green"
-							 label="API_SECRET"
-							></v-text-field>
-								
-							<v-row>
-								<v-col cols="6">
-									<v-text-field
-									   v-model="news.A4"
-									   label="买入费率(%)"
-									   min="0"
-									   step="0.1"
-									   :rules="[v => (!!v&&v>=0) || '必填且不是负数']"
-									   required
-									   color="green"
-									   type="number"
-									 ></v-text-field>
-								</v-col>
-								<v-col cols="6">
-									<v-text-field
-									   v-model="news.A5"
-									   label="卖出费率(%)"
-									   min="0"
-									   step="0.1"
-									   color="green"
-									   :rules="[v => (!!v&&v>=0) || '必填且不是负数']"
-									   required
-									   type="number"
-									 ></v-text-field>
-								</v-col>
-							</v-row>
-							
-							<v-text-field
-								v-if="place=='OKEx'"
-							   v-model="newsPassword"
-							   :rules="[rules.required,rules.isEmpty,rules.not]"
-							   required
-							   color="green"
-							   label="PASSPHPASE"
-							   type="password"
-							 ></v-text-field>
-						</v-form>
-					 
-				</v-card-text>
-		
-				<v-card-actions>
-					<div class="flex-grow-1"></div>
-					<v-btn color="green" text @click="closeAccount">
-						关闭
-					</v-btn>
-					<v-btn color="green" text @click="addOneAccount">
-						确定
-					</v-btn>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-		
-		<v-dialog v-model="dialog" width="500" persistent>
-			<v-card>
-				<v-card-title class="headline grey lighten-2" primary-title>
-					激活账号
-				</v-card-title>
 
-				<v-card-text>
-					<v-form ref="codeForm" v-model="codeValid" lazy-validation>
-						<v-text-field v-model="code" label="激活码" :rules="[rules.not,rules.required,rules.isEmpty]"></v-text-field>
-					</v-form>
-					
-				</v-card-text>
 
-				<v-card-actions>
-					<div class="flex-grow-1"></div>
-					<v-btn color="primary" text @click="cancelDialog">
-						关闭
-					</v-btn>
-					<v-btn color="primary" text @click="postCode">
-						确定
-					</v-btn>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-	</v-container>
+	<!-- </v-container> -->
 </template>
 
 <script>
