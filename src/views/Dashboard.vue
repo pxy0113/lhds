@@ -1,38 +1,12 @@
 <template>
 	 <v-container
-	   class="pa-2 pt-0"
+	   class="pa-2 pt-0" v-resize="resizeChart"
 	   fluid
 	 >
-	   <v-row style="max-height: 600px;"  :class="[$store.state.currentType=='Mobile' ? '' : 'pa-3']">
-	     <v-col xm12 cols="12" :class="[$store.state.currentType=='Mobile' ? '' : 'pa-3']">
-	      <material-chart-card 
-		  :data="dataCompletedTasksChart.data" 
-		  :options="dataCompletedTasksChart.options" 
-		  color="info" type="Line"
-		  >
-	       	<h4 class="title font-weight-light">最近8日收益</h4>
-	       	<p class="category d-inline-flex font-weight-light">
-	       		<v-icon color="green" small>
-	       			mdi-arrow-up
-	       		</v-icon>
-	       		<span class="green--text">{{percentage}}%</span>&nbsp;
-	       		今天相对昨天的增长率
-	       	</p>
-	       			
-	       	<template slot="actions">
-	       		<v-icon class="mr-2" small>
-	       			mdi-clock-outline
-	       		</v-icon>
-				<Time :time="time2" />
-	       	</template>
-	       </material-chart-card>
-	     </v-col>
-	   </v-row>
+	   <v-card class="mx-auto mt-3 pa-3" outlined tile>
+	   	<div id="chart" style="width: 100%;height: 400px;"></div>
+	   </v-card>
 	   <v-layout wrap justify-start>
-		   	<!-- <v-flex sm6 xs12 md6 lg3>
-		   	<material-stats-card color="green" icon="mdi-store" title="Revenue" value="$34,245" sub-icon="mdi-calendar"
-		   	 sub-text="Last 24 Hours" />
-		   </v-flex> -->
 		   <v-flex sm6 xs12 md6 lg4  class="pa-3">
 		   	<material-stats-card color="#279f7c" :icon="Uimg" title="USDT收益" 
 			:value="profitList.USDT?profitList.USDT:'0'" 
@@ -60,10 +34,27 @@
 	import ETH from '@/img/ETH.png';
 	import USDT from '@/img/USDT.png';
 	import { mapActions } from 'vuex';
+	import echarts from 'echarts'
+	import {line} from '@/plugins/chart.js'
 	export default {
 		data() {
+			const getBeforeDay = () => {
+				let arr = [];
+				for (let i = 1; i < 8; i++) {
+					let a = this.$moment(new Date()).subtract(i, 'days').format('MM-DD');
+					arr.unshift(a);
+				}
+				return arr;
+			}
 			return {
-				time2: (new Date()).getTime() - 86400 * 8 * 1000,
+				tableData: {
+					labels: getBeforeDay(),
+					
+					title:'最近七日收益走势图',
+				
+					series: [1, 20, 11, 61, 15, 33, 21]
+				},
+				
 				Bimg:BTC,
 				Eimg:ETH,
 				Uimg:USDT,
@@ -72,28 +63,6 @@
 				dateProfit:[],
 				
                 profitList:{},//所有利润信息
-
-				dataCompletedTasksChart: {
-					data: {
-						labels: ['day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7', 'day8'],
-						series: [
-							[0, 0, 0, 0, 0, 0, 0, 0]
-						]
-					},
-					options: {
-						lineSmooth: this.$chartist.Interpolation.cardinal({
-							tension: 0
-						}),
-						low: -10,
-						high: 10, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
-						chartPadding: {
-							top: 0,
-							right: 0,
-							bottom: 0,
-							left: 10
-						}
-					}
-				},
 
 				headers: [{
 						sortable: false,
@@ -144,10 +113,7 @@
 							});
 							this.percentage = res.percentage;
 							
-							this.dataCompletedTasksChart.options.low = Math.min.apply(null, arr)
-
-							this.dataCompletedTasksChart.options.high = Math.max.apply(null, arr)+2;
-							this.dataCompletedTasksChart.data.series = [arr];
+							this.tableData.series = [arr];
 							resolve();
 					    }else{
 							resolve();
@@ -167,11 +133,19 @@
 					    }
 					},{hasToken:true});
 				});
-            }
-		},
-        mounted () {//模板被渲染完毕之后执行
+            },
 			
-        },
+			resizeChart(){
+				console.log('重绘')
+				let myChart = echarts.init(document.getElementById('chart'));
+				myChart.resize();
+			},
+		},
+		mounted() { //模板被渲染完毕之后执行
+			let myChart = echarts.init(document.getElementById('chart'));
+			myChart.setOption(line(this.tableData));
+			
+		},
 		beforeRouteEnter (to, from, next) {//在组件创建之前调用（放置页面加载时请求的Ajax）
 		
 		(async() => {//执行异步函数

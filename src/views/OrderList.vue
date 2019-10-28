@@ -2,19 +2,21 @@
 	<!--fill-height-->
 	<v-container fluid grid-list-xl flat>
 		<v-layout justify-center wrap flex-column>
-			<v-flex class="px-4 d-flex align-center justify-start flex-wrap" id="vRow">
-				<date-pickers :value="startTime" slotText="开始" @changeTime="startTimeChange" class="mr-2 my-1"></date-pickers>
-				<date-pickers :value="endTime" slotText="结束" @changeTime="endTimeChange" class="mr-2 my-1"></date-pickers>
-				<v-chip color="green" outlined label class="mr-2 my-1 px-6" @click="search">
-					查询
-				</v-chip>
-			</v-flex>
 			
-			<div :class="[$store.state.currentType=='Mobile' ? '' : 'px-4','d-flex','flex-column']"
-			 style="border-radius: 3px;">
-				<div class=" pa-5 my-0 green white--text d-flex flex-column justify-start align-start xy-border-circle">
-					<span style="font-size:18px;" v-once>下单记录</span>
-					<span>{{searchStartTime?searchStartTime+' 至 ':''}}{{searchEndTime}}</span>
+			
+			
+			<div class="d-flex flex-column">
+				<div class="my-0 green white--text d-flex flex-column justify-start align-start">
+					<div class="d-flex align-center justify-space-between px-2" style="width: 100%;">
+						<span v-once>全部记录</span>
+						<v-btn small dark outlined @click="search" >查询</v-btn>
+					</div>
+					<div class="dateTemplate" ref="dateTemplate">
+						<date-pickers :value="startTime" slotText="md-sunny" @changeTime="startTimeChange"></date-pickers>
+						<canvas id="canvas" style="width: 50px;height: 50px;"></canvas>
+						<date-pickers :value="endTime" slotText="md-moon"  @changeTime="endTimeChange"></date-pickers>
+					</div>
+					<!-- <span>{{searchStartTime?searchStartTime+' 至 ':''}}{{searchEndTime}}</span> -->
 				
 				</div>
 				
@@ -215,6 +217,23 @@
 				}
 			},
 
+			draw(){//画箭头
+				console.log(this.$refs.dateTemplate.offsetHeight);
+				let canvas = document.getElementById('canvas');
+				canvas.width = 50;
+				canvas.height = 50;
+				let ctx = canvas.getContext('2d');
+				ctx.beginPath();
+				ctx.moveTo(18.75,0);
+				ctx.lineTo(31.25,25);
+				ctx.lineTo(18.75,50);
+				// ctx.closePath();//闭合路径
+				ctx.lineWidth=1;//线的边框为10像素
+				ctx.strokeStyle='#66BB6A';
+				ctx.stroke();//绘制定义的图形
+				
+			},
+
 			getPlaceData(list) { //获取下单数据
 				this.loading = true;
 				$ax.getAjaxData('/EasWebUser/getPlace', list, (res) => {
@@ -248,6 +267,7 @@
 
 		},
 		mounted() {
+			this.draw();//画箭头
 			let day1 = this.$moment().startOf('day').format('YYYY-MM-DD HH:mm:ss');;
 			let day2 = this.$moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
 
@@ -261,7 +281,6 @@
 				"pageIndex": 1
 			}
 			this.getPlaceData(list);
-
 		}
 	}
 </script>
@@ -269,5 +288,17 @@
 	.bg {
 		background: #C5E1A5;
 	}
-
+	.dateTemplate{
+		display: grid;
+		grid-template-columns:auto 50px auto;
+		grid-template-rows:50px;
+		border:1px solid #66BB6A;
+		text-align: center;
+		/* padding:0 16px; */
+		width: 100%;
+		color: #37474F;
+		background: #f8f9f8;
+		line-height: 50px;
+		vertical-align: middle;
+	}
 </style>

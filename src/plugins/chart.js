@@ -1,6 +1,22 @@
 import echarts from 'echarts'
-const demo = (datas) =>{
+const line = (datas) =>{
 	return {
+		grid: {
+			left: '4%',
+			right: '5%', 
+			containLabel: true
+		},
+		title : {
+			text: datas.title,
+			subtext: '',
+			x:'center',
+			textStyle: {
+			    color: '#455A64',
+				fontWeight:700
+			}
+		},
+
+
 		xAxis: {
 			type: 'category',
 			boundaryGap: false,
@@ -259,4 +275,4 @@ const pp = (t,pay) =>{
     ]
 	}
 }
-export  { bar,pie,p,circle,pp,demo}
+export  {line}

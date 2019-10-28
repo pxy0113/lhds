@@ -1,12 +1,9 @@
 <template>
 	<div>
-		<v-chip
-		      outlined
-		      label
-			  @click="show"
-		    >
-			{{dateStr}}{{' '+slotText}}
-		    </v-chip>
+		<!-- <v-btn block outlined @click="show" class="ma-0">{{dateStr}}{{' '+slotText}}</v-btn> -->
+		<span @click="show" style="font-size: 14px;">
+			{{dateStr}}
+		</span>
 		 <v-bottom-sheet v-model="display" persistent>
 
 		      <v-sheet class="text-center" height="200px">
