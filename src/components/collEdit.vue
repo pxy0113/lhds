@@ -1,15 +1,20 @@
 <template>
 	<v-card>
-		<h5 class=" pa-5 ma-0 green white--text">
-			<v-icon color="white" class="pr-5" @click="hideRule">mdi-arrow-left</v-icon>{{edit?'编辑规则':'添加规则'}}
-		</h5>
+
+		<div class=" px-5 py-3  green lighten-5 d-flex align-center">
+
+			<v-icon @click="hideRule" color="green" size="22">mdi-arrow-left</v-icon>
+		
+			<span class="green--text pl-2" >{{edit?'编辑规则':'添加规则'}}</span>
+		
+		</div>
 	
 		<v-card class="pa-6">
 			<v-form ref="form" v-model="valid" lazy-validation>
 				<v-text-field type="text" v-model="ruleName" color="green" outlined dense :rules="[rules.required,rules.isEmpty]"
 				 label="规则名称" :readonly="true"></v-text-field>
 	
-				<v-sheet class="mx-auto">
+				<v-sheet class="mx-auto mb-2">
 					<v-slide-group v-model="activeRule" show-arrows center-active mandatory>
 						<v-slide-item v-for="(n,index) in child" :key="n" v-slot:default="{ active }">
 							<div class="d-flex justify-center align-center">

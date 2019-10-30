@@ -1,72 +1,203 @@
+
 <template>
-<!-- 	<v-card class="ma-0 d-flex justify-space-between align-center" style="min-height: 70px;z-index: 7;">
-		<div class="pink--text font-weight-light green pl-200" >
-		    <v-btn v-if="responsive" class="default v-btn--simple" dark icon @click.stop="onClickBtn">
-		        <v-icon>mdi-view-list</v-icon>
-		    </v-btn>
-		    {{ title }}
-		</div>
-		
-		<v-flex align-center layout py-2>
-		    <router-link v-ripple class="toolbar-items" to="/">
-				<Avatar :src="indexB" size="small"></Avatar>
-		        
-		    </router-link>
-					  
-		    <router-link v-ripple class="toolbar-items" to="/user">
-				<Avatar :src="personB" size="small"></Avatar>
-		    </router-link>
-		</v-flex>
-	</v-card> -->
-	
-     <v-toolbar dense :min-height="70" style="position: fixed;top: 0;width: 100vw;z-index: 2;">
+     <!-- <v-toolbar dense dark :min-height="70" class="elevation-2" style="position: fixed;top: 0;width: 100vw;z-index: 2;">
        <v-toolbar-title class=" font-weight-bold " style="color: #2c2c2c;">
 
 		  <v-icon color="#2c2c2c" v-if="responsive" @click.stop="onClickBtn">mdi-view-list</v-icon>
-          {{ responsive?title:''}}
+            SSSS
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
 
-                  <v-spacer />
+       <v-spacer />
       <v-toolbar-items>
           <v-flex align-center layout py-2>
-			<span v-ripple class="toolbar-items" to="/user" @click="toRouter('/')">
-			  <Avatar :src="indexB" size="small"></Avatar>
-			  
-			</span>
-			  
-			<span v-ripple class="toolbar-items" to="/user" @click="toRouter('/user')">
-
-			  <Avatar :src="personB" size="small"></Avatar>
-			</span>
+			
 
           </v-flex>
       </v-toolbar-items>
-    </v-toolbar>
-  
+    </v-toolbar> -->
+	<div>
+		    <v-toolbar  dark class="elevation-0">
+		      <v-toolbar-title class="d-flex align-center">
+				    <v-img
+				      :src="logo"
+				      height="34"
+				  		 width="34"
+				      style="background: none;margin-right: 15px;"
+				    />
+				      <span>量化大师</span>
+			  </v-toolbar-title>
+			  
+		      <v-spacer></v-spacer>
+		
+		      <v-toolbar-items v-if="$vuetify.breakpoint.mdAndUp" v-for="item in links" :to="item.to">
+		        <v-btn text v-ripple="{ class: 'green--text' }" :class="[$route.path==item.to?'defaultGreen':'']"
+				 @click="toRouter(item.to)">{{item.text}}</v-btn>
+		      </v-toolbar-items>
+				<v-menu transition="scroll-y-transition" v-if="!$vuetify.breakpoint.mdAndUp">
+					<template v-slot:activator="{ on }">
+<!-- 						<v-btn icon v-on="on">
+							<Icon type="ios-arrow-down" />
+						</v-btn> -->
+					  <v-app-bar-nav-icon  v-on="on"></v-app-bar-nav-icon>
+					</template>
+					<v-list>
+					  <v-list-item  v-ripple="{ class: 'green--text' }"
+						v-for="n in links" link @click="toRouter(n.to)">
+						<v-list-item-title>{{n.text}}</v-list-item-title>
+					  </v-list-item>
+					</v-list>
+				</v-menu>
+				<v-menu
+				      offset-y
+				    >
+				      <template v-slot:activator="{ on }">
+						<v-btn icon v-on="on">
+							<Icon type="md-person" size="16" />
+						</v-btn>
+				      </template>
+				
+				      <v-card outlined style="border: none;"  tile>
+				      	<v-list-item dense>
+							<v-list-item-avatar tile size="24">
+								<v-img :src="logo"/>
+							</v-list-item-avatar>
+						
+							<v-list-item-content>
+								<v-list-item-title class="subtitle-1">{{userData.name}}</v-list-item-title>
+							</v-list-item-content>
+				      	
+				      	</v-list-item>
+						 <v-divider></v-divider>
+						 
+						 <v-list-item dense>
+							 <!-- <v-list-item-icon>
+							   <v-icon  color="green">mdi-email</v-icon>
+							 </v-list-item-icon> -->
+							 <v-list-item-avatar tile size="24">
+							 	<v-icon>mdi-email</v-icon>
+							 </v-list-item-avatar>
+					 
+							 <v-list-item-content>
+							   <v-list-item-title>{{userData.email}}</v-list-item-title>
+							 </v-list-item-content>
+
+						</v-list-item>
+						
+						
+						<v-list-item dense>
+							 <!-- <v-list-item-icon>
+							   <v-icon  color="green">mdi-av-timer</v-icon>
+							 </v-list-item-icon> -->
+							 <v-list-item-avatar tile size="24">
+							 	<v-icon>mdi-av-timer</v-icon>
+							 </v-list-item-avatar>
+											 
+							 <v-list-item-content>
+							   <v-list-item-title>{{changeTime(userData.endTime)}} 到期</v-list-item-title>
+							 </v-list-item-content>
+						
+						</v-list-item>
+						<v-divider></v-divider>
+						<v-list-item dense>
+							 <v-list-item-content>
+								 <div  class="ma-0 d-flex align-center justify-space-between">
+									<v-btn small text color="error" @click="renew">续期</v-btn>
+									<v-btn small text color="primary" @click="exit">退出</v-btn>
+								 </div>
+	
+							 </v-list-item-content>
+						
+						</v-list-item>
+						
+				      </v-card>
+					  
+				    </v-menu>
+		    </v-toolbar>
+			<v-dialog v-model="dialog" width="500" persistent>
+				<v-card>
+					<v-card-title class="headline grey lighten-2" primary-title>
+						激活账号
+					</v-card-title>
+						
+					<v-card-text>
+						<v-form ref="codeForm" v-model="codeValid" lazy-validation>
+							<v-text-field v-model="code" label="激活码" :rules="[rules.not,rules.required,rules.isEmpty]"></v-text-field>
+						</v-form>
+						
+					</v-card-text>
+						
+					<v-card-actions>
+						<div class="flex-grow-1"></div>
+						<v-btn color="primary" text @click="cancelDialog">
+							关闭
+						</v-btn>
+						<v-btn color="primary" text @click="postCode">
+							确定
+						</v-btn>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+	</div>
 </template>
 
 <script>
-	import indexBg from '@/img/home-outline.svg'
-	import personBg from '@/img/person-outline.svg'
-    import {
-        mapMutations
-    } from 'vuex'
+import banner from '@/img/user.jpg'
+import img from '@/img/logo.png'
+import indexBg from '@/img/index.svg'
+import detailBg from '@/img/detail.svg'
+import ruleBg from '@/img/rule.svg'
+import createBg from '@/img/create.svg'
+import {
+		mapActions
+	} from 'vuex';
 
     export default {
         data: () => ({
-			personB:personBg,
+			rules: {
+				required: v => !!v || '必填',
+				length: v =>  (v&&v.length <= 68) || '超出长度',
+				size: v => v > 0 || '必须大于0',
+				isEmpty: v => /\S/.test(v) || '不可为空',
+				not: v => !/[\u4E00-\u9FA5]/g.test(v) || '不能是中文'
+			},
 			
-			indexB:indexBg,
+			codeValid:true,//激活码校验
 			
-            notifications: [
-                'Mike, John responded to your email',
-                'You have 5 new tasks',
-                'You are now a friend with Andrew',
-                'Another Notification',
-                'Another One'
-            ],
+			code:'',//鸡和马
+			
+			dialog:false,
+			
+			bannerImg:banner,
+			userData: sessionStorage.userData ? JSON.parse(sessionStorage.userData) : {},
+			
+			logo: img,
+			
+			iconArr:[indexBg,detailBg,ruleBg,createBg],
+			links: [
+			  {
+			    to: '/dashboard',
+			    icon: 0,
+			    text: '首页'
+			  },
+			  {
+			    to: '/list',
+			    icon: 1,
+			    text: '详细数据'
+			  },
+			  {
+			    to: '/rule',
+			    icon: 2,
+			    text: '规则策略'
+			  },
+			  {
+				to: '/dem',
+				icon: 3,
+				text:'托管数据'
+			  }
+			],
+
             title: null,
             responsive: false,
             responsiveInput: false
@@ -87,6 +218,61 @@
         },
 
         methods: {
+			...mapActions(['changeLay']),
+			renew() {//显示续费对话框
+				this.dialog = true;
+			},
+			
+			cancelDialog() {
+				this.code = '';
+				this.dialog = false;
+			},
+			
+			postCode() {//提交激活码
+				if (this.$refs.codeForm.validate()) {
+					this.changeLay(true);
+					$ax.getAjaxData('/EasWebUser/recharge', {
+						code: this.code
+					}, (res) => {
+			
+						this.changeLay(false);
+						if (res.code == 1) {
+							let data = JSON.parse(sessionStorage.userData);
+							data.endTime = res.endTime;
+							sessionStorage.userData = JSON.stringify(data);
+							this.userData = data;
+			
+							let msg = {
+								state: true,
+								errorText: {
+									type: 'green',
+									text: '续期成功！'
+								}
+							}
+							this.changeSnack(msg);
+							this.dialog = false;
+							this.news = {
+								A1:'',
+								A2:'',
+								A3:'',
+								A4:0.1,
+								A5:0
+							},
+							//
+							this.code = '';
+						}
+			
+			
+					}, {
+						hasToken: true
+					});
+				}
+			},
+			
+			changeTime(time) {
+				return this.$utils.timestampToTime(Number(time));
+			},
+			
 			toRouter(name){//路由
 				if(this.$route.path!==name){
 					this.$router.push({ path:name});
@@ -94,9 +280,9 @@
 				
 			},
 			
-            ...mapMutations('app', ['setDrawer', 'toggleDrawer']),
             onClickBtn() {
-                this.setDrawer(!this.$store.state.app.drawer)
+                this.$store.state.showBar = !this.$store.state.showBar;
+				console.log(this.$store.state.showBar)
             },
 
             onResponsiveInverted() {
@@ -107,7 +293,30 @@
                     this.responsive = false
                     this.responsiveInput = true
                 }
-            }
+            },
+			
+			exit() {
+				this.$Modal.confirm({
+			        render: (h) => {
+			        	return h('div', [
+			        		h('p',{
+			        			style:{
+			        				fontWeight:'700'
+			        			}
+			        		},'确定退出吗 ?'),
+			        	])
+			        },
+			        onOk: () => {
+						sessionStorage.clear();
+						this.$store.state.showBar = false;
+						this.$router.push({
+							path: '/login'
+						});
+			        }
+			    });
+			
+			},
+			
         }
     }
 </script>

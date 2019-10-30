@@ -1,7 +1,7 @@
 <template>
 	<v-container class="pa-0" v-resize="resizeChart">
 
-		<v-card class="mx-auto mt-3 pt-5" outlined tile>
+		<v-card class="mx-auto mt-3 pa-3" outlined tile style="border: none;">
 			<div id="chart" style="width: 100%;height: 400px;"></div>
 		</v-card>
 

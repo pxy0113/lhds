@@ -1,101 +1,103 @@
 <template>
-	<!--fill-height-->
-	<v-container fluid grid-list-xl flat>
-		<v-layout justify-center wrap flex-column>
-			
-			
-			
-			<div class="d-flex flex-column">
-				<div class="my-0 green white--text d-flex flex-column justify-start align-start">
-					<div class="d-flex align-center justify-space-between px-2" style="width: 100%;">
-						<span v-once>全部记录</span>
-						<v-btn small dark outlined @click="search" >查询</v-btn>
-					</div>
-					<div class="dateTemplate" ref="dateTemplate">
-						<date-pickers :value="startTime" slotText="md-sunny" @changeTime="startTimeChange"></date-pickers>
-						<canvas id="canvas" style="width: 50px;height: 50px;"></canvas>
-						<date-pickers :value="endTime" slotText="md-moon"  @changeTime="endTimeChange"></date-pickers>
-					</div>
-					<!-- <span>{{searchStartTime?searchStartTime+' 至 ':''}}{{searchEndTime}}</span> -->
-				
-				</div>
-				
-				
-				<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
-					<v-skeleton-loader
-					v-if="loading"
-					type="article"
-					>
-					</v-skeleton-loader>
-					
-					<div v-else>
-						<v-list-item three-line class="xy-tableItem" v-if="items.length<1">
-							<p class="text-center" style="width: 100%;">暂无数据</p>
-						</v-list-item>
-						
-						<div v-for="(item,index) in items" :key="index" v-else>
-							<v-list-item three-line class="xy-tableItem">
-							  <v-list-item-content class="align-self-start">
-								<v-list-item-title
-								  class=" mb-2">
-						
-									<div class="d-flex align-center">
-										<Tag :color="(item.operate==0||item.operate==2)?'#70c68e':'#f1837f'" class="px-1">{{stateArr[item.operate]}}</Tag>
-										<span class=" font-weight-bold">{{transUpperCase(item.symbol)}} </span>/
-										<span style="font-size: 12px;">{{item.exchange}}</span>
-									</div>
-								</v-list-item-title>
-							
-								<v-list-item-subtitle class="font-weight-regular">{{item.placeTime}}</v-list-item-subtitle>
-								<div class="font-weight-regular">
-									<Row class="d-flex flex-wrap">
-						
-										<Col :lg="6" :md="6" :sm="12" :xs="12" class="py-1">
-											<span class="textAlign">法币</span>：{{item.currency}}
-										</Col>	
+	<div class="pt-2" id="vRow">
 
-										<Col :lg="6" :md="6" :sm="12" :xs="12" class="py-1">
-											<span class="textAlign">数量</span>
-											：{{item.num}}
-										</Col>
-										
-										<Col :lg="6" :md="6" :sm="12" :xs="24" class="py-1">
-											<span>价格</span>
-											：{{item.price}}
-										</Col>
-										
-										<Col :lg="6" :md="6" :sm="12" :xs="24" class="py-1">
-											<span class="textAlign">手续费</span>
-											：{{item.fee}}
-										</Col>
-									</Row>
-									
-								</div>
-							  </v-list-item-content>
-							 
-							</v-list-item>
-						</div>
-						
-					</div>
-				</component>
+			<!-- <div class="d-flex justify-start align-center">
+				<v-btn small text outlined class="my-1 mr-1">
+					<v-icon left>mdi-weather-sunny</v-icon>
+					<date-pickers :value="startTime" @changeTime="startTimeChange"></date-pickers>
+				</v-btn>
+				<v-btn outlined small text class="my-1 mr-1">
+					<v-icon left>mdi-weather-night</v-icon>
+					<date-pickers :value="endTime" @changeTime="endTimeChange"></date-pickers>
+				</v-btn>
+				<v-btn color="green" small outlined class="my-1 mr-1" @click="search" >查询</v-btn>
 				
-				<v-fab-transition>
-
-				  <Avatar :src="upIcon" 
-				  v-if="items.length>=5"
-				  class="xy-suspend"
-				  @click.stop.native="$vuetify.goTo(target, options)"
-				  >
-				  </Avatar>
-				</v-fab-transition>
+			</div> -->
+			
+			<div  class="d-flex justify-start align-center">
+				<v-chip class="my-1 mr-1">
+					<v-icon left>mdi-weather-sunny</v-icon>
+					<date-pickers :value="startTime" @changeTime="startTimeChange"></date-pickers>
+				</v-chip>
+				-
+				<v-chip  class="my-1 mr-1">
+					<v-icon left>mdi-weather-night</v-icon>
+					<date-pickers :value="endTime" @changeTime="endTimeChange"></date-pickers>
+				</v-chip>
+				<v-btn color="green" small dark class="my-1 mr-1" @click="search" >查询</v-btn>
 			</div>
 			
+			<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
+				<v-skeleton-loader
+				v-if="loading"
+				type="article"
+				>
+				</v-skeleton-loader>
+				
+				<div v-else class="xy-tableItem">
+					<v-list-item three-line  v-if="items.length<1">
+						<p class="text-center" style="width: 100%;">暂无数据</p>
+					</v-list-item>
+					
+					<div v-for="(item,index) in items" :key="index" v-else>
+						<v-list-item three-line class="xy-borderB">
+						  <v-list-item-content class="align-self-start">
+							<v-list-item-title
+							  class=" mb-2">
+					
+								<div class="d-flex align-center">
+									<Tag :color="(item.operate==0||item.operate==2)?'#70c68e':'#f1837f'" class="px-1">{{stateArr[item.operate]}}</Tag>
+									<span class=" font-weight-bold">{{transUpperCase(item.symbol)}} </span>/
+									<span style="font-size: 12px;">{{item.exchange}}</span>
+								</div>
+							</v-list-item-title>
+						
+							<v-list-item-subtitle class="font-weight-regular">{{item.placeTime}}</v-list-item-subtitle>
+							<div class="font-weight-regular">
+								<Row class="d-flex flex-wrap">
+					
+									<Col :lg="6" :md="6" :sm="12" :xs="12" class="py-1">
+										<span class="textAlign">法币</span>：{{item.currency}}
+									</Col>	
 			
-		</v-layout>
+									<Col :lg="6" :md="6" :sm="12" :xs="12" class="py-1">
+										<span class="textAlign">数量</span>
+										：{{item.num}}
+									</Col>
+									
+									<Col :lg="6" :md="6" :sm="12" :xs="24" class="py-1">
+										<span>价格</span>
+										：{{item.price}}
+									</Col>
+									
+									<Col :lg="6" :md="6" :sm="12" :xs="24" class="py-1">
+										<span class="textAlign">手续费</span>
+										：{{item.fee}}
+									</Col>
+								</Row>
+								
+							</div>
+						  </v-list-item-content>
+						 
+						</v-list-item>
+					</div>
+					
+				</div>
+			</component>
+
+		<v-fab-transition>
+		  <Avatar :src="upIcon" 
+		  v-if="items.length>=5"
+		  class="xy-suspend"
+		  @click.stop.native="$vuetify.goTo(target, options)"
+		  >
+		  </Avatar>
+		</v-fab-transition>
+		
 		<div class="text-center my-4">
 			<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="7"></v-pagination>
 		</div>
-	</v-container>
+	</div>
 </template>
 
 <script>
@@ -217,23 +219,6 @@
 				}
 			},
 
-			draw(){//画箭头
-				console.log(this.$refs.dateTemplate.offsetHeight);
-				let canvas = document.getElementById('canvas');
-				canvas.width = 50;
-				canvas.height = 50;
-				let ctx = canvas.getContext('2d');
-				ctx.beginPath();
-				ctx.moveTo(18.75,0);
-				ctx.lineTo(31.25,25);
-				ctx.lineTo(18.75,50);
-				// ctx.closePath();//闭合路径
-				ctx.lineWidth=1;//线的边框为10像素
-				ctx.strokeStyle='#66BB6A';
-				ctx.stroke();//绘制定义的图形
-				
-			},
-
 			getPlaceData(list) { //获取下单数据
 				this.loading = true;
 				$ax.getAjaxData('/EasWebUser/getPlace', list, (res) => {
@@ -267,7 +252,6 @@
 
 		},
 		mounted() {
-			this.draw();//画箭头
 			let day1 = this.$moment().startOf('day').format('YYYY-MM-DD HH:mm:ss');;
 			let day2 = this.$moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
 
@@ -287,18 +271,5 @@
 <style scoped="scoped">
 	.bg {
 		background: #C5E1A5;
-	}
-	.dateTemplate{
-		display: grid;
-		grid-template-columns:auto 50px auto;
-		grid-template-rows:50px;
-		border:1px solid #66BB6A;
-		text-align: center;
-		/* padding:0 16px; */
-		width: 100%;
-		color: #37474F;
-		background: #f8f9f8;
-		line-height: 50px;
-		vertical-align: middle;
 	}
 </style>

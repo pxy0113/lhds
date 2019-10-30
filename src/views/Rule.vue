@@ -1,14 +1,15 @@
 <template>
-	<!-- <v-container fluid grid-list-xl> -->
-	<div :class="[$store.state.currentType=='Mobile' ? '' : 'px-4','pt-2']">
-		<v-card v-if="!showAddRule" outlined  id="vRow">
-			<div class=" px-5 py-2 my-0 green white--text d-flex justify-space-between align-center">
-				<span style="font-size: 18px;" v-once>规则列表</span>
-				<v-btn small color="white" outlined  @click="newRule">新增规则</v-btn>
+	<div>
+		<!-- <v-card v-if="!showAddRule" outlined  id="vRow"> -->
+		<div id="vRow" v-if="!showAddRule">
+			<div class=" px-5 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
+				<Badge color="green" class="grey--text" text="规则列表"></Badge>
+				<v-btn small  outlined color="green"  @click="newRule" class="ma-1">新增规则</v-btn>
 
 			</div>
 			
-			
+			 <v-divider></v-divider>
+
 			<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
 				<v-skeleton-loader
 				v-if="loading"
@@ -17,13 +18,12 @@
 				</v-skeleton-loader>
 				
 				<div v-else>
-					<v-list-item three-line class="xy-tableItem" v-if="ruleList.length<1">
+					<v-list-item three-line class="xy-borderB" v-if="ruleList.length<1">
 						<p class="text-center" style="width: 100%;">暂无数据</p>
 					</v-list-item>
 					
-					<v-expansion-panels v-else >
+					<v-expansion-panels v-else class="px-4">
 					    <v-expansion-panel
-						 class="ddd"
 					      v-for="(item,i) in ruleList"
 					      :key="i"
 					    >
@@ -94,7 +94,9 @@
 
 			
 			
-		</v-card>
+		<!-- </v-card> -->
+		</div>
+		
 		<v-fab-transition>
 			<Avatar :src="upIcon" 
 			v-if="(!showAddRule)&&(ruleList.length>=5)"

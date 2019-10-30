@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<!-- <v-btn block outlined @click="show" class="ma-0">{{dateStr}}{{' '+slotText}}</v-btn> -->
+		<!-- <v-btn block outlined @click="show" class="ma-0">{{dateStr}}</v-btn> -->
 		<span @click="show" style="font-size: 14px;">
 			{{dateStr}}
 		</span>

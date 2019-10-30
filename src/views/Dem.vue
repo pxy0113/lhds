@@ -1,20 +1,20 @@
 <template>
-	<!-- <v-container fluid grid-list-xl flat> -->
-	<div :class="[$store.state.currentType=='Mobile' ? '' : 'px-4','pt-2']">
-		<v-flex class="d-flex flex-column" id="vRow">
-			<div class=" px-5 py-2 my-0 green white--text d-flex justify-space-between align-center flex-wrap xy-border-circle">
-				<span style="font-size: 18px;" v-once>托管列表</span>
+	<div id="vRow">
+		<!-- <v-card outlined  id="vRow"> -->
+			<div class=" px-5 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
+				<Badge color="green" :class-name="'title'" text="托管列表"></Badge>
 				<span style="min-width: 260px;" v-if="usable">
-					<v-btn small color="white" outlined @click="showSetting">设置</v-btn>
-					<v-btn small color="white" outlined @click="addColl">添加托管</v-btn>
-					<v-btn small color="white" outlined @click="allStart">全部启动</v-btn>
-					<v-btn small color="white" outlined @click="allEnd">全部停止</v-btn>	
+					<v-btn small color="green" outlined @click="showSetting" class="ma-1">设置</v-btn>
+					<v-btn small color="green" outlined @click="addColl"  class="ma-1">添加托管</v-btn>
+					<v-btn small color="green" outlined @click="allStart" class="ma-1">全部启动</v-btn>
+					<v-btn small color="green" outlined @click="allEnd" class="ma-1">全部停止</v-btn>	
 				</span>
-
+		
 			</div>
 			
-			
-		   <component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
+			 <v-divider></v-divider>
+		
+			<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
 				<v-skeleton-loader
 				v-if="loading"
 				type="article"
@@ -22,12 +22,12 @@
 				</v-skeleton-loader>
 				
 				<div v-else>
-					<v-list-item three-line style="border: 1px solid #ccc;text-align: center;" v-if="items.length<1">
+					<v-list-item three-line class="xy-borderB" v-if="items.length<1">
 						<p class="text-center" style="width: 100%;">{{tips}}</p>
 					</v-list-item>
 					
 					<div v-for="(item,index) in items" :key="index" v-else >
-						<v-list-item three-line class="xy-tableItem">
+						<v-list-item three-line class="xy-borderB">
 							<v-list-item-content class="align-self-start">
 								<v-list-item-title class=" mb-2">
 									<div class="d-flex align-center">
@@ -110,7 +110,9 @@
 				  
 			</component>
 		
-		</v-flex>
+			
+			
+		<!-- </v-card> -->
 		
 		<v-dialog v-model="showAddRule" fullscreen hide-overlay transition="dialog-bottom-transition">
 			<coll-edit v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" ref="AR" :edit="true" class="ma-0"></coll-edit>
@@ -238,8 +240,7 @@
 		</v-dialog>
 		
 		<setting-dialog v-if="showSetDialog" :list="settingData" :settingModal="showSetDialog" @closeSetting="closeSetting"></setting-dialog>
-		
-	<!-- </v-container> -->
+
 	</div>
 </template>
 

@@ -1,86 +1,95 @@
 <template>
-	<!--fill-height-->
-	<v-container fluid grid-list-xl>
-		<v-layout justify-center wrap flex-column>
-			<v-flex class="px-4 d-flex align-center justify-start flex-wrap" id="vRow">
-				<date-pickers :value="startTime" slotText="开始" @changeTime="startTimeChange" class="mr-2 my-1"></date-pickers>
-				<date-pickers :value="endTime" slotText="结束" @changeTime="endTimeChange" class="mr-2 my-1"></date-pickers>
-				<v-chip color="green" outlined label class="mr-2 my-1 px-6" @click="search">
-					查询
+	<div class="pt-2" id="vRow">
+	
+			<!-- <div class="d-flex justify-start align-center">
+				<v-btn small text outlined class="my-1 mr-1">
+					<v-icon left>mdi-weather-sunny</v-icon>
+					<date-pickers :value="startTime" @changeTime="startTimeChange"></date-pickers>
+				</v-btn>
+				<v-btn outlined small text class="my-1 mr-1">
+					<v-icon left>mdi-weather-night</v-icon>
+					<date-pickers :value="endTime" @changeTime="endTimeChange"></date-pickers>
+				</v-btn>
+				<v-btn color="green" small outlined class="my-1 mr-1" @click="search" >查询</v-btn>
+				
+			</div> -->
+			
+			<div  class="d-flex justify-start align-center">
+				<v-chip class="my-1 mr-1">
+					<v-icon left>mdi-weather-sunny</v-icon>
+					<date-pickers :value="startTime" @changeTime="startTimeChange"></date-pickers>
 				</v-chip>
-			</v-flex>
-
-			<!-- <v-flex class="d-flex flex-column pa-xs-0" style="border-radius: 3px;"> -->
-			<div :class="[$store.state.currentType=='Mobile' ? '' : 'px-4','d-flex','flex-column']"
-			style="border-radius: 3px;">
-				<div class=" pa-5 my-0 green white--text d-flex flex-column justify-start align-start xy-border-circle">
-					<span style="font-size: 18px;" v-once>详细数据</span>
-					<span>{{searchStartTime?searchStartTime+' 至 ':''}}{{searchEndTime}}</span>
-
-				</div>
-
-				<component :is="transition !== 'None' ? `v-${transition}` : 'div'" hide-on-leave>
-					<v-skeleton-loader v-if="loading" type="article">
-					</v-skeleton-loader>
-					<div v-else>
-						<v-list-item three-line class="xy-tableItem" v-if="items.length<1">
-							<p class="text-center" style="width: 100%;">暂无数据</p>
-						</v-list-item>
-
-						<div v-for="(item,index) in items" :key="index" v-else>
-							<v-list-item three-line class="xy-tableItem">
-								<v-list-item-content class="align-self-start">
-									<v-list-item-title class="font-weight-bold mb-2">
-										<div class="d-flex justify-space-between align-center">
-											<div class="d-flex align-center">
-												<span class="pr-4">{{transUpperCase(item.symbol)}} </span>
-
-												<span :style="{color:item.percentage>0?'#E53935':'#43A047',fontSize:'14px'}">{{item.percentage}}%</span>
-
-											</div>
-											<v-btn color="primary" small class="my-0" @click="openDrawer(item.easid)">详情</v-btn>
-										</div>
-									</v-list-item-title>
-
-									<v-list-item-subtitle class="font-weight-regular">{{item.closeTime}}</v-list-item-subtitle>
-									<div class="font-weight-regular">
-										<Row>
-											<Col :lg="6" :md="6" :sm="12" :xs="12" class="py-1">
-											交易所：{{item.exchange}}
-											</Col>
-											<Col :lg="6" :md="6" :sm="12" :xs="12" class="py-1">
-											法币：{{item.currency}}
-											</Col>
-											<Col :lg="6" :md="6" :sm="12" :xs="24" class="py-1">
-											平仓数量：{{item.closeNum}}
-											</Col>
-											<Col :lg="6" :md="6" :sm="12" :xs="24" class="py-1">
-											平仓收益：{{item.profit}}
-											</Col>
-										</Row>
-
-									</div>
-								</v-list-item-content>
-
-							</v-list-item>
-						</div>
-
-					</div>
-
-				</component>
-
-				<v-fab-transition>
-					<Avatar :src="upIcon" v-if="items.length>=5" class="xy-suspend" @click.stop.native="$vuetify.goTo(target, options)">
-					</Avatar>
-
-				</v-fab-transition>
-			<!-- </v-flex> -->
+				-
+				<v-chip  class="my-1 mr-1">
+					<v-icon left>mdi-weather-night</v-icon>
+					<date-pickers :value="endTime" @changeTime="endTimeChange"></date-pickers>
+				</v-chip>
+				<v-btn color="green" small dark class="my-1 mr-1" @click="search" >查询</v-btn>
 			</div>
-		</v-layout>
+			
+			<component :is="transition !== 'None' ? `v-${transition}` : 'div'" hide-on-leave>
+				<v-skeleton-loader v-if="loading" type="article">
+				</v-skeleton-loader>
+				<div v-else>
+					<v-list-item three-line class="xy-tableItem" v-if="items.length<1">
+						<p class="text-center" style="width: 100%;">暂无数据</p>
+					</v-list-item>
+			
+					<div v-for="(item,index) in items" :key="index" v-else>
+						<v-list-item three-line class="xy-tableItem">
+							<v-list-item-content class="align-self-start">
+								<v-list-item-title class="font-weight-bold mb-2">
+									<div class="d-flex justify-space-between align-center">
+										<div class="d-flex align-center">
+											<span class="pr-4">{{transUpperCase(item.symbol)}} </span>
+			
+											<span :style="{color:item.percentage>0?'#E53935':'#43A047',fontSize:'14px'}">{{item.percentage}}%</span>
+			
+										</div>
+										<v-btn color="primary" small class="my-0" @click="openDrawer(item.easid)">详情</v-btn>
+									</div>
+								</v-list-item-title>
+			
+								<v-list-item-subtitle class="font-weight-regular">{{item.closeTime}}</v-list-item-subtitle>
+								<div class="font-weight-regular">
+									<Row>
+										<Col :lg="6" :md="6" :sm="12" :xs="12" class="py-1">
+										交易所：{{item.exchange}}
+										</Col>
+										<Col :lg="6" :md="6" :sm="12" :xs="12" class="py-1">
+										法币：{{item.currency}}
+										</Col>
+										<Col :lg="6" :md="6" :sm="12" :xs="24" class="py-1">
+										平仓数量：{{item.closeNum}}
+										</Col>
+										<Col :lg="6" :md="6" :sm="12" :xs="24" class="py-1">
+										平仓收益：{{item.profit}}
+										</Col>
+									</Row>
+			
+								</div>
+							</v-list-item-content>
+			
+						</v-list-item>
+					</div>
+			
+				</div>
+			
+			</component>
+	
+		<v-fab-transition>
+		  <Avatar :src="upIcon" 
+		  v-if="items.length>=5"
+		  class="xy-suspend"
+		  @click.stop.native="$vuetify.goTo(target, options)"
+		  >
+		  </Avatar>
+		</v-fab-transition>
+		
 		<div class="text-center my-4">
 			<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="7"></v-pagination>
 		</div>
-
+		
 		<v-dialog v-model="drawer" fullscreen hide-overlay transition="dialog-bottom-transition">
 			<v-card>
 				<!-- <v-banner dark> -->
@@ -91,16 +100,16 @@
 					</v-btn>
 				</div>
 				<!-- </v-banner> -->
-
+		
 				<v-list three-line subheader>
-
+		
 					<v-list-item class="d-xl-none d-lg-none d-md-none">
 						<v-row class="mx-0">
 							<v-col :lg="8" :md="10" :sm="8" :xs="8" class="d-flex flex-column mx-auto my-0">
 								<v-window v-model="detailStep" class=" elevation-1">
 									<v-window-item :value="idx+1" v-for="(item,idx) in placeDetail" :key="idx">
 										<v-card-text class="blue-grey--text">
-
+		
 											<h5 class="d-flex justify-space-between font-weight-regular">
 												<span>交易所:</span>
 												<span>{{item.exchange}}</span>
@@ -109,7 +118,7 @@
 												<span>交易对:</span>
 												<span>{{item.symbol}}</span>
 											</h5>
-
+		
 											<h5 class="d-flex justify-space-between font-weight-regular">
 												<span>操作方向:</span>
 												<span>{{operates[item.operate]}}</span>
@@ -118,7 +127,7 @@
 												<span>法币:</span>
 												<span>{{item.currency}}</span>
 											</h5>
-
+		
 											<h5 class="d-flex justify-space-between font-weight-regular">
 												<span>手续费:</span>
 												<span>{{item.fee}}</span>
@@ -135,8 +144,8 @@
 												<span>建仓时间:</span>
 												<span>{{item.placeTime}}</span>
 											</h5>
-
-
+		
+		
 										</v-card-text>
 									</v-window-item>
 								</v-window>
@@ -149,23 +158,20 @@
 									 @click="detailStep++">
 										<v-icon>mdi-arrow-right</v-icon>
 									</v-btn>
-
+		
 								</h5>
 							</v-col>
 						</v-row>
-
-
+		
+		
 					</v-list-item>
-
-
-
-
+		
 					<v-list-item lg12 md12 xl12 class="d-none d-lg-flex d-md-flex d-xl-flex">
 						<v-list-item-content>
 							<v-simple-table dense>
 								<thead>
 									<tr>
-
+		
 										<th class="text-center subtitle-1">交易所</th>
 										<th class="text-center subtitle-1">交易对</th>
 										<th class="text-center subtitle-1">操作方向</th>
@@ -194,10 +200,9 @@
 				</v-list>
 			</v-card>
 		</v-dialog>
-
-	</v-container>
+		
+	</div>
 </template>
-
 <script>
 	import {
 		mapActions

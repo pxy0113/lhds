@@ -21,11 +21,11 @@
 	<v-overlay :value="overlay" style="z-index: 1000;">
        <v-progress-circular indeterminate size="64" color="white"></v-progress-circular>
     </v-overlay>
-    <core-toolbar v-if="showBar" @showSetting="settingModal=true" />
+    <core-toolbar  v-if="showBar"/>
 
-    <core-drawer v-if="showBar" />
+    <!-- <core-drawer v-if="showBar" /> -->
 
-    <core-view style="margin-top: 65px;" />
+    <core-view />
 <!-- </v-img> -->
 
   </v-app>

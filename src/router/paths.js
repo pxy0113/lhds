@@ -15,19 +15,9 @@ export default [{
 		view: 'Login'
 	},
 	{
-		path: '/user',
-		name: '个人中心',
-		view: 'User'
-	},
-	{
-		path: '/table-list',
+		path: '/list',
 		name: '详细数据',
-		view: 'TableList'
-	},
-	{
-		path: '/order-list',
-		name: '下单数据',
-		view: 'OrderList'
+		view: 'List'
 	},
 	{
 		path: '/rule',

@@ -6,15 +6,15 @@
 		<v-container class="mx-auto xy-height">
 			<v-row align="start" justify="center" style="height: 100%;">
 				<v-col :lg="3" :md="6" :sm="6" :xs="6">
-					<v-card flat outlined style="background:#f7f7f7;border: 1px solid #f7f7f7;">
+					<v-card flat outlined style="background:#FFFFFF;border: 1px solid #FFFFFF;">
 						<div class=" fill-height loginTitle py-5">
 							<v-avatar>
 								<img :src="logo">
 							</v-avatar>
-							<span style="font-size: 30px;margin-left: 3px;">量化大师</span>
+							<span style="font-size: 1.5rem;margin-left: 3px;">量化大师</span>
 
 						</div>
-						<div class="grey--text lighten-2 text-center" style="font-size: 20px;">
+						<div class="grey--text lighten-2 text-center" style="font-size: 1.1rem;">
 							{{type==1?'登陆':'注册'}}
 						</div>
 
@@ -30,12 +30,11 @@
 										</v-fade-transition>
 									</template>
 								</v-text-field>
-								<div class="d-flex justify-space-between pt-3">
-									<div class="blue--text lighten-2 pointer">忘记密码</div>
+								<div class="d-flex justify-space-between py-3">
 									<div class="blue--text lighten-4 pointer" @click="type=2">我要注册</div>
 								</div>
 
-								<v-btn color="primary" @click.native.stop="login" style="width: 100%;color: white;">
+								<v-btn color="primary" @click.native.stop="login" dark block>
 									登陆
 								</v-btn>
 
@@ -56,7 +55,7 @@
 									</template>
 								</v-text-field>
 								<v-text-field v-model="email" :rules="[rules.email]" label="邮箱"></v-text-field>
-								<div class="d-flex justify-space-between pt-3">
+								<div class="d-flex justify-space-between py-3">
 									<div class="blue--text lighten-2 pointer" @click="type=1">返回登陆</div>
 								</div>
 								<v-btn color="primary" @click="register" style="width: 100%;color: white;">
@@ -216,6 +215,9 @@
 							this.changeSnack(msg);
 							sessionStorage.userName = this.name;
 							this.type = 1;
+							this.name = '';
+							this.password = '';
+							
 						} else {
 							this.changeLay(false);
 						}

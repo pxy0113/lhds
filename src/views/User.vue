@@ -1,115 +1,77 @@
 <template>
 	<!-- <v-container  fluid grid-list-xl> -->
-		<v-layout justify-center wrap  :class="[$store.state.currentType=='Mobile' ? '' : 'mx-2','mt-2']">
+		<v-layout justify-center wrap>
 			<v-flex xs12 md11 lg11 sm11 cols="12" class="pa-0">
-
-				<v-card class="mx-auto" outlined id="vRow">
-					<v-card outlined :img="bannerImg" style="border: none;" tile>
-						<v-list-item three-line>
-								<v-list-item-avatar tile :size="100" class="white  d-none d-sm-flex" >
-									<v-img :src="bg" />
-								</v-list-item-avatar>
+					<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
+						<v-skeleton-loader
+						v-if="loading"
+						type="article"
+						>
+						</v-skeleton-loader>
+						
+						<div v-else>
+							<v-list-item three-line class="xy-tableItem" v-if="apiList.length<1">
+								<p class="text-center" style="width: 100%;">暂无数据</p>
+							</v-list-item>
 							
-								<v-list-item-content>
-									<v-list-item-title class="display-1 mb-4 white--text">{{userData.name}}</v-list-item-title>
-									<v-list-item-subtitle class="d-flex align-center">
-										<v-icon size='14' color="white">mdi-email</v-icon>
-										<span class="white--text pl-2">{{userData.email}}</span>
-									</v-list-item-subtitle>
-									<v-list-item-subtitle class="d-flex flex-wrap">
-										<span class="py-2 white--text">
-										<v-icon size='16' color="white" class="pr-1">
-											mdi-av-timer
-										</v-icon>
-										{{changeTime(userData.endTime)}} 到期
-										</span>
-										<span class="red--text py-2 pl-2" style="cursor:pointer" @click="renew">续期</span>
-									</v-list-item-subtitle>
-									
-								</v-list-item-content>
-						
-						</v-list-item>
-						<v-btn fab color="error" class="font-weight-light" 
-						style="position: absolute;right: 8px;top: 2px;"
-						@click="exit" x-small>
-							<v-icon size="20">mdi-power</v-icon>
-						</v-btn>
-					</v-card>
-					<p class="px-2 mb-0" style="border-bottom:1px solid #ccc"><v-btn color="green"  outlined @click="addDialog= true" small>添加API</v-btn></p>
-					<!-- <v-card outlined> -->
-						
-						
-						<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
-							<v-skeleton-loader
-							v-if="loading"
-							type="article"
-							>
-							</v-skeleton-loader>
+							<div v-for="(item,index) in apiList" :key="index" v-else>
+								<v-list-item three-line style="border-bottom: 1px solid #ccc;">
+								  <v-list-item-content class="align-self-start">
+									<v-list-item-title
+									  class=" mb-2">
 							
-							<div v-else>
-								<v-list-item three-line class="xy-tableItem" v-if="apiList.length<1">
-									<p class="text-center" style="width: 100%;">暂无数据</p>
-								</v-list-item>
-								
-								<div v-for="(item,index) in apiList" :key="index" v-else>
-									<v-list-item three-line style="border-bottom: 1px solid #ccc;">
-									  <v-list-item-content class="align-self-start">
-										<v-list-item-title
-										  class=" mb-2">
-								
-											<div class="d-flex align-center justify-space-between">
-												<span class=" font-weight-bold">{{transUpperCase(item.exchange)}}
-												<span style="font-size: 12px;" class="font-weight-light">/交易所</span> </span>
-												<v-btn color="primary" text small  @click="delApi(item)">删除</v-btn>
+										<div class="d-flex align-center justify-space-between">
+											<span class=" font-weight-bold">{{transUpperCase(item.exchange)}}
+											<span style="font-size: 12px;" class="font-weight-light">/交易所</span> </span>
+											<v-btn color="primary" text small  @click="delApi(item)">删除</v-btn>
+										</div>
+									</v-list-item-title>
+							
+									<div class='font-weight-regular body-2'>
+										<div class="d-flex justify-space-between flex-wrap align-center ">
+							
+											<div class="pr-3 py-1 d-flex flex-wrap align-center justify-space-between">
+												<span>名称：</span>
+												<span>{{item.remark}}</span>
 											</div>
-										</v-list-item-title>
-								
-										<div class='font-weight-regular body-2'>
-											<div class="d-flex justify-space-between flex-wrap align-center ">
-								
-												<div class="pr-3 py-1 d-flex flex-wrap align-center justify-space-between">
-													<span>名称：</span>
-													<span>{{item.remark}}</span>
-												</div>
-												
-												<div class="pr-3 py-1 d-flex flex-wrap align-center justify-space-between">
-													<span>买入费率(%)：</span>
-													<span>{{item.buy}}</span>
-												</div>
-												
-												<div class="pr-3 py-1 d-flex flex-wrap align-center justify-space-between">
-													<span>卖出费率(%)：</span>
-													<span>{{item.sell}}</span>
-												</div>
-												
+											
+											<div class="pr-3 py-1 d-flex flex-wrap align-center justify-space-between">
+												<span>买入费率(%)：</span>
+												<span>{{item.buy}}</span>
 											</div>
-											<div class="d-flex justify-space-between flex-wrap align-center">
-												<div class="pr-3 py-1 d-flex flex-wrap align-center justify-space-between">
-													<span>API_KEY：</span>
-													<span>{{item.key}}</span>
-												</div>
-												<div class="pr-3 py-1 d-flex flex-wrap align-center justify-space-between">
-													<span>API_SECRET：</span>
-													<span>{{item.secret}}</span>
-												</div>
+											
+											<div class="pr-3 py-1 d-flex flex-wrap align-center justify-space-between">
+												<span>卖出费率(%)：</span>
+												<span>{{item.sell}}</span>
 											</div>
-								
 											
 										</div>
-									  </v-list-item-content>
-									 
-									</v-list-item>
-								</div>
-								<div class="text-center my-2">
-									<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="5"></v-pagination>
-								</div>
-								
-								
+										<div class="d-flex justify-space-between flex-wrap align-center">
+											<div class="pr-3 py-1 d-flex flex-wrap align-center justify-space-between">
+												<span>API_KEY：</span>
+												<span>{{item.key}}</span>
+											</div>
+											<div class="pr-3 py-1 d-flex flex-wrap align-center justify-space-between">
+												<span>API_SECRET：</span>
+												<span>{{item.secret}}</span>
+											</div>
+										</div>
+							
+										
+									</div>
+								  </v-list-item-content>
+								 
+								</v-list-item>
 							</div>
-						
-						</component>
-						
-					</v-card>
+							<div class="text-center my-2">
+								<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="5"></v-pagination>
+							</div>
+							
+							
+						</div>
+					
+					</component>
+				
 					
 					<Avatar :src="upIcon" 
 					v-if="apiList.length>=5"
@@ -223,30 +185,7 @@
 						</v-card>
 					</v-dialog>
 					
-					<v-dialog v-model="dialog" width="500" persistent>
-						<v-card>
-							<v-card-title class="headline grey lighten-2" primary-title>
-								激活账号
-							</v-card-title>
-			
-							<v-card-text>
-								<v-form ref="codeForm" v-model="codeValid" lazy-validation>
-									<v-text-field v-model="code" label="激活码" :rules="[rules.not,rules.required,rules.isEmpty]"></v-text-field>
-								</v-form>
-								
-							</v-card-text>
-			
-							<v-card-actions>
-								<div class="flex-grow-1"></div>
-								<v-btn color="primary" text @click="cancelDialog">
-									关闭
-								</v-btn>
-								<v-btn color="primary" text @click="postCode">
-									确定
-								</v-btn>
-							</v-card-actions>
-						</v-card>
-					</v-dialog>
+					
 			
 		</v-layout>
 		
@@ -600,46 +539,7 @@
 
 			},
 
-			postCode() {
-				if (this.$refs.codeForm.validate()) {
-					this.changeLay(true);
-					$ax.getAjaxData('/EasWebUser/recharge', {
-						code: this.code
-					}, (res) => {
-
-						this.changeLay(false);
-						if (res.code == 1) {
-							let data = JSON.parse(sessionStorage.userData);
-							data.endTime = res.endTime;
-							sessionStorage.userData = JSON.stringify(data);
-							this.userData = data;
-
-							let msg = {
-								state: true,
-								errorText: {
-									type: 'green',
-									text: '续期成功！'
-								}
-							}
-							this.changeSnack(msg);
-							this.dialog = false;
-							this.news = {
-								A1:'',
-								A2:'',
-								A3:'',
-								A4:0.1,
-								A5:0
-							},
-							//
-							this.code = '';
-						}
-
-
-					}, {
-						hasToken: true
-					});
-				}
-			},
+			
 
 			exit() {
 				this.$Modal.confirm({

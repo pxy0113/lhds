@@ -1,5 +1,43 @@
 <template>
-  <v-navigation-drawer
+	    <v-navigation-drawer
+	      id="app-drawer"
+	      v-model="inputValue"
+	      app
+	      dark 
+
+		  temporary
+	      persistent
+	      width="260"
+	    >
+	      <v-list-item>
+	        <v-list-item-avatar>
+	          <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
+	        </v-list-item-avatar>
+	
+	        <v-list-item-content>
+	          <v-list-item-title>John Leider</v-list-item-title>
+	        </v-list-item-content>
+	      </v-list-item>
+	
+	      <v-divider></v-divider>
+	
+	      <v-list dense>
+	
+	        <v-list-item
+	          v-for="item in links"
+	          link
+	        >
+	          <v-list-item-icon>
+	            <Avatar :src="iconArr[item.icon]" />
+	          </v-list-item-icon>
+	
+	          <v-list-item-content>
+	            <v-list-item-title>{{ item.text }}</v-list-item-title>
+	          </v-list-item-content>
+	        </v-list-item>
+	      </v-list>
+	    </v-navigation-drawer>
+  <!-- <v-navigation-drawer
     id="app-drawer"
     v-model="inputValue"
     app
@@ -31,7 +69,6 @@
      >
        <v-list-item-action>
 		   <Avatar :src="iconArr[link.icon]" />
-         <!-- <v-icon>{{ link.icon }}</v-icon> -->
        </v-list-item-action>
 	   
        <v-list-item-title
@@ -51,7 +88,7 @@
          </v-col>
        </v-footer>
    
-  </v-navigation-drawer>
+  </v-navigation-drawer> -->
 </template>
 
 <script>
@@ -111,32 +148,32 @@ export default {
     ...mapState('app', ['image', 'color']),
     inputValue: {
       get () {
-        return this.$store.state.app.drawer
+        return this.$store.state.showBar
       },
       set (val) {
-        this.setDrawer(val)
+        this.$store.state.showBar = val;
       }
     },
     items () {
       return this.$t('Layout.View.items')
     }
   },
-  mounted () {
-    this.onResponsiveInverted()
-    window.addEventListener('resize', this.onResponsiveInverted)
-  },
-  beforeDestroy () {
-    window.removeEventListener('resize', this.onResponsiveInverted)
-  },
+  // mounted () {
+  //   this.onResponsiveInverted()
+  //   window.addEventListener('resize', this.onResponsiveInverted)
+  // },
+  // beforeDestroy () {
+  //   window.removeEventListener('resize', this.onResponsiveInverted)
+  // },
   methods: {
     ...mapMutations('app', ['setDrawer', 'toggleDrawer']),
-    onResponsiveInverted () {
-      if (window.innerWidth < 991) {
-        this.responsive = true
-      } else {
-        this.responsive = false
-      }
-    }
+    // onResponsiveInverted () {
+    //   if (window.innerWidth < 991) {
+    //     this.responsive = true
+    //   } else {
+    //     this.responsive = false
+    //   }
+    // }
   }
 }
 </script>
