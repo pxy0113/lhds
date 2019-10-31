@@ -41,6 +41,18 @@ import theme from './plugins/theme'
 import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.css'
 
+
+//按需引入echart的line图
+let echarts = require('echarts/lib/echarts');
+ require('echarts/lib/chart/line')
+
+ require('echarts/lib/component/title')
+ require('echarts/lib/component/legendScroll')//图例滚动
+//vue全局注入echarts
+ Vue.prototype.$echarts = echarts
+
+
+
 Vue.use(Vuetify, {
   iconfont: 'mdi',
   theme

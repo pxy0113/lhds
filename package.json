@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "better-scroll": "^1.15.2",
-    "chartist": "0.11.0",
     "crypto-js": "^3.1.9-1",
     "echarts": "^4.4.0",
     "moment": "^2.24.0",
@@ -18,7 +17,6 @@
     "sass-loader": "^7.1.0",
     "view-design": "^4.0.0",
     "vue": "^2.5.17",
-    "vue-chartist": "^2.1.2",
     "vue-meta": "^2.3.1",
     "vuetify": "^2.1.5"
   },

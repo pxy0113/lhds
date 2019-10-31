@@ -353,7 +353,6 @@
 		mapActions
 	} from 'vuex';
 	import Utils from '@/plugins/cryAes.js'
-	import Valid from '@/plugins/validate.js'
 	export default {
 		data() {
 			return {

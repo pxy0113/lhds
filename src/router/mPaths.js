@@ -7,7 +7,7 @@ export default [{
 		path: '/dashboard',
 		// Relative to /src/views
 		name:'首页',
-		view: 'Dashboard'
+		view: 'mobile/Index'
 	},
 	{
 		path: '/login',
@@ -17,12 +17,12 @@ export default [{
 	{
 		path: '/list',
 		name: '详细数据',
-		view: 'List'
+		view: 'mobile/List'
 	},
 	{
 		path: '/rule',
 		name:'规则策略',
-		view: 'Rule'
+		view: 'mobile/Rule'
 	},
 	{
 		path: '/dem',

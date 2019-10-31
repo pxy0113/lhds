@@ -1,16 +1,14 @@
 <template>
-	<v-container class="pa-0" v-resize="resizeChart">
-
-		<v-card class="mx-auto mt-3 pa-3" outlined tile style="border: none;">
+	<v-container class="pa-2 pt-0" v-resize="resizeChart" fluid id="vRow">
+		<v-card class="mx-auto  pa-3" outlined tile style="border: none;">
 			<div id="chart" style="width: 100%;height: 400px;"></div>
 		</v-card>
-
 		<v-row dense class="pt-4">
-			<v-col cols="12" :sm="6">
+			<v-col cols="12" :sm="6" :md="4" :lg="4">
 				<v-card outlined tile>
 					<v-card-text class="py-1 d-flex justify-space-between align-center">
 						<v-avatar size="30" color="#279f7c">
-						  <v-img :src="Uimg" ></v-img>
+							<v-img :src="Uimg"></v-img>
 						</v-avatar>
 						<span class="subtitle-1">USDT收益</span>
 					</v-card-text>
@@ -20,14 +18,14 @@
 					</v-card-text>
 				</v-card>
 			</v-col>
-			
-			<v-col cols="12" :sm="6">
+
+			<v-col cols="12" :sm="6" :md="4" :lg="4">
 				<v-card outlined tile>
 					<v-card-text class="py-1 d-flex justify-space-between align-center">
 						<v-avatar size="30" color="#26c6da">
-						  <v-img :src="Eimg"  style="width: 28px;height: 24px;" ></v-img>
+							<v-img :src="Eimg" style="width: 28px;height: 24px;"></v-img>
 						</v-avatar>
-						
+
 						<span class="subtitle-1">ETH收益</span>
 					</v-card-text>
 					<v-divider class="ma-0"></v-divider>
@@ -36,12 +34,12 @@
 					</v-card-text>
 				</v-card>
 			</v-col>
-			
-			<v-col cols="12" :sm="6">
+
+			<v-col cols="12" :sm="6" :md="4" :lg="4">
 				<v-card outlined tile>
 					<v-card-text class="py-1 d-flex justify-space-between align-center">
 						<v-avatar size="30" color="#f8a039">
-						  <v-img :src="Bimg"></v-img>
+							<v-img :src="Bimg"></v-img>
 						</v-avatar>
 						<span class="subtitle-1">BTC收益</span>
 					</v-card-text>
@@ -51,23 +49,36 @@
 					</v-card-text>
 				</v-card>
 			</v-col>
-			
+
 		</v-row>
+		<user-box class="my-2"></user-box>
+		<Avatar :src="upIcon"
+		class="xy-suspend"
+		@click.stop.native="$vuetify.goTo(target, options)"
+		>
+		</Avatar>
+
 	</v-container>
 </template>
 
 <script>
+	import UserBox from '@/components/userBox.vue';
+	import upSvg from '@/img/up.svg'
 	import BTC from '@/img/BTC.png';
 	import ETH from '@/img/ETH.png';
 	import USDT from '@/img/USDT.png';
-	import echarts from 'echarts'
-	import {line} from '@/plugins/chart.js'
 	import {
 		mapActions
 	} from 'vuex';
+	// import echarts from 'echarts'
 
+	import {
+		line
+	} from '@/plugins/chart.js'
 	export default {
-
+		components:{
+			UserBox
+		},
 		data() {
 			const getBeforeDay = () => {
 				let arr = [];
@@ -78,10 +89,20 @@
 				return arr;
 			}
 			return {
+				upIcon:upSvg,
+				
+				target: '#vRow',
+				
+				options: {
+					duration: 1000,
+					offset: 0,
+					easing: 'easeInOutCubic'
+				},
+				
 				tableData: {
 					labels: getBeforeDay(),
-					
-					title:'最近七日收益走势图',
+
+					title: '最近七日收益走势图',
 
 					series: [1, 20, 11, 61, 15, 33, 21]
 				},
@@ -94,7 +115,7 @@
 				dateProfit: [],
 
 				profitList: {}, //所有利润信息
-				
+
 				headers: [{
 						sortable: false,
 						text: 'ID',
@@ -130,7 +151,7 @@
 			...mapActions(['changeLay']),
 			getDateProfit() {
 				let list = {
-					num: 7,
+					num: 8,
 					currency: 'USDT'
 				};
 				new Promise(resolve => {
@@ -143,6 +164,7 @@
 								arr.push(item);
 							});
 							this.percentage = res.percentage;
+
 							this.tableData.series = [arr];
 							resolve();
 						} else {
@@ -168,17 +190,16 @@
 					});
 				});
 			},
-			
-			resizeChart(){
-				console.log('重绘')
-				let myChart = echarts.init(document.getElementById('chart'));
+
+			resizeChart() {
+				let myChart = this.$echarts.init(document.getElementById('chart'));
 				myChart.resize();
 			},
 		},
 		mounted() { //模板被渲染完毕之后执行
-			let myChart = echarts.init(document.getElementById('chart'));
+			let myChart = this.$echarts.init(document.getElementById('chart'));
 			myChart.setOption(line(this.tableData));
-			
+
 		},
 		beforeRouteEnter(to, from, next) { //在组件创建之前调用（放置页面加载时请求的Ajax）
 
@@ -197,9 +218,3 @@
 		},
 	}
 </script>
-<style>
-	.v-sheet--offset {
-		top: -24px;
-		position: relative;
-	}
-</style>
