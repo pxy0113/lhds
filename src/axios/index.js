@@ -18,7 +18,7 @@ const vm = new Vue();
 
 //--------------------------------------------全局设置-------------------------------
 
-axios.defaults.baseURL = 'http://192.168.2.103:8080'; //配置接口基础地址
+axios.defaults.baseURL = 'http://192.168.2.105:8080'; //配置接口基础地址
 // axios.defaults.baseURL = 'http://m252t77964.wicp.vip:20211';
 // axios.defaults.baseURL = 'http://web.lhds.vip'; //配置接口基础地址
 axios.defaults.timeout = 50000; //响应超时时间

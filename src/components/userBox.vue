@@ -385,7 +385,7 @@
 								let msg = {
 									state: true,
 									errorText: {
-										type: 'green',
+										type: 'success',
 										text: '删除成功'
 									}
 								}
@@ -442,7 +442,7 @@
 				    		let msg = {
 				    			state:true,
 				    			errorText:{
-				    				type:'green',
+				    				type:'success',
 				    				text:'添加成功'
 				    			}
 				    		}

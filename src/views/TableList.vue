@@ -222,7 +222,7 @@
 				}
 			},
 
-			transition: 'scale-transition',
+			transition: 'fade-transition',
 
 			loading: true, //控制骨架屏 true表示显示
 
@@ -379,7 +379,7 @@
 						let msg = {
 							state: true,
 							errorText: {
-								type: 'error',
+								type: 'info',
 								text: '开始时间不能大于结束时间'
 							}
 						}
@@ -391,7 +391,7 @@
 					let msg = {
 						state: true,
 						errorText: {
-							type: 'error',
+							type: 'info',
 							text: '请填写时间再搜索'
 						}
 					}

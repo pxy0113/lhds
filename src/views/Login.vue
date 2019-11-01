@@ -19,9 +19,9 @@
 						</div>
 
 						<v-card-text v-if="type==1">
-							<v-form ref="form" v-model="valid" lazy-validation>
+							<v-form ref="loginForm" v-model="loginValid" lazy-validation>
 								<v-text-field v-model="name" :rules="nameRules" label="用户名" required prepend-icon="mdi-account"></v-text-field>
-								<v-text-field v-model="password" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1"
+								<v-text-field v-model="password" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'"
 								 prepend-icon="mdi-key" label="密码" hint="至少6个字符">
 									</v-text-field>
 									<template v-slot:append>
@@ -43,9 +43,9 @@
 
 						<!--注册-->
 						<v-card-text v-if="type==2">
-							<v-form ref="form" v-model="valid" lazy-validation>
+							<v-form ref="registForm" v-model="registerValid" lazy-validation>
 								<v-text-field v-model="name" :rules="nameRules" label="用户名" required prepend-icon="mdi-account"></v-text-field>
-								<v-text-field v-model="password" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1"
+								<v-text-field v-model="password" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" 
 								 prepend-icon="mdi-key" label="密码" hint="至少6个字符">
 									</>
 									<template v-slot:append>
@@ -54,7 +54,8 @@
 										</v-fade-transition>
 									</template>
 								</v-text-field>
-								<v-text-field v-model="email" :rules="[rules.email]" label="邮箱"></v-text-field>
+								<v-text-field prepend-icon="mdi-email"
+								v-model="email" :rules="[rules.email]" label="邮箱"></v-text-field>
 								<div class="d-flex justify-space-between py-3">
 									<div class="blue--text lighten-2 pointer" @click="type=1">返回登陆</div>
 								</div>
@@ -118,7 +119,8 @@
 				hide_icon: hideIcon,
 				bg: bgImg,
 				type: 1, //1登陆2忘记3注册
-				valid: true,
+				registerValid: true,
+				loginValid:true,
 				show1: false,
 				name: '',
 				password: '',
@@ -133,7 +135,7 @@
 					email: value => {
 						const pattern =
 							/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-						return pattern.test(value) || 'Invalid e-mail.'
+						return pattern.test(value) || '请输入正确的邮箱.'
 					},
 				},
 			}
@@ -147,54 +149,57 @@
 			...mapActions(['changeLay', 'changeSnack']),
 
 			login() { //登陆
-				this.changeLay(true);
-
-				let list = {
-					account: this.name,
-					password: this.password
-				};
-				$ax.getAjaxData('/EasWebUser/login', list, (res) => {
-
-					this.changeLay(false);
-
-					if (res.code == 1) {
-						sessionStorage.token = res.token;
-						if (res.accState == 0) { //已过期
-
-							this.dialog = true;
-
-						} else { //未过期
-							let msg = {
-								state: true,
-								errorText: {
-									type: 'green',
-									text: '登陆成功'
+				if (this.$refs.loginForm.validate()) {
+					
+					this.changeLay(true);
+					
+					let list = {
+						account: this.name,
+						password: this.password
+					};
+					
+					$ax.getAjaxData('/EasWebUser/login', list, (res) => {
+						
+						this.changeLay(false);
+					
+						if (res.code == 1) {
+							sessionStorage.token = res.token;
+							if (res.accState == 0) { //已过期
+					
+								this.dialog = true;
+					
+							} else { //未过期
+								let msg = {
+									state: true,
+									errorText: {
+										type: 'success',
+										text: '登陆成功'
+									}
 								}
+								this.changeSnack(msg);
+					
+								let userData = {
+									name: this.name,
+									email: res.email,
+									endTime: res.endTime
+								}
+					
+								sessionStorage.showBar = true;
+								this.$store.state.showBar = true;
+								sessionStorage.userData = JSON.stringify(userData);
+								this.$router.push({
+									path: '/dashboard'
+								});
+					
 							}
-							this.changeSnack(msg);
-
-							let userData = {
-								name: this.name,
-								email: res.email,
-								endTime: res.endTime
-							}
-
-							sessionStorage.showBar = true;
-							this.$store.state.showBar = true;
-							sessionStorage.userData = JSON.stringify(userData);
-							this.$router.push({
-								path: '/dashboard'
-							});
-
+					
 						}
-
-					}
-				});
-
+					});
+				}
 			},
 
 			register() { //注册
-				if (this.$refs.form.validate()) {
+				if (this.$refs.registForm.validate()) {
 					let list = {
 						account: this.name,
 						password: this.password,
@@ -208,7 +213,7 @@
 							let msg = {
 								state: true,
 								errorText: {
-									type: 'green',
+									type: 'success',
 									text: '注册成功'
 								}
 							}

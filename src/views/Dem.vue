@@ -271,7 +271,7 @@
 				
 				showSetDialog:false,//显示设置对话框
 				
-				transition: 'scale-transition',
+				transition: 'fade-transition',
 				
 				loading:true,//控制骨架屏 true表示显示
 				

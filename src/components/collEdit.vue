@@ -467,7 +467,13 @@
 					this.activeRule++;
 					this.$refs.form.resetValidation();
 				} else {
-					console.log('nonononon')
+					this.changeSnack({
+						state:true,
+						errorText: {
+							type: 'info',
+							text: '表单填写错误'
+						}
+					});
 				}
 			},
 

@@ -9,7 +9,7 @@ export default {
   showOverLay:false,//显示loading
   snackbar:false,//全局提示框
   errorText:{
-	  type:'error',
+	  type:'info',
 	  text:'错误'
   }
 }

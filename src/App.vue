@@ -1,29 +1,13 @@
 <template>
   <v-app style="height: auto;">
-    <!-- <core-filter /> -->
-<!-- <v-img :src='bg' lazy-src height="100%" width="100vw" position="center center"> -->
-	<v-snackbar
-	  v-model="snackbar"
-	  :color="errorText.type"
-	  :timeout="3000"
-	  bottom
-	>
-	  {{errorText.text}}
-	  <v-btn
-		dark
-		text
-		@click="closeSnackbar"
-	  >
-		关闭
-	  </v-btn>
-	</v-snackbar>
+	
+	<xy-tip></xy-tip>
 	
 	<v-overlay :value="overlay" style="z-index: 1000;">
        <v-progress-circular indeterminate size="64" color="white"></v-progress-circular>
     </v-overlay>
+	
     <core-toolbar  v-if="showBar"/>
-
-    <!-- <core-drawer v-if="showBar" /> -->
 
     <core-view />
 <!-- </v-img> -->
@@ -31,8 +15,12 @@
   </v-app>
 </template>
 <script>
+	import xyTip from '@/components/common/xyTip.vue'
 	import { mapActions } from 'vuex';
 	export default{
+			components:{
+				xyTip
+			},
 			data() {
 				return {
 
@@ -42,11 +30,8 @@
 				this.resize();
 			},
 			methods:{
-				...mapActions(['changeSnack','deviceType']),
-				closeSnackbar(){ //关闭提示
-					this.snackbar = false;
-				},
-				
+				...mapActions(['deviceType']),
+
 				resize(){//窗口大小改变时判断当前浏览器环境
 					const detectDeviceType = () =>
 					  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
@@ -68,16 +53,7 @@
 				overlay(){
 					return this.$store.state.showOverLay;
 				},
-				
-				snackbar:{
-					get: function(){
-					  return this.$store.state.snackbar;
-					},
-					set: function(newValue){
-						this.changeSnack(newValue);
-					}
-				},
-				
+
 				errorText(){
 					return this.$store.state.errorText;
 				}

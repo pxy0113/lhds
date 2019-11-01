@@ -489,7 +489,13 @@
 					this.activeRule++;
 					this.$refs.form.resetValidation();
 				} else {
-					console.log('nonononon')
+					this.changeSnack({
+						state:true,
+						errorText: {
+							type: 'info',
+							text: '表单填写错误'
+						}
+					});
 				}
 			},
 
@@ -652,7 +658,7 @@
 						let msg = {
 							state: true,
 							errorText: {
-								type: 'green',
+								type: 'success',
 								text: this.edit ? '编辑成功' : '添加成功'
 							}
 						}

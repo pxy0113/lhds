@@ -8,7 +8,7 @@
 
 			</div>
 			
-			 <v-divider></v-divider>
+			 <!-- <v-divider></v-divider> -->
 
 			<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
 				<v-skeleton-loader
@@ -22,68 +22,71 @@
 						<p class="text-center" style="width: 100%;">暂无数据</p>
 					</v-list-item>
 					
-					<v-expansion-panels v-else class="px-4">
-					    <v-expansion-panel
-					      v-for="(item,i) in ruleList"
-					      :key="i"
-					    >
-					      <v-expansion-panel-header>
-									<div class="d-flex flex-column">
-									  <div class="my-3 d-flex justify-space-between align-center flex-wrap">
-										<div class="d-flex align-center">
-											<div class="font-weight-bold demo">
-											{{item.R0}}
-											</div>/<span style="font-size: 12px;">规则名称</span></div>
-										<div class="d-flex justify-center align-center pr-4">
-										  <v-btn outlined class="mr-1"  x-small color="error" @click.prevent.stop="delRule(item.id,i)">
-											删除
-										  </v-btn>
-										  <v-btn outlined x-small color="primary" @click="editRule(item)">
-											编辑
-										  </v-btn>
-										</div>
-									  </div>
-									  <Row class="font-weight-regular body-2">
-										  <Col :lg="6" :md="12" :xs="24" :sm="12" class="py-2">计价货币：{{item.R54==1?'USDT':item.R54==2?'ETH':'BTC'}}</Col>
-										  <Col :lg="6" :md="12" :xs="24" :sm="12" class="py-2">买入跌幅：{{item.R1}}% </Col>
-										  <Col :lg="6" :md="12" :xs="24" :sm="12" class="py-2">跌幅回调：{{item.R2}}% </Col>
-										  <Col :lg="6" :md="12" :xs="24" :sm="12" class="py-2">建仓金额：{{item.R3}} </Col>
-											<!-- <Col :lg="6" :md="12" :xs="24" :sm="12" class="py-2">涨幅回调:{{item.R5}} </Col> -->
-									  </Row>
+					<div v-else >
+						<div  v-for="(item,i) in ruleList"
+					      :key="i">
+							<v-list-item three-line>
+								<v-list-item-content>
+								<div class="d-flex flex-column px-1">
+								  <div class="my-1 d-flex justify-space-between align-center flex-wrap">
+									<div class="d-flex align-center">
+										<div class="font-weight-bold demo">
+										{{item.R0}}
+										</div>/<span style="font-size: 12px;">规则名称</span></div>
+										<v-btn text small color="green" @click="testDemo(i)">查看</v-btn>
 								  </div>
-						  </v-expansion-panel-header>
-					      <v-expansion-panel-content class=" pt-4 " style="background: #dcdee2;">
+								  <Row class="font-weight-regular body-2">
+									  <Col :lg="6" :md="12" :xs="24" :sm="12" class="py-2">计价货币：{{item.R54==1?'USDT':item.R54==2?'ETH':'BTC'}}</Col>
+									  <Col :lg="6" :md="12" :xs="24" :sm="12" class="py-2">买入跌幅：{{item.R1}}% </Col>
+									  <Col :lg="6" :md="12" :xs="24" :sm="12" class="py-2">跌幅回调：{{item.R2}}% </Col>
+									  <Col :lg="6" :md="12" :xs="24" :sm="12" class="py-2">建仓金额：{{item.R3}} </Col>
+								  </Row>
+								  <div class="d-flex justify-end align-center ">
+								    <v-btn outlined class="mr-1"  x-small color="error" @click.prevent.stop="delRule(item.id,i)">
+								  	删除
+								    </v-btn>
+								    <v-btn outlined x-small color="primary" @click="editRule(item)">
+								  	编辑
+								    </v-btn>
+								  </div>
+								</div>
+								</v-list-item-content>
 								
-								<Row style="font-size: 14px;" class="font-weight-regular ">
-									<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column pb-2">
+							</v-list-item>
+							
+							<v-scroll-y-transition >
+								<Row style="font-size: 14px;" class="font-weight-regular grey lighten-3 px-4" v-if="showIndex==i">
+									<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
 										<span>涨幅回调</span>
 										<span>{{item.R5}}% </span>
 									</Col>
-									<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column pb-2">
+									<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
 										<span>卖出涨幅</span>
 										<span>{{item.R4}}%</span>
 									</Col>
-									<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column pb-2">
+									<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
 										<span>止损跌幅</span>
 										<span>{{item.R6}}% </span>
 									</Col>
-									<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column pb-2">
+									<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
 										<span>补仓跌幅</span>
 										<span>{{item.R7}}% </span>
 									</Col>
-									<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column pb-2">
+									<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
 										<span>补仓总额</span>
 										<span>{{item.R8*item.R9}} </span>
 									</Col>
-									<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column pb-2">
+									<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
 										<span>补仓回调</span>
 										<span>{{item.R10}}% </span>
 									</Col>
 								</Row>
-					      </v-expansion-panel-content>
-					    </v-expansion-panel>
-					</v-expansion-panels>
-					
+								<v-divider v-else class="mx-2"></v-divider>
+							</v-scroll-y-transition>
+							
+						</div>
+					</div>
+
 					<div class="text-center mt-5">
 						<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="7"></v-pagination>
 					</div>
@@ -92,9 +95,6 @@
 				</div>
 			</component>
 
-			
-			
-		<!-- </v-card> -->
 		</div>
 		
 		<v-fab-transition>
@@ -124,8 +124,9 @@
 		},
 		data() {
 			return {
-
-				transition: 'scale-transition',
+				showIndex:-1,//当前显示的折叠菜单的下标
+				
+				transition: 'fade-transition',
 				
 				loading:true,//控制骨架屏 true表示显示
 				
@@ -170,6 +171,9 @@
 		},
 		
 		methods: {
+			testDemo(i){
+				this.showIndex == i?this.showIndex = -1:this.showIndex = i;
+			},
 			
 			...mapActions(['changeLay', 'changeSnack']),
 			
@@ -221,7 +225,7 @@
 								let msg = {
 									state: true,
 									errorText: {
-										type: 'green',
+										type: 'success',
 										text: '删除成功'
 									}
 								}
@@ -277,7 +281,7 @@
 				}, (res) => {
 					this.loading = false;
 					if (res.code == 1) {
-						let list = res.data; //5,6
+						let list = res.data;
 						let arr = [];
 
 						list.forEach((item, index) => {

@@ -37,10 +37,10 @@
 		      </v-toolbar-items>
 				<v-menu transition="scroll-y-transition" v-if="!$vuetify.breakpoint.mdAndUp">
 					<template v-slot:activator="{ on }">
-<!-- 						<v-btn icon v-on="on">
-							<Icon type="ios-arrow-down" />
-						</v-btn> -->
-					  <v-app-bar-nav-icon  v-on="on"></v-app-bar-nav-icon>
+						<v-btn icon text v-on="on">
+							<v-icon>mdi-format-list-bulleted-square</v-icon>
+						</v-btn>
+					  <!-- <v-app-bar-nav-icon  v-on="on"></v-app-bar-nav-icon> -->
 					</template>
 					<v-list>
 					  <v-list-item  v-ripple="{ class: 'green--text' }"
@@ -53,8 +53,8 @@
 				      offset-y
 				    >
 				      <template v-slot:activator="{ on }">
-						<v-btn icon v-on="on">
-							<Icon type="md-person" size="16" />
+						<v-btn icon text v-on="on">
+							<v-icon>mdi-account</v-icon>
 						</v-btn>
 				      </template>
 				
@@ -72,9 +72,6 @@
 						 <v-divider></v-divider>
 						 
 						 <v-list-item dense>
-							 <!-- <v-list-item-icon>
-							   <v-icon  color="green">mdi-email</v-icon>
-							 </v-list-item-icon> -->
 							 <v-list-item-avatar tile size="24">
 							 	<v-icon>mdi-email</v-icon>
 							 </v-list-item-avatar>
@@ -87,9 +84,6 @@
 						
 						
 						<v-list-item dense>
-							 <!-- <v-list-item-icon>
-							   <v-icon  color="green">mdi-av-timer</v-icon>
-							 </v-list-item-icon> -->
 							 <v-list-item-avatar tile size="24">
 							 	<v-icon>mdi-av-timer</v-icon>
 							 </v-list-item-avatar>
@@ -245,7 +239,7 @@ import {
 							let msg = {
 								state: true,
 								errorText: {
-									type: 'green',
+									type: 'success',
 									text: '续期成功！'
 								}
 							}

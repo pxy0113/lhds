@@ -206,7 +206,7 @@
 		data: () => ({
 			codeValid:true,
 			
-			transition: 'scale-transition',
+			transition: 'fade-transition',
 			
 			loading:true,//控制骨架屏 true表示显示
 			
@@ -424,7 +424,7 @@
 								let msg = {
 									state: true,
 									errorText: {
-										type: 'green',
+										type: 'success',
 										text: '删除成功'
 									}
 								}
@@ -481,7 +481,7 @@
 				    		let msg = {
 				    			state:true,
 				    			errorText:{
-				    				type:'green',
+				    				type:'success',
 				    				text:'添加成功'
 				    			}
 				    		}
