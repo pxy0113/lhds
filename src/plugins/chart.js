@@ -1,12 +1,17 @@
 import echarts from 'echarts'
+import vuex from '../store/index'
 const line = (datas) =>{
-	return {
-		grid: {
+	let type = vuex.state.currentType;//手机端不需要grids
+	let grids = {
+			top:30,
 			left: '4%',
 			right: '5%', 
 			containLabel: true
-		},
+		}
+	return {
+		grid:type=='Mobile'?{top:30}:grids,
 		title : {
+			show:false,
 			text: datas.title,
 			subtext: '',
 			x:'center',

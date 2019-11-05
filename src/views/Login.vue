@@ -30,7 +30,7 @@
 										</v-fade-transition>
 									</template>
 								</v-text-field>
-								<div class="d-flex justify-space-between py-3">
+								<div class="d-flex justify-end py-3">
 									<div class="blue--text lighten-4 pointer" @click="type=2">我要注册</div>
 								</div>
 

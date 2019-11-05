@@ -1,6 +1,27 @@
 <template>
 	<v-container class="pa-2 pt-0" v-resize="resizeChart" fluid id="vRow">
-		<v-card class="mx-auto  pa-3" outlined tile style="border: none;">
+		<v-btn @click="testFunction">AAAA</v-btn>
+		<v-card class="mx-auto  py-3" outlined tile style="border: none;">
+			<p class="subtitle-1 text-center blue-grey--text darken-3 mb-0" style="font-weight: 700;">
+				最近
+				<v-menu transition="scroll-y-transition">
+					<template v-slot:activator="{ on }">
+						 <v-chip outlined label class="subtitle-1 blue-grey--text darken-3"  v-on="on">{{numArr[defaultNum]}}</v-chip>
+						<!-- <v-btn  outlined small class="ma-0 subtitle-1" color="blue-grey darken-3" v-on="on">
+							
+							<v-icon right>mdi-menu-down</v-icon>
+						</v-btn> -->
+					</template>
+					<v-list-item-group v-model="defaultNum" color="green">
+						<v-list dense class="pa-0">
+							<v-list-item v-ripple="{ class: 'green--text' }" v-for="n in numArr" link @click="getDateProfit(n)">
+								<v-list-item-title class="text-center">{{n}}</v-list-item-title>
+							</v-list-item>
+						</v-list>
+					</v-list-item-group>
+				</v-menu>
+				日收益走势图
+			</p>
 			<div id="chart" style="width: 100%;height: 400px;"></div>
 		</v-card>
 		<v-row dense class="pt-4">
@@ -52,10 +73,7 @@
 
 		</v-row>
 		<user-box class="my-2"></user-box>
-		<Avatar :src="upIcon"
-		class="xy-suspend"
-		@click.stop.native="$vuetify.goTo(target, options)"
-		>
+		<Avatar :src="upIcon" class="xy-suspend" @click.stop.native="$vuetify.goTo(target, options)">
 		</Avatar>
 
 	</v-container>
@@ -76,35 +94,30 @@
 		line
 	} from '@/plugins/chart.js'
 	export default {
-		components:{
+		components: {
 			UserBox
 		},
 		data() {
-			const getBeforeDay = () => {
-				let arr = [];
-				for (let i = 1; i < 8; i++) {
-					let a = this.$moment(new Date()).subtract(i, 'days').format('MM-DD');
-					arr.unshift(a);
-				}
-				return arr;
-			}
 			return {
-				upIcon:upSvg,
-				
+				defaultNum: 0, //图表默认显示的天数
+				numArr: [7, 15], //天数数组
+
+				upIcon: upSvg,
+
 				target: '#vRow',
-				
+
 				options: {
 					duration: 1000,
 					offset: 0,
 					easing: 'easeInOutCubic'
 				},
-				
+
 				tableData: {
-					labels: getBeforeDay(),
+					labels: this.getBeforeDay(),
 
 					title: '最近七日收益走势图',
 
-					series: [1, 20, 11, 61, 15, 33, 21]
+					series: [0, 0, 0, 0, 0, 0, 0]
 				},
 
 				Bimg: BTC,
@@ -149,9 +162,25 @@
 		},
 		methods: {
 			...mapActions(['changeLay']),
-			getDateProfit() {
+			testFunction(){
+				$ax.getTestData('/EasWebUser/getAPIData',{},(res)=> {
+					if(res.code == 1){
+						console.log(res.data)
+					}
+				});
+			},
+			
+			getBeforeDay(n = 7) {
+				let arr = [];
+				for (let i = 1; i < n; i++) {
+					let a = this.$moment(new Date()).subtract(i, 'days').format('MM-DD');
+					arr.unshift(a);
+				}
+				return arr;
+			},
+			getDateProfit(nums = 7) {
 				let list = {
-					num: 8,
+					num: nums,
 					currency: 'USDT'
 				};
 				new Promise(resolve => {
@@ -165,7 +194,15 @@
 							});
 							this.percentage = res.percentage;
 
-							this.tableData.series = [arr];
+							this.tableData.series = res.data;
+
+							let myChart = this.$echarts.init(document.getElementById('chart'));
+							let option = myChart.getOption();
+							option.xAxis[0].data = this.getBeforeDay(nums);
+							option.title[0].text = `最近${nums}日收益走势图`;
+							option.series[0].data = this.tableData.series;
+							myChart.setOption(option);
+
 							resolve();
 						} else {
 							resolve();

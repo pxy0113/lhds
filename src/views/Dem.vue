@@ -3,11 +3,21 @@
 		<!-- <v-card outlined  id="vRow"> -->
 			<div class=" px-5 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
 				<Badge color="green" :class-name="'title'" text="托管列表"></Badge>
-				<span style="min-width: 260px;" v-if="usable">
-					<v-btn small color="green" outlined @click="showSetting" class="ma-1">设置</v-btn>
-					<v-btn small color="green" outlined @click="addColl"  class="ma-1">添加托管</v-btn>
-					<v-btn small color="green" outlined @click="allStart" class="ma-1">全部启动</v-btn>
-					<v-btn small color="green" outlined @click="allEnd" class="ma-1">全部停止</v-btn>	
+				<span style="width: 120px;">
+					<v-menu transition="scroll-y-transition">
+						<template v-slot:activator="{ on }">
+							<v-btn tile outlined small color="success" class="ma-0" v-on="on">
+								设置/操作
+								<v-icon right>mdi-menu-down</v-icon>
+							</v-btn>
+						</template>
+						<v-list>
+						  <v-list-item  v-ripple="{ class: 'green--text' }"
+							v-for="n in actionList" link @click="toFunction(n.id)">
+							<v-list-item-title>{{n.text}}</v-list-item-title>
+						  </v-list-item>
+						</v-list>
+					</v-menu>
 				</span>
 		
 			</div>
@@ -261,6 +271,13 @@
 		},
 		data() {
 			return {
+				actionList: [ //设置与操作列表
+					{ id:1,text: '设置' },
+					{ id:2,text: '添加托管' },
+					{ id:3,text: '全部启动' },
+					{ id:4,text: '全部停止' }
+				],
+				
 				settingData:{},//传递给设置Dialog的数据
 				
 				usable:false,//可以设置/全启动/新增/全暂停
@@ -373,6 +390,13 @@
 
 		methods: {
 			...mapActions(['changeLay']),
+			
+			toFunction(id){//点击操作列表的项
+				(id==1)&&this.showSetting();
+				(id==2)&&this.addColl();
+				(id==3)&&this.allStart();
+				(id==4)&&this.allEnd();
+			},
 			
 			getExchange(){//获取货币数据
 				this.testArr = [];

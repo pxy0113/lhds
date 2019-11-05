@@ -5,6 +5,7 @@ const resolve = dir => {//绝对路径
 }
 module.exports = {
   baseUrl: './',
+  productionSourceMap: false,// don·t use map 不要把源暴露出去
   chainWebpack: config => {
   	
   	//路径别名

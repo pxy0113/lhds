@@ -18,9 +18,9 @@ const vm = new Vue();
 
 //--------------------------------------------全局设置-------------------------------
 
-axios.defaults.baseURL = 'http://192.168.2.105:8080'; //配置接口基础地址
+// axios.defaults.baseURL = 'http://192.168.2.105:8080'; //配置接口基础地址
 // axios.defaults.baseURL = 'http://m252t77964.wicp.vip:20211';
-// axios.defaults.baseURL = 'http://web.lhds.vip'; //配置接口基础地址
+axios.defaults.baseURL = 'http://web.lhds.vip'; //配置接口基础地址
 axios.defaults.timeout = 50000; //响应超时时间
 
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
@@ -31,7 +31,6 @@ axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
 //-----------------在发送数据之前进行数据转换 , get不会转换,因为get走的是 parmas属性----------------------
 
 axios.defaults.transformRequest = (_data) => { //第一个参数_data是接收过来的数据
-	//骚操作  绝对有bug
 	// if(typeof(_data) == 'object'){
 	// 		let formData = new FormData(); //使用formData方式发送表单 否则程序接收不到表单变量（formData可以实现文件的异步上传）
 	// 	
@@ -46,11 +45,57 @@ axios.defaults.transformRequest = (_data) => { //第一个参数_data是接收�
 	// }else{
 	// 	return _data;
 	// }
+	
 		let data = JSON.stringify(_data);
 		console.log('-->发送了数据:', data);
 		return data;
 	
 };
+
+const CancelToken = axios.CancelToken //获取axios的取消令牌
+const source = CancelToken.source()
+// 正在进行中的请求列表
+let reqList = []
+
+/**
+ * 阻止重复请求
+ * @param {array} reqList - 请求缓存列表
+ * @param {string} url - 当前请求地址
+ * @param {function} cancel - 请求中断函数
+ * @param {string} errorMessage - 请求中断时需要显示的错误信息
+ */
+const stopRepeatRequest = function (url, cancel, errorMessage) { //取消重复请求
+  const errorMsg = errorMessage || ''
+  
+  for (let i = 0; i < reqList.length; i++) {
+    if (reqList[i] === url) {
+      cancel(errorMsg); //循环每个对象 跟当前url相同 则执行一次cancel(msg)方法
+      return
+    }
+  }
+  reqList.push(url)
+  console.log(reqList)
+}
+
+/**
+ * 允许某个请求可以继续进行
+ * @param {array} reqList 全部请求列表
+ * @param {string} url 请求地址
+ */
+const allowRequest = function (url) {
+  for (let i = 0; i < reqList.length; i++) {
+    if(reqList[i]=== url) {
+	
+      reqList.splice(i, 1)
+	  console.log(reqList)
+
+      break
+    }else{
+		console.log('错了错了')
+	}
+  }
+}
+
 
 //--------------------添加一个请求拦截器,每次请求都会拦截一次,但是尽量使用全局设置,方便每次使用不同的设置--------------
 
@@ -59,6 +104,13 @@ axios.interceptors.request.use(
 	_config => { //在请求发出之前对配置进行一些操作
 
 		let config = _config;
+		
+		config.cancelToken = source.token;
+
+		    // 阻止重复请求。当上个请求未完成时，相同的请求不会进行
+		
+		stopRepeatRequest(_config.url, source.cancel, `${config.url} 请求被中断`)
+
 		
 		if(config.hasToken){ //是否携带token
 			if(sessionStorage.token){//session如果有token
@@ -82,31 +134,54 @@ axios.interceptors.request.use(
 );
 
 //------------------------添加一个响应拦截器----------------------
-
+			
 axios.interceptors.response.use(
 
 	_res => { //在这里对返回的数据进行处理
+
+		setTimeout(() => {
+			let ss = _res.config.url.split(axios.defaults.baseURL);
+
+		   allowRequest(ss[ss.length-1]);
+		   
+		}, 1000);
+
+			
 		console.log('<--返回了数据', _res);
 		
 		if(_res.data.code!==1){//请求不成功，报错
-			let msg = transCode(_res.data.code);
-			vuex.errorText.text = msg; 
-			vuex.snackbar = true;
-			
-		}
+			if(_res.data.code ==20001){ //用户未登录
+				sessionStorage.clear();
+				vuex.showBar = false;
+				router.push({path:'/login'});
+			}else{
+				let msg = transCode(_res.data.code);
+				vuex.errorText.text = msg; 
+				vuex.snackbar = true;
+			}
 
-		if(_res.data.code ==20001){ //用户未登录
-			sessionStorage.clear();
-			vuex.showBar = false;
-			router.push({path:'/login'});
 		}
 
 		return _res.data;
 
 	},
-	
 	_err => { //处理错误
+	     let urls = _err.message.split(' ')[0];
+		 // if (axios.isCancel(_err)) {
+		 //      console.log('axios cancel',urls);
+			//   setTimeout(() => {
+			// 		
+			// 	console.log('我日哦')
+			//      allowRequest(urls);
+			//      
+			//   }, 2000);
+		 //    } else {
+		 //      // 增加延迟，相同请求不得在短时间内重复发送
+			//   console.log('增加延迟')
+		 //      
+		 //    }
 
+		
 		console.log('>>>>>>发生了ajax错误');
 
 		console.log('-------------------------------------------');
@@ -120,7 +195,7 @@ axios.interceptors.response.use(
 			console.log('statusText:', _err.response.statusText);
 
 		} else { //一些错误是在设置请求的时候触发		   
-			
+			console.log('请求设置的时候出错了呢',_err)
 		}
 
 		console.log('url:', _err.config.url);
@@ -134,10 +209,10 @@ axios.interceptors.response.use(
 		console.log('-------------------------------------------');
 
 		return _err;
-
 	}
 );
 
+//get请求
 export const getTestData = (url = '', data = {}, fn, config = {}, errorCallBack) => {
 	axios.get(url, data, config).then(response => {
 		fn && fn(response);
