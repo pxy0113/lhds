@@ -1,7 +1,9 @@
 <template>
   <v-app style="height: auto;">
 	
-	<xy-tip></xy-tip>
+	<keep-alive>
+		<xy-tip></xy-tip>
+	</keep-alive>
 	
 	<v-overlay :value="overlay" style="z-index: 1000;">
        <v-progress-circular indeterminate size="64" color="white"></v-progress-circular>

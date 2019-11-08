@@ -4,7 +4,7 @@
 		<span @click="show" style="font-size: 14px;">
 			{{dateStr}} <v-icon v-if="showIcon" right>mdi-chevron-down</v-icon>
 		</span>
-		 <v-bottom-sheet v-model="display" persistent>
+		 <v-bottom-sheet v-model="display">
 
 		      <v-sheet class="text-center" height="200px">
 				<div class="picker">
@@ -47,10 +47,12 @@
 	} from '@/plugins/date.js'
 	import upSvg from '@/img/up.svg'
 	import BScroll from 'better-scroll'
+	import { scrollMixins } from '@/mixins/scroll.js'
 	import {
 		mapActions
 	} from 'vuex';
 	export default {
+		mixins:[scrollMixins],
 		data() {
 			return {
 				dateStr:'',
@@ -99,11 +101,13 @@
 					this.init();
 				},
 				immediate: true
+			},
+			display(nV){
+				!nV&&this.scrollToOrigin();
 			}
 		},
 		
 		methods: {
-			
 			init(){//初始化
 				this.dateTime = transPickerValue(this.firstTime);
 				
@@ -120,9 +124,14 @@
 
 			cancelSelect(){//取消选择
 				this.display = false;
+			},
+			
+			scrollToOrigin(){//滚动位置回到原点
+				this.beforeClose();
+				
 				this.dateTime.forEach((item,i) =>{
-					this.wheels[i].wheelTo(item)
-				})
+					this.wheels[i].wheelTo(item);
+				});
 			},
 
 			selectOk(){//确定选择
@@ -152,12 +161,15 @@
 			show(){ //显示选择器
 
 				this.display = true;
+				
 				this.$nextTick(() => {
 				  const wheelWrapper = this.$refs.wheelWrapper
 				  this.pickerData.forEach((item, index) => {
 					this.createWheel(wheelWrapper, index).enable()
 				  });
 				});
+				
+				this.afterOpen();
 			},
 			
 			_getCurrentValue () {

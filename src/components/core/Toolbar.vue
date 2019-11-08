@@ -1,22 +1,5 @@
 
 <template>
-     <!-- <v-toolbar dense dark :min-height="70" class="elevation-2" style="position: fixed;top: 0;width: 100vw;z-index: 2;">
-       <v-toolbar-title class=" font-weight-bold " style="color: #2c2c2c;">
-
-		  <v-icon color="#2c2c2c" v-if="responsive" @click.stop="onClickBtn">mdi-view-list</v-icon>
-            SSSS
-      </v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-       <v-spacer />
-      <v-toolbar-items>
-          <v-flex align-center layout py-2>
-			
-
-          </v-flex>
-      </v-toolbar-items>
-    </v-toolbar> -->
 	<div>
 		    <v-toolbar  dark class="elevation-0">
 		      <v-toolbar-title class="d-flex align-center">

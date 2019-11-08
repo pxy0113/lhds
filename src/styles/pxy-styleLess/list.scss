@@ -6,6 +6,14 @@ $green-500: #4caf50 !default;
 	border: none!important;
 }
 
+
+//禁止滚动穿透
+.scroll_open{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+}
+
 /*自定义表格*/
 .xy-tableItem {
   border: 1px solid #ccc;

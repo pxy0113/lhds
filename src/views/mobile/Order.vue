@@ -63,8 +63,6 @@
 				return data.toUpperCase();
 			},
 			
-		},
-		mounted() {
 		}
 	}
 </script>

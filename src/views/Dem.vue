@@ -125,7 +125,7 @@
 		<!-- </v-card> -->
 		
 		<v-dialog v-model="showAddRule" fullscreen hide-overlay transition="dialog-bottom-transition">
-			<coll-edit v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" ref="AR" :edit="true" class="ma-0"></coll-edit>
+			<common-colledit v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" ref="AR" :edit="true" class="ma-0"></common-colledit>
 		</v-dialog>
 		
 		<v-dialog v-model="addCollocation" width="800" persistent>
@@ -249,26 +249,19 @@
 			</v-card>
 		</v-dialog>
 		
-		<setting-dialog v-if="showSetDialog" :list="settingData" :settingModal="showSetDialog" @closeSetting="closeSetting"></setting-dialog>
+		<commmon-setdialog v-if="showSetDialog" :list="settingData" :settingModal="showSetDialog" @closeSetting="closeSetting"></commmon-setdialog>
 
 	</div>
 </template>
 
 <script>
 	import Utils from '@/plugins/cryAes.js'
-	import settingDialog from '@/components/settingDialog.vue'
-	import collEdit from '@/components/collEdit.vue'
 	import upSvg from '@/img/up.svg'
 	import {
 		mapActions
 	} from 'vuex';
 	export default {
 		inject: ['theme'],
-		
-		compoments: {
-			collEdit,
-			settingDialog
-		},
 		data() {
 			return {
 				actionList: [ //设置与操作列表
