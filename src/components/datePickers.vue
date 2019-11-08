@@ -2,7 +2,7 @@
 	<div>
 		<!-- <v-btn block outlined @click="show" class="ma-0">{{dateStr}}</v-btn> -->
 		<span @click="show" style="font-size: 14px;">
-			{{dateStr}}
+			{{dateStr}} <v-icon v-if="showIcon" right>mdi-chevron-down</v-icon>
 		</span>
 		 <v-bottom-sheet v-model="display" persistent>
 
@@ -86,9 +86,9 @@
 				type:String,
 				default:''
 			},
-			slotText:{
-				type:String,
-				default:''
+			showIcon:{
+				type:Boolean,
+				default:false
 			}
 		},
 		

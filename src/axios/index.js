@@ -18,9 +18,9 @@ const vm = new Vue();
 
 //--------------------------------------------全局设置-------------------------------
 
-// axios.defaults.baseURL = 'http://192.168.2.105:8080'; //配置接口基础地址
+axios.defaults.baseURL = 'http://192.168.2.105:8080'; //配置接口基础地址
 // axios.defaults.baseURL = 'http://m252t77964.wicp.vip:20211';
-axios.defaults.baseURL = 'http://web.lhds.vip'; //配置接口基础地址
+// axios.defaults.baseURL = 'http://web.lhds.vip'; //配置接口基础地址
 axios.defaults.timeout = 50000; //响应超时时间
 
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
@@ -52,49 +52,29 @@ axios.defaults.transformRequest = (_data) => { //第一个参数_data是接收�
 	
 };
 
-const CancelToken = axios.CancelToken //获取axios的取消令牌
-const source = CancelToken.source()
-// 正在进行中的请求列表
-let reqList = []
 
-/**
- * 阻止重复请求
- * @param {array} reqList - 请求缓存列表
- * @param {string} url - 当前请求地址
- * @param {function} cancel - 请求中断函数
- * @param {string} errorMessage - 请求中断时需要显示的错误信息
- */
-const stopRepeatRequest = function (url, cancel, errorMessage) { //取消重复请求
-  const errorMsg = errorMessage || ''
-  
-  for (let i = 0; i < reqList.length; i++) {
-    if (reqList[i] === url) {
-      cancel(errorMsg); //循环每个对象 跟当前url相同 则执行一次cancel(msg)方法
-      return
-    }
-  }
-  reqList.push(url)
-  console.log(reqList)
-}
-
-/**
- * 允许某个请求可以继续进行
- * @param {array} reqList 全部请求列表
- * @param {string} url 请求地址
- */
-const allowRequest = function (url) {
-  for (let i = 0; i < reqList.length; i++) {
-    if(reqList[i]=== url) {
+　	let pending = []; //声明一个数组用于存储每个请求的取消函数和axios标识
+	let cancelToken = axios.CancelToken;
+	 
+	let Cancel;
 	
-      reqList.splice(i, 1)
-	  console.log(reqList)
+	let removePending = (url) => {
 
-      break
-    }else{
-		console.log('错了错了')
+		for(let i in pending){
+			if(pending[i].url == axios.defaults.baseURL+url) { //在当前请求在数组中存在时执行取消函数
+				pending[i].f.cancel(); //执行取消操作
+			}
+		}
 	}
-  }
-}
+			
+	let delPending = (url) => {
+		for(let i in pending){
+			if(pending[i].url == axios.defaults.baseURL+url) { //在当前请求在数组中存在时删除
+				pending.splice(i, 1);
+			}
+		}
+		
+	}
 
 
 //--------------------添加一个请求拦截器,每次请求都会拦截一次,但是尽量使用全局设置,方便每次使用不同的设置--------------
@@ -104,14 +84,16 @@ axios.interceptors.request.use(
 	_config => { //在请求发出之前对配置进行一些操作
 
 		let config = _config;
-		
-		config.cancelToken = source.token;
-
+		  removePending(config.url);
 		    // 阻止重复请求。当上个请求未完成时，相同的请求不会进行
-		
-		stopRepeatRequest(_config.url, source.cancel, `${config.url} 请求被中断`)
+			
+			config.cancelToken = new cancelToken((c) => {
+				pending.push({
+				    url: axios.defaults.baseURL+config.url,
+				    f:c
+				});
+			});
 
-		
 		if(config.hasToken){ //是否携带token
 			if(sessionStorage.token){//session如果有token
 				config.headers = Object.assign(config.headers,{'token':sessionStorage.token});
@@ -128,7 +110,7 @@ axios.interceptors.request.use(
 	},
 	
 	_err => {
-		console.log(_err);
+		console.log('请求拦截器报错');
 	}
 	
 );
@@ -141,10 +123,10 @@ axios.interceptors.response.use(
 
 		setTimeout(() => {
 			let ss = _res.config.url.split(axios.defaults.baseURL);
-
-		   allowRequest(ss[ss.length-1]);
-		   
-		}, 1000);
+			
+			delPending(ss[ss.length-1]);
+			
+		}, 2000);
 
 			
 		console.log('<--返回了数据', _res);
@@ -166,20 +148,15 @@ axios.interceptors.response.use(
 
 	},
 	_err => { //处理错误
-	     let urls = _err.message.split(' ')[0];
-		 // if (axios.isCancel(_err)) {
-		 //      console.log('axios cancel',urls);
-			//   setTimeout(() => {
-			// 		
-			// 	console.log('我日哦')
-			//      allowRequest(urls);
-			//      
-			//   }, 2000);
-		 //    } else {
-		 //      // 增加延迟，相同请求不得在短时间内重复发送
-			//   console.log('增加延迟')
-		 //      
-		 //    }
+	    // let urls = _err.message.split(' ')[0];
+		
+		let urls =_err.config.url.split(axios.defaults.baseURL);
+		
+		setTimeout(() => {
+				  
+			delPending(urls[urls.length-1])
+			
+		}, 2000);
 
 		
 		console.log('>>>>>>发生了ajax错误');
@@ -187,15 +164,12 @@ axios.interceptors.response.use(
 		console.log('-------------------------------------------');
 
 		if(_err.response) { //请求已经发出，但是服务器响应返回的状态码不在2xx的范围内		
-
-			// console.log('_err.response',_err.response);
-
 			console.log('status:', _err.response.status);
 
 			console.log('statusText:', _err.response.statusText);
 
 		} else { //一些错误是在设置请求的时候触发		   
-			console.log('请求设置的时候出错了呢',_err)
+			console.log('设置的时候触发了错误');
 		}
 
 		console.log('url:', _err.config.url);
@@ -219,7 +193,7 @@ export const getTestData = (url = '', data = {}, fn, config = {}, errorCallBack)
 	}).catch(error => {
 		vuex.showOverLay = false;
 		errorCallBack && errorCallBack(error);
-		console.log('!!!single发生了错误!!!：' + error);
+		console.log('!!!getTestData发生了错误!!!：' + error);
 	});
 }
 

@@ -3,7 +3,7 @@
 		<!-- <v-card outlined  id="vRow"> -->
 			<div class=" px-5 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
 				<Badge color="green" :class-name="'title'" text="托管列表"></Badge>
-				<span style="width: 120px;">
+				<span style="width: 120px;" v-if="usable">
 					<v-menu transition="scroll-y-transition">
 						<template v-slot:activator="{ on }">
 							<v-btn tile outlined small color="success" class="ma-0" v-on="on">

@@ -1,18 +1,14 @@
 <template>
 	<v-container class="pa-2 pt-0" v-resize="resizeChart" fluid id="vRow">
-		<v-btn @click="testFunction">AAAA</v-btn>
+
 		<v-card class="mx-auto  py-3" outlined tile style="border: none;">
-			<p class="subtitle-1 text-center blue-grey--text darken-3 mb-0" style="font-weight: 700;">
+			<p class="subtitle-1 text-center blue-grey--text darken-3 mb-0 d-flex justify-center align-center" style="font-weight: 700;">
 				最近
 				<v-menu transition="scroll-y-transition">
 					<template v-slot:activator="{ on }">
 						 <v-chip outlined label class="subtitle-1 blue-grey--text darken-3"  v-on="on">{{numArr[defaultNum]}}</v-chip>
-						<!-- <v-btn  outlined small class="ma-0 subtitle-1" color="blue-grey darken-3" v-on="on">
-							
-							<v-icon right>mdi-menu-down</v-icon>
-						</v-btn> -->
 					</template>
-					<v-list-item-group v-model="defaultNum" color="green">
+					<v-list-item-group v-model="defaultNum" color="green" mandatory >
 						<v-list dense class="pa-0">
 							<v-list-item v-ripple="{ class: 'green--text' }" v-for="n in numArr" link @click="getDateProfit(n)">
 								<v-list-item-title class="text-center">{{n}}</v-list-item-title>
@@ -20,6 +16,7 @@
 						</v-list>
 					</v-list-item-group>
 				</v-menu>
+				 
 				日收益走势图
 			</p>
 			<div id="chart" style="width: 100%;height: 400px;"></div>
@@ -129,46 +126,10 @@
 
 				profitList: {}, //所有利润信息
 
-				headers: [{
-						sortable: false,
-						text: 'ID',
-						value: 'id'
-					},
-					{
-						sortable: false,
-						text: 'Name',
-						value: 'name'
-					},
-					{
-						sortable: false,
-						text: 'Salary',
-						value: 'salary',
-						align: 'right'
-					},
-					{
-						sortable: false,
-						text: 'Country',
-						value: 'country',
-						align: 'right'
-					},
-					{
-						sortable: false,
-						text: 'City',
-						value: 'city',
-						align: 'right'
-					}
-				]
 			}
 		},
 		methods: {
 			...mapActions(['changeLay']),
-			testFunction(){
-				$ax.getTestData('/EasWebUser/getAPIData',{},(res)=> {
-					if(res.code == 1){
-						console.log(res.data)
-					}
-				});
-			},
 			
 			getBeforeDay(n = 7) {
 				let arr = [];

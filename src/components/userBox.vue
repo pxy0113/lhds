@@ -131,8 +131,9 @@
 												   v-model="news.A4"
 												   label="买入费率(%)"
 												   min="0"
+												   max="100"
 												   step="0.1"
-												   :rules="[v => (!!v&&v>=0) || '必填且不是负数']"
+												   :rules="[v => (!!v&&v>=0&&v<=100) || '必填,不是负数且不能大于100']"
 												   required
 												   color="green"
 												   type="number"
@@ -144,8 +145,9 @@
 												   label="卖出费率(%)"
 												   min="0"
 												   step="0.1"
+												   max="100"
 												   color="green"
-												   :rules="[v => (!!v&&v>=0) || '必填且不是负数']"
+												   :rules="[v => (!!v&&v>=0&&v<=100) || '必填,不是负数且不能大于100']"
 												   required
 												   type="number"
 												 ></v-text-field>
