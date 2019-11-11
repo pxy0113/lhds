@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div v-for="(item,index) in items" :key="index">
-				<v-list-item three-line class="xy-borderB">
+				<v-list-item three-line class="xy-borderB px-3">
 				  <v-list-item-content class="align-self-start">
 					<v-list-item-title
 					  class=" mb-2">

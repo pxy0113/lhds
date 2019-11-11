@@ -2,14 +2,20 @@
 	 <v-bottom-sheet v-model="sheets">
 		  <v-card >
 		  	<div class="blue-grey darken-4  pa-2">
-		  		<span class="font-weight-bold white--text ml-5 my-0" style="font-size: 1.2rem;">下单详情</span>
+		  		<span class="font-weight-bold white--text ml-5 my-0" style="font-size: 1rem;">下单详情</span>
 		  	</div>
 		  		
-		  	<v-list three-line subheader>
+		  	<v-list three-line subheader class="pb-0">
 		  		
-		  		<v-list-item class="d-xl-none d-lg-none d-md-none">
+		  		<v-list-item>
 		  			<v-row class="mx-0">
-						<v-col>
+						<v-col v-if="placeDetail.length==0">
+							<v-card-text class="blue-grey--text">
+								暂无数据
+							</v-card-text>
+						</v-col>
+						
+						<v-col v-else>
 							<v-window v-model="detailStep" class="xy-tableItem">
 								<v-window-item :value="idx+1" v-for="(item,idx) in placeDetail" :key="idx">
 									<v-card-text class="blue-grey--text">
@@ -52,43 +58,25 @@
 									</v-card-text>
 								</v-window-item>
 							</v-window>
+							
+							<h5 class="my-2 d-flex justify-center  align-center">
+								<v-btn :disabled="(detailStep === 1)||placeDetail.length==0" text @click="detailStep--" x-small fab class="pa-1 mx-2">
+									<v-icon>mdi-arrow-left</v-icon>
+								</v-btn>
+								<span>{{detailStep}}/{{placeDetail.length}}</span>
+								<v-btn :disabled="(detailStep === placeDetail.length)||placeDetail.length==0" fab text x-small class="pa-1 mx-2"
+								 @click="detailStep++">
+									<v-icon>mdi-arrow-right</v-icon>
+								</v-btn>
+									
+							</h5>
+							
 						</v-col>
 		  			</v-row>
 		  		
 		  		
 		  		</v-list-item>
-		  		
-		  		<v-list-item lg12 md12 xl12 class="d-none d-lg-flex d-md-flex d-xl-flex">
-		  			<v-list-item-content>
-		  				<v-simple-table dense>
-		  					<thead>
-		  						<tr>
-		  		
-		  							<th class="text-center subtitle-1">交易所</th>
-		  							<th class="text-center subtitle-1">交易对</th>
-		  							<th class="text-center subtitle-1">操作方向</th>
-		  							<th class="text-center subtitle-1">法币</th>
-		  							<th class="text-center subtitle-1">手续费</th>
-		  							<th class="text-center subtitle-1">建仓数量</th>
-		  							<th class="text-center subtitle-1">建仓价格</th>
-		  							<th class="text-center subtitle-1">建仓时间</th>
-		  						</tr>
-		  					</thead>
-		  					<tbody>
-		  						<tr v-for="(item,index) in placeDetail" :key="index" class='subtitle-1 text-center'>
-		  							<td>{{ item.exchange }}</td>
-		  							<td>{{ item.symbol }}</td>
-		  							<td>{{ operates[item.operate] }}</td>
-		  							<td>{{ item.currency }}</td>
-		  							<td>{{ item.fee }}</td>
-		  							<td>{{ item.num }}</td>
-		  							<td>{{ item.price }}</td>
-		  							<td>{{ item.placeTime }}</td>
-		  						</tr>
-		  					</tbody>
-		  				</v-simple-table>
-		  			</v-list-item-content>
-		  		</v-list-item>
+		  	
 		  	</v-list>
 		  </v-card>
 		  

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div v-for="(item,index) in items" :key="index">
-			<v-list-item three-line class="xy-tableItem">
+			<v-list-item three-line class="xy-borderB">
 				<v-list-item-content class="align-self-start">
 					<v-list-item-title class="font-weight-bold mb-2">
 						<div class="d-flex justify-space-between align-center">
@@ -38,18 +38,20 @@
 			</v-list-item>
 		</div>
 
-		<v-dialog v-model="drawer" fullscreen hide-overlay transition="dialog-bottom-transition">
+		<v-dialog v-model="drawer" fullscreen hide-overlay
+		 transition="dialog-bottom-transition">
 			<v-card>
 				<!-- <v-banner dark> -->
 				<div class="blue-grey darken-4  pa-4 d-flex justify-space-between align-center">
 					<span class="font-weight-bold white--text ml-5 my-0" style="font-size: 1.2rem;">下单详情</span>
-					<v-btn icon dark @click="drawer = false" class="my-0">
+					<v-btn icon dark @click="clickClose" class="my-0">
 						<v-icon>mdi-close</v-icon>
 					</v-btn>
 				</div>
 				<!-- </v-banner> -->
-		
-				<v-list three-line subheader>
+				<h4 v-if="placeDetail.length==0" class="text-center subtitle-1 py-2">暂无数据</h4>
+				
+				<v-list three-line subheader v-else>
 		
 					<v-list-item class="d-xl-none d-lg-none d-md-none">
 						<v-row class="mx-0">
@@ -58,46 +60,46 @@
 									<v-window-item :value="idx+1" v-for="(item,idx) in placeDetail" :key="idx">
 										<v-card-text class="blue-grey--text">
 		
-											<h5 class="d-flex justify-space-between font-weight-regular">
+											<h4 class="d-flex justify-space-between font-weight-regular">
 												<span>交易所:</span>
 												<span>{{item.exchange}}</span>
-											</h5>
-											<h5 class="d-flex justify-space-between font-weight-regular">
+											</h4>
+											<h4 class="d-flex justify-space-between font-weight-regular">
 												<span>交易对:</span>
 												<span>{{item.symbol}}</span>
-											</h5>
+											</h4>
 		
-											<h5 class="d-flex justify-space-between font-weight-regular">
+											<h4 class="d-flex justify-space-between font-weight-regular">
 												<span>操作方向:</span>
 												<span>{{operates[item.operate]}}</span>
-											</h5>
-											<h5 class="d-flex justify-space-between font-weight-regular">
+											</h4>
+											<h4 class="d-flex justify-space-between font-weight-regular">
 												<span>法币:</span>
 												<span>{{item.currency}}</span>
-											</h5>
+											</h4>
 		
-											<h5 class="d-flex justify-space-between font-weight-regular">
+											<h4 class="d-flex justify-space-between font-weight-regular">
 												<span>手续费:</span>
 												<span>{{item.fee}}</span>
-											</h5>
-											<h5 class="d-flex justify-space-between font-weight-regular">
+											</h4>
+											<h4 class="d-flex justify-space-between font-weight-regular">
 												<span>建仓数量:</span>
 												<span>{{item.num}}</span>
-											</h5>
-											<h5 class="d-flex justify-space-between font-weight-regular">
+											</h4>
+											<h4 class="d-flex justify-space-between font-weight-regular">
 												<span>建仓价格:</span>
 												<span>{{item.price}}</span>
-											</h5>
-											<h5 class="d-flex justify-space-between font-weight-regular">
+											</h4>
+											<h4 class="d-flex justify-space-between font-weight-regular">
 												<span>建仓时间:</span>
 												<span>{{item.placeTime}}</span>
-											</h5>
+											</h4>
 		
 		
 										</v-card-text>
 									</v-window-item>
 								</v-window>
-								<h5 class="my-2 d-flex justify-center  align-center">
+								<h4 class="my-2 d-flex justify-center  align-center">
 									<v-btn :disabled="(detailStep === 1)||placeDetail.length==0" text @click="detailStep--" x-small fab class="pa-1 mx-2">
 										<v-icon>mdi-arrow-left</v-icon>
 									</v-btn>
@@ -107,7 +109,7 @@
 										<v-icon>mdi-arrow-right</v-icon>
 									</v-btn>
 		
-								</h5>
+								</h4>
 							</v-col>
 						</v-row>
 		
@@ -131,7 +133,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-for="(item,index) in placeDetail" :key="index" class='subtitle-1 text-center'>
+									<tr  v-for="(item,index) in placeDetail" :key="index" class='subtitle-1 text-center'>
 										<td>{{ item.exchange }}</td>
 										<td>{{ item.symbol }}</td>
 										<td>{{ operates[item.operate] }}</td>
@@ -155,6 +157,7 @@
 	import {
 		mapActions
 	} from 'vuex';
+	import { scrollMixins } from '@/mixins/scroll.js'
 	export default {
 		props: {
 			items: {
@@ -162,6 +165,9 @@
 			  default:() => []
 			}
 		},
+		
+		mixins:[scrollMixins],
+		
 		data: () => ({
 			detailStep: 1,
 
@@ -178,9 +184,14 @@
 			transUpperCase(data) { //交易对转大写
 				return data.toUpperCase();
 			},
+			
+			clickClose(){//点击关闭抽屉
+				this.drawer = false;
+				this.beforeClose();
+			},
+			
+			openDrawer(id) {//打开抽屉
 
-			openDrawer(id) {
-				console.log(id)
 				this.changeLay(true);
 
 				$ax.getAjaxData('/EasWebUser/getPlaceID', {
@@ -194,6 +205,7 @@
 						this.placeDetail = list;
 						this.detailStep = 1;
 						this.drawer = true;
+						this.afterOpen();
 					} else {
 
 						console.log('错误错误')
@@ -202,6 +214,8 @@
 				}, {
 					hasToken: true
 				});
+				
+				
 
 			},
 

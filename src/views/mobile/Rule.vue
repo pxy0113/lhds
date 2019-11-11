@@ -3,7 +3,11 @@
 		<!-- <v-card v-if="!showAddRule" outlined  id="vRow"> -->
 		<div id="vRow" v-if="!showAddRule">
 			<div class=" px-5 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
-				<Badge color="green" class="grey--text" text="规则列表"></Badge>
+				<!-- <Badge color="green" class="grey--text" text="规则列表"></Badge> -->
+				<span class="d-flex align-center">
+					<Avatar style="background-color: #66BB6A" size="10"></Avatar>
+					<span class="pl-2">规则列表</span>
+				</span>
 				<v-btn small  outlined color="green"  @click="newRule" class="ma-1">新增规则</v-btn>
 
 			</div>

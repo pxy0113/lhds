@@ -53,29 +53,6 @@ axios.defaults.transformRequest = (_data) => { //第一个参数_data是接收�
 };
 
 
-　	let pending = []; //声明一个数组用于存储每个请求的取消函数和axios标识
-	let cancelToken = axios.CancelToken;
-	 
-	let Cancel;
-	
-	let removePending = (url) => {
-
-		for(let i in pending){
-			if(pending[i].url == axios.defaults.baseURL+url) { //在当前请求在数组中存在时执行取消函数
-				pending[i].f.cancel(); //执行取消操作
-			}
-		}
-	}
-			
-	let delPending = (url) => {
-		for(let i in pending){
-			if(pending[i].url == axios.defaults.baseURL+url) { //在当前请求在数组中存在时删除
-				pending.splice(i, 1);
-			}
-		}
-		
-	}
-
 
 //--------------------添加一个请求拦截器,每次请求都会拦截一次,但是尽量使用全局设置,方便每次使用不同的设置--------------
 
@@ -84,15 +61,6 @@ axios.interceptors.request.use(
 	_config => { //在请求发出之前对配置进行一些操作
 
 		let config = _config;
-		  removePending(config.url);
-		    // 阻止重复请求。当上个请求未完成时，相同的请求不会进行
-			
-			config.cancelToken = new cancelToken((c) => {
-				pending.push({
-				    url: axios.defaults.baseURL+config.url,
-				    f:c
-				});
-			});
 
 		if(config.hasToken){ //是否携带token
 			if(sessionStorage.token){//session如果有token
@@ -120,14 +88,6 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
 
 	_res => { //在这里对返回的数据进行处理
-
-		setTimeout(() => {
-			let ss = _res.config.url.split(axios.defaults.baseURL);
-			
-			delPending(ss[ss.length-1]);
-			
-		}, 2000);
-
 			
 		console.log('<--返回了数据', _res);
 		
@@ -148,17 +108,7 @@ axios.interceptors.response.use(
 
 	},
 	_err => { //处理错误
-	    // let urls = _err.message.split(' ')[0];
-		
-		let urls =_err.config.url.split(axios.defaults.baseURL);
-		
-		setTimeout(() => {
-				  
-			delPending(urls[urls.length-1])
-			
-		}, 2000);
 
-		
 		console.log('>>>>>>发生了ajax错误');
 
 		console.log('-------------------------------------------');

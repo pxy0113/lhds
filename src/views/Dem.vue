@@ -2,7 +2,11 @@
 	<div id="vRow">
 		<!-- <v-card outlined  id="vRow"> -->
 			<div class=" px-5 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
-				<Badge color="green" :class-name="'title'" text="托管列表"></Badge>
+				<!-- <Badge color="green" :class-name="'title'" text="托管列表"></Badge> -->
+				<span class="d-flex align-center">
+					<Avatar style="background-color: #66BB6A" size="10"></Avatar>
+					<span class="pl-2">托管列表</span>
+				</span>
 				<span style="width: 120px;" v-if="usable">
 					<v-menu transition="scroll-y-transition">
 						<template v-slot:activator="{ on }">
@@ -11,8 +15,8 @@
 								<v-icon right>mdi-menu-down</v-icon>
 							</v-btn>
 						</template>
-						<v-list>
-						  <v-list-item  v-ripple="{ class: 'green--text' }"
+						<v-list class="pa-0">
+						  <v-list-item dense  v-ripple="{ class: 'green--text' }"
 							v-for="n in actionList" link @click="toFunction(n.id)">
 							<v-list-item-title>{{n.text}}</v-list-item-title>
 						  </v-list-item>

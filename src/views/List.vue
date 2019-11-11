@@ -1,7 +1,7 @@
 <template>
 	<div class="ma-2">
 		<div class="d-flex flex-column mt-1"id="vRow">
-			 <div class="d-flex justify-start align-center flex-wrap py-2">
+			 <div class="d-flex justify-start align-center flex-wrap py-2 px-3">
 				 <v-divider
 				   class="my-1"
 				 	vertical

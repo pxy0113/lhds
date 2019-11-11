@@ -1,30 +1,60 @@
 <template>
-	<div class="pa-2">
-		<div class="d-flex flex-column mt-1" v-resize="draw" id="vRow">
-			<div style="border: 1px solid #66BB6A;">
-				<div class=" green lighten-5 dateTemplate" ref="dateTemplate">
-					<common-datepick :value="startTime" @changeTime="startTimeChange"></common-datepick>
-					<canvas id="canvas" :style="{'width':'50px','height':size+'px'}"></canvas>
-					<common-datepick :value="endTime" @changeTime="endTimeChange"></common-datepick>
+	<div>
+		<div class="d-flex flex-column" v-resize="draw" id="vRow">
+			<div class=" px-5 py-2 green lighten-5">
+				
+				<v-menu transition="scroll-y-transition">
+					<template v-slot:activator="{ on }">
+						<Avatar style="background-color: #66BB6A" size="10"></Avatar>
+						<!-- <v-btn tile outlined small  class="ma-0 px-1" style="border: none;font-size: 14px;" v-on="on">
+							{{typeArr[tabIndex].value}}
+							<v-icon right>mdi-menu-down</v-icon>
+						</v-btn> -->
+						 <v-chip
+							 class="pl-2"
+						      outlined
+						      label
+							  v-on="on"
+							   style="border: none;"
+						    >
+							{{typeArr[tabIndex].value}}
+							<v-icon right>mdi-menu-down</v-icon>
+						
+						</v-chip>
+					</template>
+					<v-list class="pa-0">
+					  <v-list-item dense  v-ripple="{ class: 'green--text' }"
+						v-for="n in typeArr" link @click="transTab(n.id)"
+						:class="[tabIndex==n.id?'green lighten-5':'']">
+						<v-list-item-title>{{n.value}}</v-list-item-title>
+					  </v-list-item>
+					</v-list>
+				</v-menu>
+					
+			</div>
+			
+			<div class="pa-2 mt-1">
+				<div class="d-flex flex-column">
+					<div class="dateTemplate" ref="dateTemplate"
+					style="border: 1px solid #66BB6A;border-bottom: none;">
+						<common-datepick :value="startTime" @changeTime="startTimeChange"></common-datepick>
+						<canvas id="canvas" :style="{'width':'50px','height':size+'px'}"></canvas>
+						<common-datepick :value="endTime" @changeTime="endTimeChange"></common-datepick>
+					</div>
+					<v-btn  block tile color="green" depressed  outlined @click="search">
+						<v-icon>mdi-magnify</v-icon>
+						查询
+					</v-btn>
 				</div>
 			</div>
 
-			<div class="d-flex align-center justify-space-between flex-wrap my-1">
-				<div style="max-width: 200px;">
-					<v-select v-model="tabIndex" @change="changeTab" dense hide-details color="green" :items="typeArr" item-text="value"
-					 item-color="green" item-value="id" single-line></v-select>
-				</div>
-				<v-btn color="green" depressed outlined class="ml-1" @click="search">
-					<v-icon>mdi-magnify</v-icon>
-					查询
-				</v-btn>
-			</div>
+			
 
-			<component :is="transition !== 'None' ? `v-${transition}` : 'div'" hide-on-leave>
-				<v-skeleton-loader v-if="loading" type="article">
+			<component  :is="transition !== 'None' ? `v-${transition}` : 'div'" hide-on-leave>
+				<v-skeleton-loader v-if="loading" type="article" class="pa-2">
 				</v-skeleton-loader>
 
-				<div v-else>
+				<div v-else class="pa-2">
 					<v-list-item three-line v-if="items.length<1" class="xy-tableItem">
 						<p class="text-center" style="width: 100%;">暂无数据</p>
 					</v-list-item>
@@ -61,6 +91,11 @@
 		mixins:[listData],
 		
 		methods: {
+			transTab(id){
+				this.tabIndex = id;
+				this.changeTab();
+			},
+			
 			draw() { //画箭头
 				this.size = this.$refs.dateTemplate.offsetHeight;
 				let canvas = document.getElementById('canvas');

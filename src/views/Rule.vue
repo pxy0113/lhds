@@ -3,7 +3,12 @@
 		<!-- <v-card v-if="!showAddRule" outlined  id="vRow"> -->
 		<div id="vRow" v-if="!showAddRule">
 			<div class=" px-5 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
-				<Badge color="green" class="grey--text" text="规则列表"></Badge>
+				<!-- <Badge color="green" class="grey--text" text="规则列表"></Badge> -->
+				
+				<span class="d-flex align-center">
+					<Avatar style="background-color: #66BB6A" size="10"></Avatar>
+					<span class="pl-2">规则列表</span>
+				</span>
 				<v-btn small  outlined color="green"  @click="newRule" class="ma-1">新增规则</v-btn>
 
 			</div>
@@ -22,12 +27,12 @@
 						<p class="text-center" style="width: 100%;">暂无数据</p>
 					</v-list-item>
 					
-					<v-expansion-panels v-else class="px-4">
+					<v-expansion-panels v-else>
 					    <v-expansion-panel
 					      v-for="(item,i) in ruleList"
 					      :key="i"
 					    >
-					      <v-expansion-panel-header>
+					      <v-expansion-panel-header class="pa-4">
 									<div class="d-flex flex-column">
 									  <div class="my-3 d-flex justify-space-between align-center flex-wrap">
 										<div class="d-flex align-center">

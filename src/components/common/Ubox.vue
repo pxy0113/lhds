@@ -365,50 +365,59 @@
 			},
 
 			delApi(item){
-				this.$Modal.confirm({
-					render: (h) => {
-						return h('div', [
-							h('p',{
-								style:{
-									fontWeight:'700'
-								}
-							},'确定删除吗? 该操作不可撤销'),
-						])
-					},
-					onOk: () => {
-						
-						this.changeLay(true);
-						
-						$ax.getAjaxData('/EasWebUser/delAPI', {
-							id: item.id
-						}, (res) => {
-							this.changeLay(false);
-							if (res.code == 1) {
-								let msg = {
-									state: true,
-									errorText: {
-										type: 'success',
-										text: '删除成功'
-									}
-								}
-								this.changeSnack(msg);
-								
-								let state = this.$sock.lookState();
-								
-								state==-1?this.$sock.initWebSocket():this.sendMsgToClient();
-								
-								let index = this.apiList.indexOf(item);
-
-								sessionStorage.removeItem('collocation');//删除api/rule的时候把存储的旧数据清空
-								
-								this.apiList.splice(index, 1);
-							}
-						
-						}, {
-							hasToken: true
-						});
-					}
+				this.$toast({
+				    content: '系统异常',
+				    onOK: () => {
+				        console.log('ok')
+				     },
+				    onCancel: () => {
+				      console.log('cancel')
+				    }
 				});
+// 				this.$Modal.confirm({
+// 					render: (h) => {
+// 						return h('div', [
+// 							h('p',{
+// 								style:{
+// 									fontWeight:'700'
+// 								}
+// 							},'确定删除吗? 该操作不可撤销'),
+// 						])
+// 					},
+// 					onOk: () => {
+// 						
+// 						this.changeLay(true);
+// 						
+// 						$ax.getAjaxData('/EasWebUser/delAPI', {
+// 							id: item.id
+// 						}, (res) => {
+// 							this.changeLay(false);
+// 							if (res.code == 1) {
+// 								let msg = {
+// 									state: true,
+// 									errorText: {
+// 										type: 'success',
+// 										text: '删除成功'
+// 									}
+// 								}
+// 								this.changeSnack(msg);
+// 								
+// 								let state = this.$sock.lookState();
+// 								
+// 								state==-1?this.$sock.initWebSocket():this.sendMsgToClient();
+// 								
+// 								let index = this.apiList.indexOf(item);
+// 
+// 								sessionStorage.removeItem('collocation');//删除api/rule的时候把存储的旧数据清空
+// 								
+// 								this.apiList.splice(index, 1);
+// 							}
+// 						
+// 						}, {
+// 							hasToken: true
+// 						});
+// 					}
+// 				});
 				
 			},
 
