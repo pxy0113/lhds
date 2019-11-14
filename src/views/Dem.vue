@@ -45,12 +45,12 @@
 							<v-list-item-content class="align-self-start">
 								<v-list-item-title class=" mb-2">
 									<div class="d-flex align-center">
-
+										<Tag :color="item.type==0?'#90A4AE':'#70c68e'" class="px-1">{{typeArr[item.type]}}</Tag>
 										<span class=" font-weight-bold">{{item.symbol}} </span>
-										<span 
-										:style="{color:item.isRun==0?'#E53935':item.isRun==1?'#43A047':item.isRun==2?'orange':'blue',fontSize:'14px'}" 
+										<span
+										:style="{color:runState[item.isRun].color,fontSize:'14px'}" 
 										class="font-weight-bold pl-2">
-										{{item.isRun==0?'待启动':item.isRun==1?'运行中':item.isRun==2?'建仓中':'平仓中'}}</span>
+										{{runState[item.isRun].text}}</span>
 									</div>
 								</v-list-item-title>
 					
@@ -246,14 +246,14 @@
 		
 				<v-card-actions>
 					<div class="flex-grow-1"></div>
-					<v-btn color="primary" text @click="closeAddColl">
+					<v-btn color="success" text @click="closeAddColl">
 						关闭
 					</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 		
-		<commmon-setdialog v-if="showSetDialog" :list="settingData" :settingModal="showSetDialog" @closeSetting="closeSetting"></commmon-setdialog>
+		<common-setDialog v-if="showSetDialog" :list="settingData" :settingModal="showSetDialog" @closeSetting="closeSetting"></common-setDialog>
 
 	</div>
 </template>
@@ -261,13 +261,40 @@
 <script>
 	import Utils from '@/plugins/cryAes.js'
 	import upSvg from '@/img/up.svg'
+	import { scrollMixins } from '@/mixins/scroll.js'
 	import {
 		mapActions
 	} from 'vuex';
 	export default {
 		inject: ['theme'],
+		mixins:[scrollMixins],
 		data() {
 			return {
+				runState:[
+					{
+						text:'待启动',
+						color:'#E53935'
+					},
+					{
+						text:'运行中',
+						color:'#43A047'
+					},
+					{
+						text:'建仓中',
+						color:'orange'
+					},
+					{
+						text:'平仓中',
+						color:'blue'
+					},
+					{
+						text:'暂停中',
+						color:'#009688'
+					}
+				],
+				
+				typeArr:['主','补'],
+				
 				actionList: [ //设置与操作列表
 					{ id:1,text: '设置' },
 					{ id:2,text: '添加托管' },
@@ -375,7 +402,22 @@
 						this.neighborhoods.push(idx);
 					}
 				});
+			},
+			showSetDialog:{
+				handler(nV,oV){
+					nV&&this.afterOpen();//mixins不允许滚动
+					!nV&&this.beforeClose();
+				},
+				immediate:true
+			},
+			addCollocation:{
+				handler(nV,oV){
+					nV&&this.afterOpen();//mixins不允许滚动
+					!nV&&this.beforeClose();
+				},
+				immediate:true
 			}
+			
 			
 		},
 
@@ -587,25 +629,18 @@
 			},
 
 			onPosition(item){ //平仓/建仓-单个
-				this.$Modal.confirm({
-					render: (h) => {
-						return h('div', [
-							h('p',{
-								style:{
-									fontWeight:'700'
-								}
-							},item.isBuy==0?'确定建仓吗?':'确定平仓吗?'),
-						])
-					},
-					onOk: () => {
+				this.$xyDialog({
+				    content: item.isBuy==0?'确定建仓吗?':'确定平仓吗?',
+				    onOk: () => {
 						let send = {
 							data:[{id:item.id}],
 							code:item.isBuy==0?1011:1012
 						};
 						
-						this.$sock.websocketsend(JSON.stringify(send));
-					}
+						this.$sock.websocketsend(JSON.stringify(send));						
+				     }
 				});
+
 			},
 			
 			getColRuleData(list){//托管规则数据
@@ -622,26 +657,19 @@
 			},
 			
 			onRemove(item){//删除单个托管			
-
-				this.$Modal.confirm({
-					render: (h) => {
-						return h('div', [
-							h('p',{
-								style:{
-									fontWeight:'700'
-								}
-							},item.isBuy==1?'交易对有持仓,确定要删除吗?':'确定删除吗?'),
-						])
-					},
-					onOk: () => {
+				this.$xyDialog({
+					title:'删除托管',
+				    content: item.isBuy==1?'交易对有持仓,确定要删除吗?':'确定删除吗?',
+				    onOk: () => {
 						let send = {
 							data:[{id:item.id}],
 							code:1010
 						};	
 						
-						this.$sock.websocketsend(JSON.stringify(send));
-					}
+						this.$sock.websocketsend(JSON.stringify(send));						
+				     }
 				});
+
 			},
 
 			onEdit(item) { //编辑规则 用某id得到对应的规则 传递给组件
@@ -657,42 +685,28 @@
 			
 			allEnd(){//全部停止
 				if(this.items.length>0){
-					this.$Modal.confirm({
-						render: (h) => {
-							return h('div', [
-								h('p',{
-									style:{
-										fontWeight:'700'
-									}
-								},'是否全部停止?'),
-							])
-						},
-						onOk: () => {
+					this.$xyDialog({
+					    content: '是否全部停止?',
+					    onOk: () => {
 							let json = JSON.stringify({code:1003});
 							this.$sock.websocketsend(json);
-						}
+					     }
 					});
+
 				}
 
 			},
 			
 			allStart(){//全部启动
 				if(this.items.length>0){
-					this.$Modal.confirm({
-						render: (h) => {
-							return h('div', [
-								h('p',{
-									style:{
-										fontWeight:'700'
-									}
-								},'是否全部启动?'),
-							])
-						},
-						onOk: () => {
+					this.$xyDialog({
+					    content: '是否全部启动?',
+					    onOk: () => {
 							let code = JSON.stringify({code:1002});
 							this.$sock.websocketsend(code);
-						}
+					     }
 					});
+
 				}
 
 			},
@@ -734,6 +748,20 @@
 				if(this.items.length ==0){
 					this.tips = '暂无数据';
 				}
+			},
+			
+			reLogin(){
+				this.$xyDialog({
+				    content: '用户已经在其他地方登录!',
+					hideCancel:true,
+				    onOk: () => {
+						sessionStorage.clear();
+						this.$store.state.showBar = false;
+						this.$router.replace({
+							path: '/login'
+						});
+					},
+				});
 			},
 			
 			addData(obj){//数据新增时
@@ -794,7 +822,7 @@
 					case 1016://获取托管规则数据
 					this.getColRuleData(result.data);
 						break;
-						
+					
 					case 20012:
 					this.items = [];
 					this.usable = false;
@@ -802,14 +830,18 @@
 					this.loading = false;
 					this.showSetDialog = false;
 						break;
+					
+					case 20011://重复登录
+					this.reLogin();
+						break;
 						
 					case 20013://客户端在线
 					this.usable = true;
 					this.loading = false;
 					let json = JSON.stringify({code:1000});
 					this.$sock.websocketsend(json);
-						break;	
-						
+						break;
+
 					default:
 						break;
 				}
@@ -825,7 +857,6 @@
 			this.$sock.close();
 		},
 		mounted() {
-			
 			 this.$sock.initWebSocket();
 
 			if(sessionStorage.apiPublic){

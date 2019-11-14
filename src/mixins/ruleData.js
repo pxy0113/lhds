@@ -83,17 +83,10 @@ import upSvg from '@/img/up.svg'
 			},
 
 			delRule(id, index) { //删除规则
-				this.$Modal.confirm({
-					render: (h) => {
-						return h('div', [
-							h('p', {
-								style: {
-									fontWeight: '700'
-								}
-							}, '确定删除吗? 该操作不可撤销'),
-						])
-					},
-					onOk: () => {
+				this.$xyDialog({
+					title:'删除规则',
+				    content: '确定删除吗? 该操作不可撤销',
+				    onOk: () => {
 						this.changeLay(true);
 
 						let state = this.$sock.lookState();
@@ -126,9 +119,8 @@ import upSvg from '@/img/up.svg'
 						}, {
 							hasToken: true
 						});
-					}
+				     }
 				});
-
 			},
 
 			hideRule() { //隐藏规则输入框

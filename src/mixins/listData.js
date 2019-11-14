@@ -7,11 +7,11 @@ import {
 		data: () => ({
 			typeArr: [{
 					id: 0,
-					value: '收益数据'
+					value: '下单数据'
 				},
 				{
 					id: 1,
-					value: '下单数据'
+					value: '收益数据'
 				},
 			],
 

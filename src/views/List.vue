@@ -108,6 +108,9 @@
 			orderList,
 			tableList
 		},
+		mounted() {
+
+		}
 	}
 </script>
 

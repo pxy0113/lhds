@@ -120,17 +120,14 @@
 </template>
 
 <script>
-import banner from '@/img/user.jpg'
+import { scrollMixins } from '@/mixins/scroll.js'
 import img from '@/img/logo.png'
-import indexBg from '@/img/index.svg'
-import detailBg from '@/img/detail.svg'
-import ruleBg from '@/img/rule.svg'
-import createBg from '@/img/create.svg'
 import {
 		mapActions
 	} from 'vuex';
 
     export default {
+		mixins:[scrollMixins],
         data: () => ({
 			rules: {
 				required: v => !!v || '必填',
@@ -145,13 +142,11 @@ import {
 			code:'',//鸡和马
 			
 			dialog:false,
-			
-			bannerImg:banner,
+
 			userData: sessionStorage.userData ? JSON.parse(sessionStorage.userData) : {},
 			
 			logo: img,
-			
-			iconArr:[indexBg,detailBg,ruleBg,createBg],
+
 			links: [
 			  {
 			    to: '/dashboard',
@@ -183,7 +178,15 @@ import {
         watch: {
             '$route'(val) {
                 this.title = val.name
-            }
+            },
+			dialog:{
+				handler(nV,oV){
+					nV&&this.afterOpen();//mixins不允许滚动
+					!nV&&this.beforeClose();
+				},
+				immediate:true
+			}
+			
         },
 
         mounted() {
@@ -273,25 +276,18 @@ import {
             },
 			
 			exit() {
-				this.$Modal.confirm({
-			        render: (h) => {
-			        	return h('div', [
-			        		h('p',{
-			        			style:{
-			        				fontWeight:'700'
-			        			}
-			        		},'确定退出吗 ?'),
-			        	])
-			        },
-			        onOk: () => {
+				this.$xyDialog({
+					title:'退出登录',
+				    content: '确定退出吗?',
+				    onOk: () => {
 						sessionStorage.clear();
 						this.$store.state.showBar = false;
-						this.$router.push({
+						this.$router.replace({
 							path: '/login'
 						});
-			        }
-			    });
-			
+					},
+				});
+
 			},
 			
         }

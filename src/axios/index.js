@@ -18,9 +18,9 @@ const vm = new Vue();
 
 //--------------------------------------------全局设置-------------------------------
 
-axios.defaults.baseURL = 'http://192.168.2.105:8080'; //配置接口基础地址
+// axios.defaults.baseURL = 'http://192.168.2.105:8080'; //配置接口基础地址
 // axios.defaults.baseURL = 'http://m252t77964.wicp.vip:20211';
-// axios.defaults.baseURL = 'http://web.lhds.vip'; //配置接口基础地址
+axios.defaults.baseURL = 'http://web.lhds.vip'; //配置接口基础地址
 axios.defaults.timeout = 50000; //响应超时时间
 
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
@@ -95,7 +95,7 @@ axios.interceptors.response.use(
 			if(_res.data.code ==20001){ //用户未登录
 				sessionStorage.clear();
 				vuex.showBar = false;
-				router.push({path:'/login'});
+				router.replace({path:'/login'});
 			}else{
 				let msg = transCode(_res.data.code);
 				vuex.errorText.text = msg; 

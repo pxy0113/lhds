@@ -20,21 +20,22 @@
 
 						<v-card-text v-if="type==1">
 							<v-form ref="loginForm" v-model="loginValid" lazy-validation>
-								<v-text-field v-model="name" :rules="nameRules" label="用户名" required prepend-icon="mdi-account"></v-text-field>
-								<v-text-field v-model="password" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'"
-								 prepend-icon="mdi-key" label="密码" hint="至少6个字符">
-									</v-text-field>
-									<template v-slot:append>
-										<v-fade-transition leave-absolute>
-											<img width="24" height="24" :src="show1?show_icon:hide_icon" alt="" style="cursor: pointer;" @click="show1 = !show1">
-										</v-fade-transition>
-									</template>
+								<v-text-field outlined v-model="name" :rules="nameRules" label="用户名" required dense prepend-inner-icon="mdi-account"
+								 color="grey darken-3"></v-text-field>
+								<v-text-field outlined v-model="password" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'"
+								 prepend-inner-icon="mdi-key" dense label="密码" hint="至少6个字符" color="grey darken-3">
+								</v-text-field>
+								<template v-slot:append>
+									<v-fade-transition leave-absolute>
+										<img width="24" height="24" :src="show1?show_icon:hide_icon" alt="" style="cursor: pointer;" @click="show1 = !show1">
+									</v-fade-transition>
+								</template>
 								</v-text-field>
 								<div class="d-flex justify-end py-3">
-									<div class="blue--text lighten-4 pointer" @click="type=2">我要注册</div>
+									<div class="grey--text lighten-4 pointer" @click="type=2">我要注册</div>
 								</div>
 
-								<v-btn color="primary" @click.native.stop="login" dark block>
+								<v-btn color="grey darken-3" @click.native.stop="login" dark block>
 									登陆
 								</v-btn>
 
@@ -44,9 +45,10 @@
 						<!--注册-->
 						<v-card-text v-if="type==2">
 							<v-form ref="registForm" v-model="registerValid" lazy-validation>
-								<v-text-field v-model="name" :rules="nameRules" label="用户名" required prepend-icon="mdi-account"></v-text-field>
-								<v-text-field v-model="password" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" 
-								 prepend-icon="mdi-key" label="密码" hint="至少6个字符">
+								<v-text-field outlined dense v-model="name" :rules="nameRules" label="用户名" required prepend-inner-icon="mdi-account"
+								 color="grey darken-3"></v-text-field>
+								<v-text-field outlined dense v-model="password" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'"
+								 prepend-inner-icon="mdi-key" color="grey darken-3" label="密码" hint="至少6个字符">
 									</>
 									<template v-slot:append>
 										<v-fade-transition leave-absolute>
@@ -54,12 +56,12 @@
 										</v-fade-transition>
 									</template>
 								</v-text-field>
-								<v-text-field prepend-icon="mdi-email"
-								v-model="email" :rules="[rules.email]" label="邮箱"></v-text-field>
+								<v-text-field prepend-inner-icon="mdi-email" outlined dense v-model="email" :rules="[rules.email]" label="邮箱"
+								 color="grey darken-3"></v-text-field>
 								<div class="d-flex justify-space-between py-3">
-									<div class="blue--text lighten-2 pointer" @click="type=1">返回登陆</div>
+									<div class="grey--text lighten-2 pointer" @click="type=1">返回登陆</div>
 								</div>
-								<v-btn color="primary" @click="register" style="width: 100%;color: white;">
+								<v-btn color="grey darken-3" @click="register" style="width: 100%;color: white;">
 									注册
 								</v-btn>
 							</v-form>
@@ -76,12 +78,12 @@
 							</v-card-title>
 
 							<v-card-text>
-								<v-text-field v-model="code" label="激活码"></v-text-field>
+								<v-text-field v-model="code" label="激活码" color="grey darken-3"></v-text-field>
 							</v-card-text>
 
 							<v-card-actions>
 								<div class="flex-grow-1"></div>
-								<v-btn color="primary" text @click="toJH">
+								<v-btn color="grey darken-3" text @click="toJH">
 									确定
 								</v-btn>
 							</v-card-actions>
@@ -120,7 +122,7 @@
 				bg: bgImg,
 				type: 1, //1登陆2忘记3注册
 				registerValid: true,
-				loginValid:true,
+				loginValid: true,
 				show1: false,
 				name: '',
 				password: '',
@@ -150,24 +152,24 @@
 
 			login() { //登陆
 				if (this.$refs.loginForm.validate()) {
-					
+
 					this.changeLay(true);
-					
+
 					let list = {
 						account: this.name,
 						password: this.password
 					};
-					
+
 					$ax.getAjaxData('/EasWebUser/login', list, (res) => {
-						
+
 						this.changeLay(false);
-					
+
 						if (res.code == 1) {
 							sessionStorage.token = res.token;
 							if (res.accState == 0) { //已过期
-					
+
 								this.dialog = true;
-					
+
 							} else { //未过期
 								let msg = {
 									state: true,
@@ -177,22 +179,23 @@
 									}
 								}
 								this.changeSnack(msg);
-					
+
 								let userData = {
 									name: this.name,
 									email: res.email,
 									endTime: res.endTime
 								}
-					
+
 								sessionStorage.showBar = true;
 								this.$store.state.showBar = true;
 								sessionStorage.userData = JSON.stringify(userData);
-								this.$router.push({
+
+								this.$router.replace({
 									path: '/dashboard'
 								});
-					
+
 							}
-					
+
 						}
 					});
 				}
@@ -222,7 +225,7 @@
 							this.type = 1;
 							this.name = '';
 							this.password = '';
-							
+
 						} else {
 							this.changeLay(false);
 						}

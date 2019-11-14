@@ -42,9 +42,9 @@ import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.css'
 
 
-//自己写的modal
-import Toast from './plugins/xyModal.js' 
-Vue.use(Toast)
+//模态框dialog
+import xyDialog from './plugins/xyDialog.js' 
+Vue.use(xyDialog)
 
 //按需引入echart的line图
 let echarts = require('echarts/lib/echarts');

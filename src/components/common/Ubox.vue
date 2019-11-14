@@ -3,8 +3,11 @@
 		<div>
 				<v-card outlined id="vRow">
 					
-					<p class="pa-2 ma-0 green lighten-5" ><v-btn color="green"  
-					outlined @click="addDialog= true" small>添加API</v-btn></p>
+					<p class="pa-2 ma-0 green lighten-5 d-flex justify-space-between align-center" >
+						<span class="green--text">API列表</span>
+						<v-btn color="green"
+						outlined @click="addDialog= true">添加API</v-btn>
+					</p>
 					<v-divider></v-divider>
 						<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
 							<v-skeleton-loader
@@ -27,7 +30,7 @@
 											<div class="d-flex align-center justify-space-between">
 												<span class=" font-weight-bold">{{transUpperCase(item.remark)}}
 												<span style="font-size: 12px;" class="font-weight-light">/{{item.exchange}}</span> </span>
-												<v-btn color="primary" text small  @click="delApi(item)">删除</v-btn>
+												<v-btn color="success" text small  @click="delApi(item)">删除</v-btn>
 											</div>
 										</v-list-item-title>
 								
@@ -190,7 +193,9 @@
 		mapActions
 	} from 'vuex';
 	import upSvg from '@/img/up.svg'
+	import { scrollMixins } from '@/mixins/scroll.js'
 	export default {
+		mixins:[scrollMixins],
 		data: () => ({
 			transition: 'scale-transition',
 			
@@ -301,7 +306,15 @@
 					this.getMessage();
 				},
 				deep:true
+			},
+			addDialog:{
+				handler(nV,oV){
+					nV&&this.afterOpen();//mixins不允许滚动
+					!nV&&this.beforeClose();
+				},
+				immediate:true
 			}
+			
 		},
 		
 		computed:{
@@ -322,6 +335,7 @@
 					}
 				});
 			}
+			
 			this.getApiList();
 		},
 		
@@ -365,59 +379,42 @@
 			},
 
 			delApi(item){
-				this.$toast({
-				    content: '系统异常',
-				    onOK: () => {
-				        console.log('ok')
-				     },
-				    onCancel: () => {
-				      console.log('cancel')
-				    }
+				this.$xyDialog({
+					title:'删除API',
+				    content: '确定删除吗? 该操作不可撤销',
+				    onOk: () => {
+				        this.changeLay(true);
+				        
+				        $ax.getAjaxData('/EasWebUser/delAPI', {
+				        	id: item.id
+				        }, (res) => {
+				        	this.changeLay(false);
+				        	if (res.code == 1) {
+				        		let msg = {
+				        			state: true,
+				        			errorText: {
+				        				type: 'success',
+				        				text: '删除成功'
+				        			}
+				        		}
+				        		this.changeSnack(msg);
+				        		
+				        		let state = this.$sock.lookState();
+				        		
+				        		state==-1?this.$sock.initWebSocket():this.sendMsgToClient();
+				        		
+				        		let index = this.apiList.indexOf(item);
+				        
+				        		sessionStorage.removeItem('collocation');//删除api/rule的时候把存储的旧数据清空
+				        		
+				        		this.apiList.splice(index, 1);
+				        	}
+				        
+				        }, {
+				        	hasToken: true
+				        });
+				     }
 				});
-// 				this.$Modal.confirm({
-// 					render: (h) => {
-// 						return h('div', [
-// 							h('p',{
-// 								style:{
-// 									fontWeight:'700'
-// 								}
-// 							},'确定删除吗? 该操作不可撤销'),
-// 						])
-// 					},
-// 					onOk: () => {
-// 						
-// 						this.changeLay(true);
-// 						
-// 						$ax.getAjaxData('/EasWebUser/delAPI', {
-// 							id: item.id
-// 						}, (res) => {
-// 							this.changeLay(false);
-// 							if (res.code == 1) {
-// 								let msg = {
-// 									state: true,
-// 									errorText: {
-// 										type: 'success',
-// 										text: '删除成功'
-// 									}
-// 								}
-// 								this.changeSnack(msg);
-// 								
-// 								let state = this.$sock.lookState();
-// 								
-// 								state==-1?this.$sock.initWebSocket():this.sendMsgToClient();
-// 								
-// 								let index = this.apiList.indexOf(item);
-// 
-// 								sessionStorage.removeItem('collocation');//删除api/rule的时候把存储的旧数据清空
-// 								
-// 								this.apiList.splice(index, 1);
-// 							}
-// 						
-// 						}, {
-// 							hasToken: true
-// 						});
-// 					}
-// 				});
 				
 			},
 
