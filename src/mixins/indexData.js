@@ -70,11 +70,11 @@
 							let arr = [];
 
 							data.forEach(item => {
-								arr.push(item);
+								arr.push(item.toFixed(2));//保留两位小数
 							});
 							this.percentage = res.percentage;
 
-							this.tableData.series = res.data;
+							this.tableData.series = arr;
 							
 							let myChart = this.$echarts.init(document.getElementById('chart'));
 							let option = myChart.getOption();

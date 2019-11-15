@@ -99,6 +99,7 @@ axios.interceptors.response.use(
 			}else{
 				let msg = transCode(_res.data.code);
 				vuex.errorText.text = msg; 
+				vuex.errorText.type = 'error';
 				vuex.snackbar = true;
 			}
 

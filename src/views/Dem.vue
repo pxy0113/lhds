@@ -822,7 +822,7 @@
 					case 1016://获取托管规则数据
 					this.getColRuleData(result.data);
 						break;
-					
+						
 					case 20012:
 					this.items = [];
 					this.usable = false;

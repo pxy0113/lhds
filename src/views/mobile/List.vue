@@ -37,9 +37,13 @@
 				<div class="d-flex flex-column">
 					<div class="dateTemplate" ref="dateTemplate"
 					style="border: 1px solid #66BB6A;border-bottom: none;">
-						<common-datepick :value="startTime" @changeTime="startTimeChange"></common-datepick>
+						<common-datepick :value="startTime" @changeTime="startTimeChange">
+							<span slot="tail"> 00:00:00</span>
+						</common-datepick>
 						<canvas id="canvas" :style="{'width':'50px','height':size+'px'}"></canvas>
-						<common-datepick :value="endTime" @changeTime="endTimeChange"></common-datepick>
+						<common-datepick :value="endTime" @changeTime="endTimeChange">
+							<span slot="tail"> 23:59:59</span>
+						</common-datepick>
 					</div>
 					<v-btn  block tile color="green" depressed  outlined @click="search">
 						<v-icon>mdi-magnify</v-icon>
@@ -94,6 +98,14 @@
 			transTab(id){
 				this.tabIndex = id;
 				this.changeTab();
+			},
+			
+			startTimeChange(time) {//开始时间改变
+				this.startTime = this.$moment(time).format('YYYY-MM-DD HH:mm:ss');
+			},
+			
+			endTimeChange(time) {
+				this.endTime = this.$moment(time).set('hour',23).set('minutes', 59).set('seconds',59).format('YYYY-MM-DD HH:mm:ss');
 			},
 			
 			draw() { //画箭头

@@ -7,8 +7,6 @@ import upSvg from '@/img/up.svg'
 	export const ruleData = {
 		data() {
 			return {
-				showIndex: -1, //当前显示的折叠菜单的下标
-
 				transition: 'fade-transition',
 
 				loading: true, //控制骨架屏 true表示显示

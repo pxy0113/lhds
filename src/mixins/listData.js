@@ -5,13 +5,17 @@ import {
 	import upSvg from '@/img/up.svg'
 	export const listData = {
 		data: () => ({
+			shortStart:'',//pc段端于传递给选择器的字段
+			shortEnd:'',
+			//new
+			
 			typeArr: [{
 					id: 0,
-					value: '下单数据'
+					value: '收益数据'
 				},
 				{
 					id: 1,
-					value: '收益数据'
+					value: '下单数据'
 				},
 			],
 
@@ -21,7 +25,7 @@ import {
 
 			upIcon: upSvg,
 
-			urls: ['/EasWebUser/getPlace', '/EasWebUser/getClose'],
+			urls: [ '/EasWebUser/getClose','/EasWebUser/getPlace'],
 
 			target: '#vRow',
 			options: {
@@ -39,7 +43,7 @@ import {
 
 			size: 50,
 
-			componentArr: ['orderList', 'tableList'], //组件数组
+			componentArr: ['tableList','orderList'], //组件数组
 
 		}),
 
@@ -48,15 +52,15 @@ import {
 		},
 		methods: {
 			init() { //初始化
-				let day1 = this.$moment().startOf('day').format('YYYY-MM-DD HH:mm:ss');;
-				let day2 = this.$moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
-
-				this.startTime = day1;
-				this.endTime = day2;
+				this.startTime = this.$moment().startOf('day').format('YYYY-MM-DD HH:mm:ss');
+				this.endTime = this.$moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
+				
+				this.shortStart = this.$moment().format('YYYY-MM-DD');
+				this.shortEnd = this.$moment().format('YYYY-MM-DD');
 
 				let list = {
-					"beginTime": this.$moment(day1).format('x'),
-					"endTime": this.$moment(day2).format('x'),
+					"beginTime": this.$moment(this.startTime).format('x'),
+					"endTime": this.$moment(this.endTime).format('x'),
 					"pageSize": 10,
 					"pageIndex": 1
 				}
@@ -112,18 +116,10 @@ import {
 
 			...mapActions(['changeSnack']),
 
-			startTimeChange(time) {
-				this.startTime = time;
-			},
-
-			endTimeChange(time) {
-				this.endTime = time;
-			},
-
 			changeTab() {
 				let list = {
 					"beginTime": this.$moment(this.startTime).format('x'),
-					"endTime": Number(this.$moment(this.endTime).format('x')) + 59000 + "",
+					"endTime": this.$moment(this.endTime).format('x'),
 					"pageSize": 10,
 					"pageIndex": 1
 				}
@@ -138,7 +134,7 @@ import {
 					if (end > start) {
 						let list = {
 							"beginTime": this.$moment(this.startTime).format('x'),
-							"endTime": Number(this.$moment(this.endTime).format('x')) + 59000 + "",
+							"endTime": this.$moment(this.endTime).format('x'),
 							"pageSize": 10,
 							"pageIndex": 1
 						}

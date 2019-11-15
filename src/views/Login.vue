@@ -14,16 +14,12 @@
 							<span style="font-size: 1.5rem;margin-left: 3px;">量化大师</span>
 
 						</div>
-						<div class="grey--text lighten-2 text-center" style="font-size: 1.1rem;">
-							{{type==1?'登陆':'注册'}}
-						</div>
-
 						<v-card-text v-if="type==1">
 							<v-form ref="loginForm" v-model="loginValid" lazy-validation>
 								<v-text-field outlined v-model="name" :rules="nameRules" label="用户名" required dense prepend-inner-icon="mdi-account"
 								 color="grey darken-3"></v-text-field>
 								<v-text-field outlined v-model="password" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'"
-								 prepend-inner-icon="mdi-key" dense label="密码" hint="至少6个字符" color="grey darken-3">
+								 prepend-inner-icon="mdi-key" dense label="密码" color="grey darken-3">
 								</v-text-field>
 								<template v-slot:append>
 									<v-fade-transition leave-absolute>
@@ -48,7 +44,7 @@
 								<v-text-field outlined dense v-model="name" :rules="nameRules" label="用户名" required prepend-inner-icon="mdi-account"
 								 color="grey darken-3"></v-text-field>
 								<v-text-field outlined dense v-model="password" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'"
-								 prepend-inner-icon="mdi-key" color="grey darken-3" label="密码" hint="至少6个字符">
+								 prepend-inner-icon="mdi-key" color="grey darken-3" label="密码">
 									</>
 									<template v-slot:append>
 										<v-fade-transition leave-absolute>

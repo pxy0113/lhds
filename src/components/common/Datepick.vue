@@ -2,7 +2,9 @@
 	<div>
 		<!-- <v-btn block outlined @click="show" class="ma-0">{{dateStr}}</v-btn> -->
 		<span @click="show" style="font-size: 14px;">
-			{{dateStr}} <v-icon v-if="showIcon" right>mdi-chevron-down</v-icon>
+			{{dateStr}}
+			<slot name="tail"></slot> 
+			<v-icon v-if="showIcon" right>mdi-chevron-down</v-icon>
 		</span>
 		 <v-bottom-sheet v-model="display">
 
@@ -44,7 +46,7 @@
 	  getMonthDay,
 	  dateTimePicker,
 	  transPickerValue
-	} from '@/plugins/date.js'
+	} from '@/plugins/newDate.js'
 	import upSvg from '@/img/up.svg'
 	import BScroll from 'better-scroll'
 	import { scrollMixins } from '@/mixins/scroll.js'
@@ -57,11 +59,11 @@
 			return {
 				dateStr:'',
 				
-				firstTime:'2019-01-11 21:15:10',
+				firstTime:'2019-01-11',
 				
-				text:['年','月','日','时','分','秒'],
+				text:['年','月','日'],
 				
-				dateTime:[0,0,0,0,0,0],
+				dateTime:[0,0,0],
 				
 				wheels: [],
 				
@@ -119,7 +121,7 @@
 					brr.push(this.pickerData[i][this.dateTime[i]]);
 				});
 
-				this.dateStr = `${brr[0]}-${brr[1]}-${brr[2]} ${brr[3]}:${brr[4]}:${brr[5]}`;
+				this.dateStr = `${brr[0]}-${brr[1]}-${brr[2]}`;
 			},
 
 			cancelSelect(){//取消选择
@@ -149,7 +151,7 @@
 					brr.push(this.pickerData[i][arr[i]]);
 				});
 				
-				let str = `${brr[0]}-${brr[1]}-${brr[2]} ${brr[3]}:${brr[4]}:${brr[5]}`;
+				let str = `${brr[0]}-${brr[1]}-${brr[2]}`;
 				
 				this.dateStr = str;
 				

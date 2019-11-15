@@ -12,8 +12,8 @@
 			if(token){
 				let ds = window.encodeURIComponent(token);
 				
-				const wsuri = `ws://192.168.2.105:8080/EasRobotWS/ws?token=${ds}`;
-				// const wsuri = `ws://ws.lhds.vip:8080/EasRobotWS/ws?token=${ds}`;
+				// const wsuri = `ws://192.168.2.105:8080/EasRobotWS/ws?token=${ds}`;
+				const wsuri = `ws://ws.lhds.vip:8080/EasRobotWS/ws?token=${ds}`;
 				
 				// const wsuri = `ws://m252t77964.wicp.vip:20211/EasRobotWS/ws?token=${ds}`
 				

@@ -10,7 +10,7 @@
 		  		<v-list-item>
 		  			<v-row class="mx-0">
 						<v-col v-if="placeDetail.length==0">
-							<v-card-text class="blue-grey--text">
+							<v-card-text class="blue-grey--text text-center">
 								暂无数据
 							</v-card-text>
 						</v-col>
@@ -133,8 +133,9 @@
 			...mapActions(['changeLay']),
 			
 			openDrawer(id) {
+				this.placeDetail = [];
 				this.changeLay(true);
-			
+
 				$ax.getAjaxData('/EasWebUser/getPlaceID', {
 					id: id
 				}, (res) => {

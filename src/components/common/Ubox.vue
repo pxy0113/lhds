@@ -5,7 +5,7 @@
 					
 					<p class="pa-2 ma-0 green lighten-5 d-flex justify-space-between align-center" >
 						<span class="green--text">API列表</span>
-						<v-btn color="green"
+						<v-btn color="green" small
 						outlined @click="addDialog= true">添加API</v-btn>
 					</p>
 					<v-divider></v-divider>
@@ -30,7 +30,8 @@
 											<div class="d-flex align-center justify-space-between">
 												<span class=" font-weight-bold">{{transUpperCase(item.remark)}}
 												<span style="font-size: 12px;" class="font-weight-light">/{{item.exchange}}</span> </span>
-												<v-btn color="success" text small  @click="delApi(item)">删除</v-btn>
+												<!-- <v-btn color="success" text small  @click="delApi(item)">删除</v-btn> -->
+												<v-icon color="error" @click="delApi(item)">mdi-delete</v-icon>
 											</div>
 										</v-list-item-title>
 								

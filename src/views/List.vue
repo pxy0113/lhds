@@ -1,39 +1,71 @@
 <template>
 	<div class="ma-2">
-		<div class="d-flex flex-column mt-1"id="vRow">
+		<div class="d-flex flex-column mt-1" id="vRow">
+			
 			 <div class="d-flex justify-start align-center flex-wrap py-2 px-3">
 				 <v-divider
 				   class="my-1"
 				 	vertical
 				   ></v-divider>
-				 <div class="d-flex flex-column justify-start align-start px-2" 
-				 style="width: 200px;">
-				 	<span class="mb-1">开始时间</span>
-				 	<v-chip>
-				 		<common-datepick :value="startTime" :showIcon="true" @changeTime="startTimeChange"></common-datepick>
-				 	</v-chip>
-				 </div>
+				<div style="max-width: 400px;" class='px-2 '>
+					<v-menu
+					ref="menu"
+					v-model="menu"
+					  bottom
+					  origin="center center"
+					  :close-on-content-click="false"
+					  :return-value.sync="shortStart"
+					  transition="scale-transition"
+					  min-width="290px"
+					>
+					      <template v-slot:activator="{ on }">
+					        <v-text-field hide-details color="green"
+							dense v-model="startTime" label="开始时间" readonly v-on="on">
+							</v-text-field>
+					      </template>
+						 <v-date-picker v-model="shortStart" no-title scrollable locale="zh-cn" color="green" :day-format="dateF">
+						  <v-spacer></v-spacer>
+						  <v-btn text color="green" outlined @click="startTimeOk">确定</v-btn>
+						</v-date-picker>
+					</v-menu>
+				</div>
+				<v-divider
+				  class="my-1"
+					vertical
+				  ></v-divider>
+				<div style="max-width: 400px;" class='px-2 '>
+					<v-menu
+					v-model="menu1"
+					ref="menu1"
+					  bottom
+					  origin="center center"
+					  :close-on-content-click="false"
+					  :return-value.sync="shortEnd"
+					  transition="scale-transition"
+					  min-width="290px"
+					>
+					      <template v-slot:activator="{ on }">
+					        <v-text-field hide-details color="green"
+							dense v-model="endTime" label="结束时间" readonly v-on="on" >
+							</v-text-field>
+					      </template>
+						 <v-date-picker v-model="shortEnd" no-title scrollable locale="zh-cn" color="green" :day-format="dateF">
+						  <v-spacer></v-spacer>
+						  <v-btn text color="green" outlined @click="endTimeOk">确定</v-btn>
+						</v-date-picker>
+					</v-menu>
+				</div>
 				 <v-divider
 				 class="my-1"
 				 vertical
 				 ></v-divider>
-				 
-				 <div class="d-flex flex-column justify-start align-start px-2" 
+				 <div class="px-2" 
 				 style="width: 200px;">
-				 	<span class="mb-1">结束时间</span>
-				 	<v-chip>
-				 		<common-datepick :value="endTime" :showIcon="true" @changeTime="endTimeChange"></common-datepick>
-				 	</v-chip>
-				 </div>
-				 <v-divider
-				 class="my-1"
-				 vertical
-				 ></v-divider>
-				 <div class="d-flex flex-column justify-start align-start px-2 py-1" 
-				 style="width: 200px;">
-				 	<span>类别</span>
-				 	<v-select v-model="tabIndex" @change="changeTab" dense hide-details color="green" :items="typeArr" item-text="value"
-				 	 item-color="green" item-value="id" single-line></v-select>
+				 	<!-- <span>类别</span> -->
+				 	<v-select v-model="tabIndex" @change="changeTab" dense hide-details color="green" 
+					label="类别"
+					:items="typeArr" item-text="value"
+				 	 item-color="green" item-value="id"></v-select>
 				 </div>
 				 <v-divider
 				 class="my-1"
@@ -44,32 +76,6 @@
 				 	查询
 				 </v-btn>
 			 </div>
-
-			
-<!-- 			<div  class="d-flex justify-start align-center">
-				<v-chip class="my-1 mr-1">
-					<v-icon left>mdi-weather-sunny</v-icon>
-					<date-pickers :value="startTime" @changeTime="startTimeChange"></date-pickers>
-				</v-chip>
-				-
-				<v-chip  class="my-1 mr-1">
-					<v-icon left>mdi-weather-night</v-icon>
-					<date-pickers :value="endTime" @changeTime="endTimeChange"></date-pickers>
-				</v-chip>
-			</div>
-		
-			<div class="d-flex align-center justify-space-between justify-lg-start flex-wrap my-1">
-				<div style="max-width: 200px;">
-					<v-select v-model="tabIndex" @change="changeTab" dense hide-details color="green" :items="typeArr" item-text="value"
-					 item-color="green" item-value="id" single-line></v-select>
-				</div>
-				<v-btn color="green" depressed outlined class="ml-1" @click="search">
-					<v-icon>mdi-magnify</v-icon>
-					查询
-				</v-btn>
-			</div> -->
-			
-			
 		
 			<component :is="transition !== 'None' ? `v-${transition}` : 'div'" hide-on-leave>
 				<v-skeleton-loader v-if="loading" type="article">
@@ -108,8 +114,26 @@
 			orderList,
 			tableList
 		},
-		mounted() {
-
+		data: () =>({
+			menu:false,
+			menu1:false,
+		}),
+		methods:{
+			dateF(e){
+				let arr = e.split('-');
+				return arr[2];
+			},
+			startTimeOk(){//开始时间选择器-确定
+				this.menu = false;
+				this.$refs.menu.save(this.shortStart);
+				this.startTime = this.$moment(this.shortStart).format('YYYY-MM-DD HH:mm:ss');
+			},
+			endTimeOk(){//结束时间选择器-确定
+				this.endTime = this.$moment(this.shortEnd).set('hour',23).set('minutes', 59).set('seconds',59).format('YYYY-MM-DD HH:mm:ss');
+				this.$refs.menu1.save(this.shortEnd)
+				this.menu1= false;
+				
+			},
 		}
 	}
 </script>

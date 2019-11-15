@@ -1,47 +1,43 @@
 <template>
 	<div>
-		<div v-for="(item,index) in items" :key="index">
-			<v-list-item three-line class="xy-borderB">
-			  <v-list-item-content class="align-self-start">
-				<v-list-item-title
-				  class=" mb-2">
-		
-					<div class="d-flex align-center">
+		<v-row align="center" justify="start" class="px-1">
+			<v-col v-for="(item,i) in items" :key="i" class="d-flex flex-column" 
+			cols="12" :lg="2" :md="4" :sm="6" :xs="12">
+				<v-card outlined flat>
+					<v-card-text class="d-flex align-end green lighten-4">
 						<Tag :color="(item.operate==0||item.operate==2)?'#70c68e':'#f1837f'" class="px-1">{{stateArr[item.operate]}}</Tag>
 						<span class=" font-weight-bold">{{transUpperCase(item.symbol)}} </span>/
 						<span style="font-size: 12px;">{{item.exchange}}</span>
-					</div>
-				</v-list-item-title>
-			
-				<v-list-item-subtitle class="font-weight-regular">{{item.placeTime}}</v-list-item-subtitle>
-				<div class="font-weight-regular">
-					<Row class="d-flex flex-wrap">
+					</v-card-text>
+					
+					<v-card-text>
+						<p class="d-flex justify-space-between align-center">
+							<span class="font-weight-bold">时间：</span>
+							<span>{{item.placeTime}}</span>
+						</p>
+						<p class="d-flex justify-space-between align-center">
+							<span class="font-weight-bold">法币：</span>
+							<span>{{item.currency}}</span>
+						</p>
+						<p class="d-flex justify-space-between align-center">
+							<span class="font-weight-bold">数量：</span>
+							<span>{{item.num}}</span>
+						</p>
+						<p class="d-flex justify-space-between align-center">
+							<span class="font-weight-bold">价格：</span>
+							<span>{{item.price}}</span>
+						</p>
+						<p class="d-flex justify-space-between align-center flex-wrap mb-0">
+							<span class="font-weight-bold">手续费：</span>
+							<span>{{item.fee}}</span>
+						</p>
+						
+					</v-card-text>
+				</v-card>
 		
-						<Col :lg="6" :md="6" :sm="12" :xs="12" class="py-1">
-							<span class="textAlign">法币</span>：{{item.currency}}
-						</Col>	
-					
-						<Col :lg="6" :md="6" :sm="12" :xs="12" class="py-1">
-							<span class="textAlign">数量</span>
-							：{{item.num}}
-						</Col>
-						
-						<Col :lg="6" :md="6" :sm="12" :xs="24" class="py-1">
-							<span>价格</span>
-							：{{item.price}}
-						</Col>
-						
-						<Col :lg="6" :md="6" :sm="12" :xs="24" class="py-1">
-							<span class="textAlign">手续费</span>
-							：{{item.fee}}
-						</Col>
-					</Row>
-					
-				</div>
-			  </v-list-item-content>
-			 
-			</v-list-item>
-		</div>
+			</v-col>
+		</v-row>
+
 	</div>
 </template>
 

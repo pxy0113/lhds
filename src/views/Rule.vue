@@ -1,15 +1,12 @@
 <template>
 	<div>
-		<!-- <v-card v-if="!showAddRule" outlined  id="vRow"> -->
 		<div id="vRow" v-if="!showAddRule">
 			<div class=" px-5 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
-				<!-- <Badge color="green" class="grey--text" text="规则列表"></Badge> -->
-				
 				<span class="d-flex align-center">
 					<Avatar style="background-color: #66BB6A" size="10"></Avatar>
 					<span class="pl-2">规则列表</span>
 				</span>
-				<v-btn small  outlined color="green"  @click="newRule" class="ma-1">新增规则</v-btn>
+				<v-btn small outlined color="green"  @click="newRule" class="ma-1">新增规则</v-btn>
 
 			</div>
 			
@@ -28,103 +25,79 @@
 					</v-list-item>
 					
 					<div v-else >
-						<v-row align="center" justify="space-between">
+						<v-row align="center" justify="space-between" class="px-1">
 							<v-col v-for="(item,i) in ruleList" :key="i" class="d-flex flex-column" 
 							cols="12" :lg="2" :md="4" :sm="6" :xs="12">
 								 <v-hover>
 								    <template v-slot:default="{ hover }">
 										<v-card outlined flat>
 											<v-card-text>
-												<div class="my-1 d-flex justify-space-between align-center flex-wrap">
-													<div class="d-flex align-center">
-														<div class="font-weight-bold demo">
-														{{item.R0}}
-														</div>/<span style="font-size: 12px;">规则名称</span>
-													</div>
-													<v-btn text small color="green" @click="lookOne(i,$event)">详细</v-btn>
-												</div>
+												<span class="font-weight-bold demo black--text">
+												{{item.R0}}
+												</span>/<span style="font-size: 12px;">规则名称</span>
 											</v-card-text>
-														
+
 											<v-card-text>
+												<p class="d-flex justify-space-between align-center">
+													<span class="font-weight-bold">计价货币：</span>
+													<span>{{item.R54==1?'USDT':item.R54==2?'ETH':'BTC'}}</span>
+												</p>
+												<p class="d-flex justify-space-between align-center">
+													<span class="font-weight-bold">买入跌幅：</span>
+													<span>{{item.R1}}%</span>
+												</p>
+												<p class="d-flex justify-space-between align-center">
+													<span class="font-weight-bold">跌幅回调：</span>
+													<span>{{item.R2}}%</span>
+												</p>
+												<p class="d-flex justify-space-between align-center flex-wrap mb-0">
+													<span class="font-weight-bold">建仓金额：</span>
+													<span>{{item.R3}}</span>
+												</p>
 												
 											</v-card-text>
-														
-											<v-card-actions>
-											  <v-btn text>Listen Now</v-btn>
-											</v-card-actions>
 											<v-fade-transition>
-											  <v-overlay
+											  <v-overlay class="bor"
 												v-if="hover"
 												absolute
-												:opacity="0.7"
+												:opacity="1"
 												
 											  >
-												<Row style="font-size: 14px;" class="font-weight-regular px-4 ">
-													<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
-														<span>涨幅回调</span>
+												<div class="font-weight-regular overlay">
+													<p class="d-flex justify-space-between align-center">
+														<span class="font-weight-bold">涨幅回调：</span>
 														<span>{{item.R5}}% </span>
-													</Col>
-													<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
-														<span>卖出涨幅</span>
+													</p>
+													<p class="d-flex justify-space-between align-center">
+														<span class="font-weight-bold">卖出涨幅：</span>
 														<span>{{item.R4}}%</span>
-													</Col>
-													<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
-														<span>止损跌幅</span>
+													</p>
+													<p class="d-flex justify-space-between align-center">
+														<span class="font-weight-bold">止损跌幅：</span>
 														<span>{{item.R6}}% </span>
-													</Col>
-													<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
-														<span>补仓跌幅</span>
+													</p>
+													<p class="d-flex justify-space-between align-center">
+														<span class="font-weight-bold">补仓跌幅：</span>
 														<span>{{item.R7}}% </span>
-													</Col>
-													<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
-														<span>补仓总额</span>
-														<span>{{item.R8*item.R9}} </span>
-													</Col>
-													<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
-														<span>补仓回调</span>
+													</p>
+													<p class="d-flex justify-space-between align-center flex-wrap">
+														<span class="font-weight-bold">补仓总额：</span>
+														<span>{{item.R8*item.R9}}</span>
+													</p>
+													<p class="d-flex justify-space-between align-center mb-0">
+														<span class="font-weight-bold">补仓回调：</span>
 														<span>{{item.R10}}% </span>
-													</Col>
-												</Row>
+													</p>
+
+
+												</div>
 											  </v-overlay>
 											</v-fade-transition>
 										</v-card>
 									</template>
 								</v-hover>
-									
-								
-								<!-- <v-scroll-y-transition >
-									<Row style="font-size: 14px;" class="font-weight-regular grey lighten-3 px-5" v-if="showIndex==i">
-										<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
-											<span>涨幅回调</span>
-											<span>{{item.R5}}% </span>
-										</Col>
-										<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
-											<span>卖出涨幅</span>
-											<span>{{item.R4}}%</span>
-										</Col>
-										<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
-											<span>止损跌幅</span>
-											<span>{{item.R6}}% </span>
-										</Col>
-										<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
-											<span>补仓跌幅</span>
-											<span>{{item.R7}}% </span>
-										</Col>
-										<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
-											<span>补仓总额</span>
-											<span>{{item.R8*item.R9}} </span>
-										</Col>
-										<Col :lg="6" :md="8" :sm="12" :xs="12" class="d-flex flex-column py-1">
-											<span>补仓回调</span>
-											<span>{{item.R10}}% </span>
-										</Col>
-									</Row>
-									<v-divider v-else class="mx-2"></v-divider>
-								</v-scroll-y-transition> -->
+
 							</v-col>
-								
-								
-								
 						</v-row>
 						
 					</div>
@@ -137,9 +110,6 @@
 				</div>
 			</component>
 
-			
-			
-		<!-- </v-card> -->
 		</div>
 		
 		<v-fab-transition>
@@ -159,47 +129,66 @@
 	import { ruleData } from '@/mixins/ruleData.js'
 	export default {
 		mixins:[ruleData],
-
+		data:() =>({
+			// showIndex: -1, //当前显示的折叠菜单的下标
+		}),
 		methods:{
-			lookOne(i,e) { //查看折叠的内容
-				this.showIndex == i ? this.showIndex = -1 : this.scrollActions(i,e);
-			},
-			scrollActions(i,e){
-				this.showIndex = i;
-				let ev = e.currentTarget.parentElement.parentElement;//拿到按钮的祖父元素
-
-				let clientHeight =document.documentElement.clientHeight;
-
-				if ("IntersectionObserver" in window) {//判断浏览器是否支持
-					let Observer = new IntersectionObserver(
-					  entry => {
-						if(entry[0].intersectionRatio < 1){
-							this.$vuetify.goTo(e.target, {
-								duration: 1000,
-								offset: clientHeight/3,
-								easing: 'easeInOutCubic'});
-						}				  
-						  Observer.disconnect();
-						  Observer.unobserve(ev);
-					  }
-	
-					);
-					
-					Observer.observe(ev);
-				   
-						
-				}else{
-					this.$vuetify.goTo(e.target, {
-					duration: 1000,
-					offset: clientHeight/3,
-					easing: 'easeInOutCubic'});
-				}
-
-			}
+// 			lookOne(i,e) { //查看折叠的内容
+// 				this.showIndex == i ? this.showIndex = -1 : this.scrollActions(i,e);
+// 			},
+// 			scrollActions(i,e){
+// 				this.showIndex = i;
+// 				let ev = e.currentTarget.parentElement.parentElement;//拿到按钮的祖父元素
+// 
+// 				let clientHeight =document.documentElement.clientHeight;
+// 
+// 				if ("IntersectionObserver" in window) {//判断浏览器是否支持
+// 					let Observer = new IntersectionObserver(
+// 					  entry => {
+// 						if(entry[0].intersectionRatio < 1){
+// 							this.$vuetify.goTo(e.target, {
+// 								duration: 1000,
+// 								offset: clientHeight/3,
+// 								easing: 'easeInOutCubic'});
+// 						}				  
+// 						  Observer.disconnect();
+// 						  Observer.unobserve(ev);
+// 					  }
+// 	
+// 					);
+// 					
+// 					Observer.observe(ev);
+// 				   
+// 						
+// 				}else{
+// 					this.$vuetify.goTo(e.target, {
+// 					duration: 1000,
+// 					offset: clientHeight/3,
+// 					easing: 'easeInOutCubic'});
+// 				}
+// 
+// 			}
 		}
 	}
 </script>
 <style scoped="scoped">
+	.overlay{
+		font-size: 14px;
+		min-width: 180px!important;
+
+	}
+	.bor:after{
+	    content: '';
+	    width: 100%;
+	    height: 100%;
+	    position: absolute;
+	    top: 0;
+	    right: 0;
+	    bottom: 0;
+	    left: 0;
+	    opacity: 0.5;
+	    background: url('../img/green.jpg') center center no-repeat;
+	}
 	::-webkit-input-placeholder {
 		/* WebKit browsers */
 		color: white;

@@ -2,11 +2,11 @@
 <template>
 	<div>
 		    <v-toolbar  dark class="elevation-0">
-		      <v-toolbar-title class="d-flex align-center">
+		      <v-toolbar-title class="d-flex align-center " @click="toRouter('/')" style="cursor: pointer;">
 				    <v-img
 				      :src="logo"
 				      height="34"
-				  		 width="34"
+				  	  width="34"
 				      style="background: none;margin-right: 15px;"
 				    />
 				      <span>量化大师</span>
