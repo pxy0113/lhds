@@ -3,13 +3,15 @@
 	<div>
 		    <v-toolbar  dark class="elevation-0">
 		      <v-toolbar-title class="d-flex align-center " @click="toRouter('/')" style="cursor: pointer;">
-				    <v-img
+<!-- 				    <v-img
 				      :src="logo"
 				      height="34"
 				  	  width="34"
 				      style="background: none;margin-right: 15px;"
-				    />
-				      <span>量化大师</span>
+				    /> -->
+					<Avatar :src="logo" size="42"></Avatar>
+					
+				      <span class="pl-1">量化大师</span>
 			  </v-toolbar-title>
 			  
 		      <v-spacer></v-spacer>
@@ -43,8 +45,9 @@
 				
 				      <v-card outlined style="border: none;"  tile>
 				      	<v-list-item dense>
-							<v-list-item-avatar tile size="24">
-								<v-img :src="logo"/>
+							<v-list-item-avatar tile size="28">
+								<!-- <v-img :src="logo"/> -->
+								<Avatar :src="logo"></Avatar>
 							</v-list-item-avatar>
 						
 							<v-list-item-content>

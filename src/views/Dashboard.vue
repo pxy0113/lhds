@@ -40,6 +40,7 @@
 				<v-card outlined tile>
 					<v-card-text class="py-1 d-flex justify-space-between align-center">
 						<v-avatar size="30" color="#26c6da">
+							<!-- <Avatar :src="Eimg" size="24"></Avatar> -->
 							<v-img :src="Eimg" style="width: 28px;height: 24px;"></v-img>
 						</v-avatar>
 

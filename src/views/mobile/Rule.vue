@@ -38,7 +38,7 @@
 										{{item.R0}}
 										</div>/<span style="font-size: 12px;">规则名称</span></div>
 										<v-btn small outlined color="green" @click="lookOne(i,item)" style="margin: 0;padding: 0;">
-											查看
+											更多
 										</v-btn>
 								  </div>
 								  <Row class="font-weight-regular body-2">
