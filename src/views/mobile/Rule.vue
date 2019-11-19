@@ -2,7 +2,7 @@
 	<div>
 		<!-- <v-card v-if="!showAddRule" outlined  id="vRow"> -->
 		<div id="vRow" v-if="!showAddRule">
-			<div class=" px-5 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
+			<div class=" pl-5 pr-4 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
 				<!-- <Badge color="green" class="grey--text" text="规则列表"></Badge> -->
 				<span class="d-flex align-center">
 					<Avatar style="background-color: #66BB6A" size="10"></Avatar>
@@ -85,7 +85,8 @@
 			</Avatar>
 
 		</v-fab-transition>
-		<common-addrule v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" ref="AR" :edit="editType"></common-addrule>
+		<common-mRuleForm v-if="showAddRule"></common-mRuleForm>
+		<!-- <common-addrule v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" ref="AR" :edit="editType"></common-addrule> -->
 	</div>
 </template>
 

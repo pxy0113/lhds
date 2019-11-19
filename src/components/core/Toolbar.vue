@@ -136,7 +136,8 @@ import {
 				required: v => !!v || '必填',
 				length: v =>  (v&&v.length <= 68) || '超出长度',
 				size: v => v > 0 || '必须大于0',
-				isEmpty: v => /\S/.test(v) || '不可为空',
+				// isEmpty: v => /\S/.test(v) || '不可为空',
+				isEmpty:v => /^[^\s]*$/.test(v) ||'不能是空格',
 				not: v => !/[\u4E00-\u9FA5]/g.test(v) || '不能是中文'
 			},
 			

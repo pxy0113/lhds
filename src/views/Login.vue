@@ -74,7 +74,9 @@
 							</v-card-title>
 
 							<v-card-text>
-								<v-text-field v-model="code" label="激活码" color="grey darken-3"></v-text-field>
+								<v-form ref="codeForm" v-model="codeValid" lazy-validation>
+									<v-text-field v-model="code" label="激活码" :rules="[rules.not,rules.required,rules.isEmpty]"></v-text-field>
+								</v-form>
 							</v-card-text>
 
 							<v-card-actions>
@@ -108,6 +110,7 @@
 
 		data() { //数据
 			return {
+				codeValid:true,//激活码校验
 				errorText: {},
 				snackbar: false,
 				code: '',
@@ -135,6 +138,10 @@
 							/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 						return pattern.test(value) || '请输入正确的邮箱.'
 					},
+					length: v =>  (v&&v.length <= 68) || '超出长度',
+					// isEmpty: v => /\S/.test(v) || '不可为空',
+					isEmpty:v => /^[^\s]*$/.test(v) ||'不能是空格',
+					not: v => !/[\u4E00-\u9FA5]/g.test(v) || '不能是中文'
 				},
 			}
 		},
@@ -230,25 +237,27 @@
 			},
 
 			toJH() { //激活
-				let list = {
-					// account:sessionStorage.userName,
-					code: this.code
-				}
-				this.changeLay(true);
-				$ax.getAjaxData('/EasWebUser/recharge', list, (res) => {
-
-					this.changeLay(false);
-
-					if (res.code == 1) {
-						this.dialog = false;
-
-						this.login();
-
+				if (this.$refs.codeForm.validate()) {
+					let list = {
+						code: this.code
 					}
+					this.changeLay(true);
+					$ax.getAjaxData('/EasWebUser/recharge', list, (res) => {
 
-				}, {
-					hasToken: true
-				});
+						this.changeLay(false);
+
+						if (res.code == 1) {
+							this.dialog = false;
+
+							this.login();
+
+						}
+
+					}, {
+						hasToken: true
+					});
+				}
+
 
 			}
 		},

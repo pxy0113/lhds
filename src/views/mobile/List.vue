@@ -52,8 +52,6 @@
 				</div>
 			</div>
 
-			
-
 			<component  :is="transition !== 'None' ? `v-${transition}` : 'div'" hide-on-leave>
 				<v-skeleton-loader v-if="loading" type="article" class="pa-2">
 				</v-skeleton-loader>
