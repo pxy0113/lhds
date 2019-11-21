@@ -1,24 +1,29 @@
 <template>
-	<v-dialog v-model="dialog" persistent>
+	<v-dialog v-model="dialog" persistent style="z-index: 2000;">
 		<v-card>
 			<v-card-title class="subtitle-2 green lighten-2 white--text">
 			 {{currentObj.name}}规则
 			</v-card-title>
 			
 			<div class="mobile-grid px-2 mb-2">
+				<v-form ref="other" v-model="valid" lazy-validation>
+					<v-text-field type="number" v-model="currentObj.a"  color="green" single-line min="1"
+					 suffix="分钟内下跌" :rules="[rules.required,rules.size]"
+					 ></v-text-field>
+		
+					<v-text-field type="number" v-model="currentObj.b"  color="green"  single-line min="0"
+					 suffix="%时" class="pt-1" :rules="[rules.required,rules.size,rules.percent]"></v-text-field>
+					
+					<v-text-field type="number"  color="green" v-model="currentObj.c" single-line 
+					:prefix="currentObj.name+'比例变为'" min="1"   class="pt-1" 
+					:rules="[rules.required,rules.size,rules.percent]"
+					></v-text-field>
+					
+					<v-text-field type="number" class="pt-1"  color="green" v-model="currentObj.d" single-line min="1"
+					suffix="分钟后恢复"></v-text-field>
+				</v-form>
 				
-				<v-text-field type="number" v-model="currentObj.a"  color="green" hide-details single-line min="1"
-				 suffix="分钟内下跌"
-				 ></v-text-field>
-	
-				<v-text-field type="number" v-model="currentObj.b"  color="green" hide-details  single-line min="0"
-				 suffix="%时"></v-text-field>
-				
-				<v-text-field type="number"  color="green" v-model="currentObj.c" single-line hide-details 
-				prefix="比例变为" min="1"></v-text-field>
-				
-				<v-text-field type="number"  color="green" v-model="currentObj.d" hide-details  single-line min="1"
-				suffix="分钟后恢复"></v-text-field>
+
 			</div>
 			
 			  <v-card-actions>
@@ -36,25 +41,18 @@
 	export default {
 		data() {
 			return {
+				valid:true,
+				
+				rules: {
+					required: v => !!v || '必填',
+					size: v => v > 0 || '必须大于0',
+					percent:v => v <= 100 || '不可超出100'
+				},
+				
 				other:['补仓','止损','建仓'],
-
-				otherObj:{
-					R26: false, //允许补仓
-					R27: 0, //分钟内下跌
-					R28: 0, //时
-					R29: 0, //补仓比例更改为
-					R30: 0, //分钟后回复数值
-					R21: false, //允许止损
-					R22: 0,
-					R23: 0,
-					R24: 0,
-					R25: 0,
-					R31: false, //允许建仓
-					R32: 0,
-					R33: 0,
-					R34: 0,
-					R35: 0
-				}
+				
+				currentObj:{}
+				
 				
 			}
 		},
@@ -68,19 +66,29 @@
 				default:() =>({})
 			}
 		},
-		computed:{
-			currentObj(){
-				return this.newOtherObj;
+		watch:{
+			newOtherObj:{
+				handler(nV){
+					this.currentObj = {...nV};
+				},
+				immediate:true,
+				deep:true
 			}
 		},
-		
+
 		methods:{
 			cancelOtherRule(){
 				this.$emit('cancelDialog');
+				this.$refs.other.resetValidation();
+				this.currentObj = {};
 			},
 			
 			newOtherRule(){
-				this.$emit('pushData',this.currentObj);
+				if(this.$refs.other.validate()){
+					this.$emit('pushData',this.currentObj);
+					this.$refs.other.resetValidation();
+				}
+				
 			},
 			
 		}

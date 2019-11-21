@@ -128,8 +128,12 @@
 			
 		<!-- </v-card> -->
 		
-		<v-dialog v-model="showAddRule" fullscreen hide-overlay transition="dialog-bottom-transition">
-			<common-colledit v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" ref="AR" :edit="true" class="ma-0"></common-colledit>
+		<v-dialog v-model="showAddRule"  fullscreen hide-overlay transition="dialog-bottom-transition">
+			<component :is="$store.state.currentType=='Desktop'?'common-colledit':'common-mDemForm'" 
+			v-if="showAddRule" @hideRule="hideRule"
+			:ruleObj="currentRule" ref="AR" :edit="true">
+			</component>
+			<!-- <common-colledit v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" ref="AR" :edit="true" class="ma-0"></common-colledit> -->
 		</v-dialog>
 		
 		<v-dialog v-model="addCollocation" width="800" persistent>
@@ -646,7 +650,7 @@
 			getColRuleData(list){//托管规则数据
 				let data = list[0].data;
 				
-				console.log(data);
+				this.afterOpen();
 				
 				this.currentRule = JSON.parse(Utils.decrypt(data));
 				
@@ -681,6 +685,7 @@
 
 			hideRule() { //隐藏规则输入框
 				this.showAddRule = false;
+				this.beforeClose();
 			},
 			
 			allEnd(){//全部停止

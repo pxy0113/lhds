@@ -1,27 +1,33 @@
 <template>
 	<v-card flat>
 		<div class=" px-5 py-3  green lighten-5 d-flex align-center">
-			<span class="green--text">返回</span>
+			<span class="green--text" @click="hideRule">返回</span>
 	
 <!-- 			<span class="green--text pl-2" >{{edit?'编辑规则':'添加规则'}}</span>
 		 -->
 		</div>
 		<div class="grey lighten-3">
 			<v-form ref="valid" v-model="valid" lazy-validation class="px-6 py-4 white">
+				<div class="d-flex flex-column mb-2">
+					<span style="border-left: 4px solid #66BB6A;" class="pl-2 font-weight-bold">规则名称</span>
+					<v-text-field type="text" v-model="ruleName"
+					class="py-0"
+					color="green" dense :rules="[rules.required,rules.isEmpty]"></v-text-field>
+				</div>
 				<p style="border-left: 4px solid #66BB6A;" class="pl-2 font-weight-bold">建仓规则</p>
 				<div class="mobile-grid">
 					<div class="d-flex flex-column">
 						<span class="grey--text">买入跌幅</span>
-						<v-text-field type="text" v-model="ruleName"
-						class="py-0"
-						color="green" dense :rules="[rules.required,rules.isEmpty]"></v-text-field>
+						<v-text-field type="number" v-model="jData.R1"
+						class="py-0"  :step="0.01" min="0"
+						color="green" :rules="[rules.required,rules.size,rules.percent]"></v-text-field>
 					</div>
 					
 					<div class="d-flex flex-column">
 						<span class="grey--text">涨幅回调</span>
-						<v-text-field type="text" v-model="ruleName"
+						<v-text-field type="number" v-model="jData.R2"
 						class="py-0"
-						color="green" dense :rules="[rules.required,rules.isEmpty]"></v-text-field>
+						color="green" dense :step="0.01" min="0"></v-text-field>
 					</div>
 					
 					<div class="d-flex flex-column">
@@ -34,9 +40,9 @@
 					
 					<div class="d-flex flex-column">
 						<span class="grey--text">单次买入金额</span>
-						<v-text-field type="text" v-model="ruleName"
-						class="py-0"
-						color="green" dense :rules="[rules.required,rules.isEmpty]"></v-text-field>
+						<v-text-field type="number" v-model="jData.R3"
+						class="py-0" :step="0.01" min="0"
+						color="green" dense :rules="[rules.required,rules.size]"></v-text-field>
 					</div>
 				
 				</div>
@@ -46,14 +52,14 @@
 						<span class="grey--text">
 							强制建仓
 						</span>
-						<!-- <Icon type="md-checkbox-outline"  @click="allowJc" size="18" :color="jData.R11?'':'#BDBDBD'" /> -->
+
 						<v-btn icon small>
 							<v-icon @click="allowJc" small>{{jData.R11 ? 'mdi-check-box-outline' : 'mdi-square-outline'}}</v-icon>
 						</v-btn>
 					</p>
 					<transition name="fade" v-if="jData.R11">
 						<v-text-field type="number" v-model="jData.R12" :disabled="!jData.R11" color="green"  single-line
-						:step="0.01" min="1"  suffix="分钟无仓强制建仓" hide-details  dense></v-text-field>
+						:step="0.01" min="1" suffix="分钟无仓强制建仓" hide-details  dense></v-text-field>
 					</transition>
 				</div>
 				
@@ -99,16 +105,16 @@
 				<div class="mobile-grid">
 					<div class="d-flex flex-column">
 						<span class="grey--text">卖出涨幅</span>
-						<v-text-field type="text" v-model="ruleName"
-						class="py-0"
-						color="green" dense :rules="[rules.required,rules.isEmpty]"></v-text-field>
+						<v-text-field type="number" v-model="jData.R4"
+						class="py-0" :step="0.01" min="0"
+						color="green" dense  :rules="[rules.required,rules.isEmpty,rules.precent]"></v-text-field>
 					</div>
 					
 					<div class="d-flex flex-column">
 						<span class="grey--text">涨幅回调</span>
-						<v-text-field type="text" v-model="ruleName"
+						<v-text-field type="number" v-model="jData.R5"
 						class="py-0"
-						color="green" dense :rules="[rules.required,rules.isEmpty]"></v-text-field>
+						color="green" dense :step="0.01" min="0"></v-text-field>
 					</div>
 					
 					<div class="d-flex flex-column">
@@ -198,7 +204,7 @@
 		
 			<div class="px-6 py-4 white mt-2">
 				<p style="border-left: 4px solid #66BB6A;" class="pl-2 font-weight-bold">其他规则</p>
-				<v-menu transition="scroll-y-transition" v-if="other.length>0">
+				<v-menu transition="scroll-y-transition" v-if="other[0].show||other[1].show||other[2].show">
 					<template v-slot:activator="{ on }">
 						<v-btn tile outlined small color="success" class="ma-0" v-on="on">
 							添加
@@ -217,28 +223,53 @@
 					{{other.a}}分钟内下跌{{other.b}}%时,{{other.name}}比例变为{{other.c}}%,{{other.d}}分钟后恢复数值
 				</div> -->
 				 <v-list two-line > 
-					 <v-list-item v-for="(other,idx) in otherList" class="my-1 grey lighten-4">
+					 <v-list-item class="my-1 grey lighten-4" v-if="otherList[1].a">
 						  <v-list-item-content>
-							{{other.a}}分钟内下跌{{other.b}}%时,{{other.name}}比例变为{{other.c}}%,{{other.d}}分钟后恢复数值
+							{{otherList[1].a}}分钟内下跌{{otherList[1].b}}%时,{{otherList[1].name}}比例变为{{otherList[1].c}}%,{{otherList[1].d}}分钟后恢复数值
 						  </v-list-item-content>
 			
 						  <v-list-item-action>
-							<v-btn icon small class="ma-1" @click="closeOtherItem(other)"><v-icon color="error">mdi-close</v-icon></v-btn>
-							<v-btn icon small class="ma-1" @click="editOtherItem(idx)"><v-icon>mdi-square-edit-outline</v-icon></v-btn>
+							<v-btn icon small class="ma-1" @click="closeOtherItem(1)"><v-icon color="error">mdi-close</v-icon></v-btn>
+							<v-btn icon small class="ma-1" @click="editOtherItem(1)"><v-icon>mdi-square-edit-outline</v-icon></v-btn>
 						  </v-list-item-action>
 					  </v-list-item>
+				
+					   <v-list-item class="my-1 grey lighten-4" v-if="otherList[2].a">
+						  <v-list-item-content>
+							{{otherList[2].a}}分钟内下跌{{otherList[2].b}}%时,{{otherList[2].name}}比例变为{{otherList[2].c}}%,
+							{{otherList[2].d}}分钟后恢复数值
+						  </v-list-item-content>
+			
+						  <v-list-item-action>
+							<v-btn icon small class="ma-1" @click="closeOtherItem(2)"><v-icon color="error">mdi-close</v-icon></v-btn>
+							<v-btn icon small class="ma-1" @click="editOtherItem(2)"><v-icon>mdi-square-edit-outline</v-icon></v-btn>
+						  </v-list-item-action>
+					    </v-list-item>
+						
+						<v-list-item class="my-1 grey lighten-4" v-if="otherList[3].a">
+						  <v-list-item-content>
+							{{otherList[3].a}}分钟内下跌{{otherList[3].b}}%时,{{otherList[3].name}}比例变为{{otherList[3].c}}%,
+							{{otherList[3].d}}分钟后恢复数值
+						  </v-list-item-content>
+			
+						  <v-list-item-action>
+							<v-btn icon small class="ma-1" @click="closeOtherItem(3)"><v-icon color="error">mdi-close</v-icon></v-btn>
+							<v-btn icon small class="ma-1" @click="editOtherItem(3)"><v-icon>mdi-square-edit-outline</v-icon></v-btn>
+						  </v-list-item-action>
+						 </v-list-item>
+						 
 				 </v-list>
 				
 			</div>
 			
-			<p class="bottomBtn white">
-				 <v-btn block color="secondary" outlined depressed tile>取消</v-btn>
+			<p class="bottomBtn white mb-0 pb-2">
+				 <v-btn block color="secondary" outlined depressed tile @click="hideRule">取消</v-btn>
 				  <v-btn block color="green" dark  depressed tile @click="mainValid">提交</v-btn>
 			</p>
 		</div>
-		
 		<common-otherRule :dialog="dialog" :newOtherObj="newOtherObj" @pushData="createOneOther"
 		@cancelDialog="cancelOther"></common-otherRule>
+		
 		
 	</v-card>
 </template>
@@ -248,7 +279,7 @@
 		mapActions
 	} from 'vuex';
 	import Utils from '@/plugins/cryAes.js'
-	import { addRuleData } from '@/mixins/addRuleData.js'
+	import { addRuleData } from '@/mixins/mobileRule.js'
 	export default {
 		data() {
 			return {
@@ -258,17 +289,14 @@
 					{id:3,text:'建仓',show:true},
 				],
 				
-				otherList:[],
-				
+				otherList:{
+					"1":{},
+					"2":{},
+					"3":{}
+				},
 				newOtherObj:{},
 				
 				dialog:false,
-				
-				valid2:true,
-				
-				valid3:true,
-				
-				
 			}
 		},
 		mixins:[addRuleData],
@@ -286,7 +314,7 @@
 		
 		watch: {
 			edit: {
-				handler: 'transPropsData',
+				handler: 'transRuleData',
 				immediate: true
 			},
 			wssData: {
@@ -304,19 +332,79 @@
 		},
 		
 		methods:{
+			transRuleData(){//要编辑的数据进行转化
+				if (this.edit) {
+					let item = {...this.ruleObj};
+					
+					this.curcy = Number(item.R54);
+					
+					this.ruleName = item.R0 ? this.unescapeF(item.R0) : '';
+					
+					let [R11,R13,R19,R16,R20,R21,R26,R31] = [
+						item.R11 == 1 ? true : false,
+						item.R13 == 1 ? true : false,
+						item.R19 == 1 ? true : false,
+						item.R16 == 1 ? true : false,
+						item.R20 == 1 ? true : false,
+						item.R21 == 1 ? true : false,
+						item.R26 == 1 ? true : false,
+						item.R31 == 1 ? true : false
+					];
+					
+					
+					this.jData = Object.assign({}, item, {R11,R13,R19,R16,R20,R21,R26,R31});
+
+					if(R21){
+						this.other[1].show = false;
+						this.otherList[2] = {
+							name:this.other[1].text,
+							a:this.jData.R22,
+							b:this.jData.R23,
+							c:this.jData.R24,
+							d:this.jData.R25
+						}
+					}
+					if(R26){
+						this.other[0].show = false;
+						this.otherList[1] = {
+							name:this.other[0].text,
+							a:this.jData.R27,
+							b:this.jData.R28,
+							c:this.jData.R29,
+							d:this.jData.R30
+						}
+					}
+					if(R31){
+						this.other[2].show = false;
+						this.otherList[3] = {
+							name:this.other[2].text,
+							a:this.jData.R32,
+							b:this.jData.R33,
+							c:this.jData.R34,
+							d:this.jData.R35
+						}
+					}
+
+
+				}
+						
+			},
+			
 			cancelOther(){
 				this.newOtherObj = {};
 				this.dialog = false;
 			},
 			
 			closeOtherItem(obj){//删掉其他规则
+				this.otherList[obj] = {};
+				
 				this.other.forEach(item =>{
-					if(item.text==obj.name){
+					if(item.id==obj){
+						this.checkName(item.id,false);
 						item.show = true;
 					}
 				});
-				let list = this.otherList.filter(item =>item.name!==obj.name);
-				this.otherList = list;
+				
 			},
 			
 			editOtherItem(idx){//编辑已经存在的其他规则
@@ -324,32 +412,35 @@
 				this.dialog = true;
 			},
 			
+			checkName(name,state){//查找id得到不同的其他规则
+				name==1&&(this.jData.R26=state);
+				name==2&&(this.jData.R21=state);
+				name==3&&(this.jData.R31=state);
+			},
+			
 			createOneOther(obj){//编辑其他规则提交后
 				this.dialog = false;
-				// let {name,...params} = obj;
+				// let {name,...params} = obj;可以得到去除了name属性的obj
+				
 				
 				this.other.forEach(item =>{
 					if(item.text==obj.name){
 						item.show = false;
+						this.otherList[item.id] = obj;
+						this.checkName(item.id,true);
 					}
 				});
-
-				let arr = this.otherList.filter(list =>list.name == obj.name);
-				
-				if(arr.length>0){
-					arr[0] = obj;
-				}else{
-					this.otherList.push(obj);
-				}
-				
 				
 				
 			},
 			
 			addOther(id,index){
-				this.newOtherObj = {
-					name:this.other[index].text
-				}
+				
+				let arr = Object.values(this.otherList[id]);
+				
+				let [a,b,c,d] = arr;
+				
+				this.newOtherObj = {name:this.other[index].text,a,b,c,d};
 
 				this.dialog = true;
 			},
@@ -377,7 +468,7 @@
 				this.$sock.websocketsend(json);
 			},
 			
-			mainValid(){
+			mainValid(){//表单验证
 				let options = {
 					duration: 1000,
 					offset: 0,
@@ -387,7 +478,7 @@
 				if (this.$refs.valid.validate()) {
 					if(this.$refs.valid2.validate()){
 						if(this.$refs.valid3.validate()){
-							console.log('全过啦')
+							this.postRule();
 						}else{
 							this.$vuetify.goTo(this.$refs.valid3, options)
 						}
@@ -398,24 +489,53 @@
 					this.$vuetify.goTo(this.$refs.valid, options)
 				}
 			},
+
 			
 			postRule() { //提交规则
-				let list = JSON.parse(JSON.stringify(this.jData));
-				list.R54 = this.curcy;
 				let title = this.ruleName.replace(/\s+/g,'');
-				list.R0 = this.charToUnicode(title);
-				list.R11 = list.R11 ? 1 : 0;
-				list.R13 = list.R13 ? 1 : 0;
-				list.R19 = list.R19 ? 1 : 0;
-				list.R16 = list.R16 ? 1 : 0;
-				list.R20 = list.R20 ? 1 : 0;
-				list.R21 = list.R21 ? 1 : 0;
-				list.R26 = list.R26 ? 1 : 0;
-				list.R31 = list.R31 ? 1 : 0;
-					
-				for (let i in list) { //数字转成了字符
+				
+				let other1 = this.otherList;
+				
+				let [R54,R0,R11,R13,R19,R16,R20] = [
+					this.curcy,
+					this.charToUnicode(title),
+					this.jData.R11 ? 1 : 0,
+					this.jData.R13 ? 1 : 0,
+					this.jData.R19 ? 1 : 0,
+					this.jData.R16 ? 1 : 0,
+					this.jData.R20 ? 1 : 0
+				];
+				let [R21,R22,R23,R24,R25,R26,R27,R28,R29,R30,R31,R32,R33,R34,R35] = [
+					this.jData.R21? 1 : 0,
+					other1[2].a,
+					other1[2].b,
+					other1[2].c,
+					other1[2].d,
+					this.jData.R26? 1 : 0,
+					other1[1].a,
+					other1[1].b,
+					other1[1].c,
+					other1[1].d,
+					this.jData.R31? 1 : 0,
+					other1[3].a,
+					other1[3].b,
+					other1[3].c,
+					other1[3].d,
+				];
+				let list = {
+					...this.jData,
+					R54,R0,R11,R13,R19,R16,R20,R21,
+					R22,R23,R24,R25,R26,R27,
+					R28,R29,R30,R31,R32,R33,R34,R35
+				};
+
+				console.log(list)
+				for (let i in list) { //后端要求数字转字符
 					if (typeof(list[i]) == 'number') {
 						list[i] = list[i].toString();
+					}
+					if(typeof(list[i]) == 'undefined'){ //other1里不存在就会undefined 转为0
+						list[i] = '0';
 					}
 				}
 					

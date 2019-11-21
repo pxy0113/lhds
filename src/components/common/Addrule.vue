@@ -358,7 +358,7 @@
 					<v-card-actions>
 						<v-btn  @click="activeRule--" v-if="activeRule>0">上一个</v-btn>
 		
-						<v-btn color="green" outlined v-if="activeRule == child.length-1" @click="postRule">提交</v-btn>
+						<v-btn color="green" outlined v-if="activeRule == child.length-1" @click="postRule" depressed>提交</v-btn>
 						<v-btn @click="validateData()" color="green" outlined v-else>填写完成,下一个</v-btn>
 					</v-card-actions>
 				</v-card>
@@ -438,19 +438,25 @@
 			},
 			
 			postRule() { //提交规则
-				
-				let list = JSON.parse(JSON.stringify(this.jData));
-				list.R54 = this.curcy;
+			
 				let title = this.ruleName.replace(/\s+/g,'');
-				list.R0 = this.charToUnicode(title);
-				list.R11 = list.R11 ? 1 : 0;
-				list.R13 = list.R13 ? 1 : 0;
-				list.R19 = list.R19 ? 1 : 0;
-				list.R16 = list.R16 ? 1 : 0;
-				list.R20 = list.R20 ? 1 : 0;
-				list.R21 = list.R21 ? 1 : 0;
-				list.R26 = list.R26 ? 1 : 0;
-				list.R31 = list.R31 ? 1 : 0;
+				
+				let [R54,R0,R11,R13,R19,R16,R20] = [
+					this.curcy,
+					this.charToUnicode(title),
+					this.jData.R11 ? 1 : 0,
+					this.jData.R13 ? 1 : 0,
+					this.jData.R19 ? 1 : 0,
+					this.jData.R16 ? 1 : 0,
+					this.jData.R20 ? 1 : 0,
+					this.jData.R21 ? 1 : 0,
+					this.jData.R26 ? 1 : 0,
+					this.jData.R31 ? 1 : 0
+				];
+				let list = {
+					...this.jData,
+					R54,R0,R11,R13,R19,R16,R20
+				}
 					
 				for (let i in list) { //数字转成了字符
 					if (typeof(list[i]) == 'number') {

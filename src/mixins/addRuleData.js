@@ -107,19 +107,25 @@
 		
 			transPropsData() { //编辑初始化对数据进行转换
 				if (this.edit) {
-					let item = JSON.parse(JSON.stringify(this.ruleObj));
+					
+					let item = {...this.ruleObj};
+					
 					this.curcy = Number(item.R54);
+					
 					this.ruleName = item.R0 ? this.unescapeF(item.R0) : '';
-					item.R11 = item.R11 == 1 ? true : false;
-					item.R13 = item.R13 == 1 ? true : false;
-					item.R19 = item.R19 == 1 ? true : false;
-					item.R16 = item.R16 == 1 ? true : false;
-					item.R20 = item.R20 == 1 ? true : false;
-					item.R21 = item.R21 == 1 ? true : false;
-					item.R26 = item.R26 == 1 ? true : false;
-					item.R31 = item.R31 == 1 ? true : false;
-		
-					this.jData = Object.assign({}, this.jData, item);
+					
+					let [R11,R13,R19,R16,R20,R21,R26,R31] = [
+						item.R11 == 1 ? true : false,
+						item.R13 == 1 ? true : false,
+						item.R19 == 1 ? true : false,
+						item.R16 == 1 ? true : false,
+						item.R20 == 1 ? true : false,
+						item.R21 == 1 ? true : false,
+						item.R26 == 1 ? true : false,
+						item.R31 == 1 ? true : false
+					];
+
+					this.jData = Object.assign({}, item, {R11,R13,R19,R16,R20,R21,R26,R31});
 				}
 		
 			},

@@ -85,7 +85,7 @@
 			</Avatar>
 
 		</v-fab-transition>
-		<common-mRuleForm v-if="showAddRule"></common-mRuleForm>
+		<common-mRuleForm v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" :edit="editType"></common-mRuleForm>
 		<!-- <common-addrule v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" ref="AR" :edit="editType"></common-addrule> -->
 	</div>
 </template>
