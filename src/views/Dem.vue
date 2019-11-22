@@ -129,9 +129,9 @@
 		<!-- </v-card> -->
 		
 		<v-dialog v-model="showAddRule"  fullscreen hide-overlay transition="dialog-bottom-transition">
-			<component :is="$store.state.currentType=='Desktop'?'common-colledit':'common-mDemForm'" 
+			<component :is="$store.state.currentType=='Desktop'?'common-addrule':'common-mDemForm'" 
 			v-if="showAddRule" @hideRule="hideRule"
-			:ruleObj="currentRule" ref="AR" :edit="true">
+			:ruleObj="currentRule" parentName="Dem" :edit="true">
 			</component>
 			<!-- <common-colledit v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" ref="AR" :edit="true" class="ma-0"></common-colledit> -->
 		</v-dialog>
@@ -391,10 +391,15 @@
 					this.ruleData = [];
 				}
 			}, 
-				
 			wssData:{
 				handler(nV,oV){
+					if(nV.length==0&&this.$sock.lookState()==-1){
+						Object.assign(this.$data, this.$options.data());
+						this.tips = '连接失败,刷新后重试';
+						this.loading = false;
+					}
 					this.getMessage();
+
 				},
 				deep:true
 			},
@@ -678,7 +683,8 @@
 
 			onEdit(item) { //编辑规则 用某id得到对应的规则 传递给组件
 				let json = JSON.stringify({code:1016,data:[{id:item.id}]});
-				
+				let state = this.$sock.lookState();
+
 				this.$sock.websocketsend(json);
 
 			},

@@ -75,7 +75,6 @@
 				deep:true
 			}
 		},
-
 		methods:{
 			cancelOtherRule(){
 				this.$emit('cancelDialog');

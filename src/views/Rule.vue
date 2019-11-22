@@ -28,15 +28,19 @@
 						<v-row align="center" justify="space-between" class="px-1">
 							<v-col v-for="(item,i) in ruleList" :key="i" class="d-flex flex-column" 
 							cols="12" :lg="2" :md="4" :sm="6" :xs="12">
-								 <v-hover>
-								    <template v-slot:default="{ hover }">
 										<v-card outlined flat>
 											<v-card-text>
 												<span class="font-weight-bold demo black--text">
 												{{item.R0}}
 												</span>/<span style="font-size: 12px;">规则名称</span>
 											</v-card-text>
+											<div style="position: absolute;top: 0; right: 0;
+											width: 50px;height: 50px;overflow: hidden;">
+											<div class="testB">
 
+											</div>
+											</div>
+												
 											<v-card-text>
 												<p class="d-flex justify-space-between align-center">
 													<span class="font-weight-bold">计价货币：</span>
@@ -55,8 +59,53 @@
 													<span>{{item.R3}}</span>
 												</p>
 												
+												<p class="text-center pt-2 pb-0 d-flex align-center justify-space-between">
+													<v-btn outlined small @click="editRule(item)" color="primary">编辑</v-btn>
+													<v-hover v-slot:default="{ hover }">
+														
+														<span>
+															<v-btn small outlined color="green">查看更多</v-btn>
+															<v-expand-transition>
+															  <div
+																v-if="hover"
+																class="d-flex transition-fast-in-fast-out green lighten-2 
+																v-card--reveal white--text overlay flex-column"
+																style="height: 100%"
+															  >
+															  	<p class="d-flex justify-space-between align-center">
+															  		<span class="font-weight-bold">涨幅回调：</span>
+															  		<span>{{item.R5}}% </span>
+															  	</p>
+															  	<p class="d-flex justify-space-between align-center">
+															  		<span class="font-weight-bold">卖出涨幅：</span>
+															  		<span>{{item.R4}}%</span>
+															  	</p>
+															  	<p class="d-flex justify-space-between align-center">
+															  		<span class="font-weight-bold">止损跌幅：</span>
+															  		<span>{{item.R6}}% </span>
+															  	</p>
+															  	<p class="d-flex justify-space-between align-center">
+															  		<span class="font-weight-bold">补仓跌幅：</span>
+															  		<span>{{item.R7}}% </span>
+															  	</p>
+															  	<p class="d-flex justify-space-between align-center flex-wrap">
+															  		<span class="font-weight-bold">补仓总额：</span>
+															  		<span>{{item.R8*item.R9}}</span>
+															  	</p>
+															  	<p class="d-flex justify-space-between align-center mb-0">
+															  		<span class="font-weight-bold">补仓回调：</span>
+															  		<span>{{item.R10}}% </span>
+															  	</p>
+															  </div>
+															</v-expand-transition>
+														</span>
+														
+													</v-hover>
+												</p>	
+												
+												
 											</v-card-text>
-											<v-fade-transition>
+											<!-- <v-fade-transition>
 											  <v-overlay class="bor"
 												v-if="hover"
 												absolute
@@ -89,13 +138,10 @@
 														<span>{{item.R10}}% </span>
 													</p>
 
-
 												</div>
 											  </v-overlay>
-											</v-fade-transition>
+											</v-fade-transition> -->
 										</v-card>
-									</template>
-								</v-hover>
 
 							</v-col>
 						</v-row>
@@ -121,7 +167,8 @@
 			</Avatar>
 
 		</v-fab-transition>
-		<common-addrule v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" ref="AR" :edit="editType"></common-addrule>
+		<common-addrule v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule":edit="editType" parentName="Rule"
+		></common-addrule>
 	</div>
 </template>
 
@@ -217,5 +264,25 @@
 	.demo{
 		max-width: 150px;
 		overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
+	}
+	.v-card--reveal {
+	  align-items: center;
+	  bottom: 0;
+	  left:0;
+	  justify-content: center;
+	  position: absolute;
+	  width: 100%;
+	}
+	.testB{
+		width: 0; 
+		height: 0;
+		border-top: 50px solid #31b968;
+		border-left: 50px solid transparent;
+	}
+	.testB:before{
+		 content: "X";
+		  position: absolute;
+		  top: 0;
+		  right: 0;
 	}
 </style>

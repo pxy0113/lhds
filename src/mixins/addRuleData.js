@@ -1,11 +1,32 @@
-	// import {
-	// 	mapActions
-	// } from 'vuex';
-	// import Utils from '@/plugins/cryAes.js'
+	import {
+		mapActions
+	} from 'vuex';
+	import Utils from '@/plugins/cryAes.js'
 	export const addRuleData = {
+		props: {
+			ruleObj: {
+				type: Object,
+				default: () => ({})
+			},
+			edit: {
+				type: Boolean,
+				default: false
+			},
+			parentName: {//父组件的名字
+				type:String,
+				default:'Rule'
+			}
+		},
+		
+		watch: {
+			edit: {
+				handler: 'transPropsData',
+				immediate: true
+			},
+		},
+		
 		data() {
 			return {
-				ajaxObj: {}, //要提交的规则数据
 				rules: {
 					required: v => !!v || '必填',
 					length: v => (v && v.length <= 68) || '超出长度',
@@ -84,7 +105,16 @@
 			}
 		},
 		methods: {
-		
+			...mapActions(['changeLay', 'changeSnack']),
+			
+			wssSave() {//传递数据给ws
+				let json = JSON.stringify({
+					code: 1006
+				});
+					
+				this.$sock.websocketsend(json);
+			},
+			
 			listenState(name) {
 				this.jData.R19 = name;
 				name == true ? '' : this.jData.R20 = false;
@@ -133,9 +163,7 @@
 			selectCurrency(e) { //选择计价货币
 				this.jData.R54 = e;
 			},
-		
-			// ...mapActions(['changeLay', 'changeSnack']),
-		
+
 			hideRule() {
 				this.$emit('hideRule');
 			},
@@ -212,6 +240,97 @@
 				}
 				return "%u" + res.join("%u");
 			},
+			
+			
+			beforePostRule(){//提交前整理
+				let title = this.ruleName.replace(/\s+/g,'');
+				
+				let [R54,R0,R11,R13,R19,R16,R20] = [
+					this.curcy,
+					this.charToUnicode(title),
+					this.jData.R11 ? 1 : 0,
+					this.jData.R13 ? 1 : 0,
+					this.jData.R19 ? 1 : 0,
+					this.jData.R16 ? 1 : 0,
+					this.jData.R20 ? 1 : 0,
+					this.jData.R21 ? 1 : 0,
+					this.jData.R26 ? 1 : 0,
+					this.jData.R31 ? 1 : 0
+				];
+				let list = {
+					...this.jData,
+					R54,R0,R11,R13,R19,R16,R20
+				}
+					
+				for (let i in list) { //数字转成了字符
+					if (typeof(list[i]) == 'number') {
+						list[i] = list[i].toString();
+					}
+				}
+				
+				return {list , title};
+			},
+			
+			ruleAction(obj){//父组件是Rule时执行
+				let url = this.edit ? '/EasWebUser/changeRule' : '/EasWebUser/addRule';
+				
+				$ax.getAjaxData(url, obj, (res) => {
+					this.changeLay(false);
+					if (res.code == 1) {
+						let msg = {
+							state: true,
+							errorText: {
+								type: 'success',
+								text: this.edit ? '编辑成功' : '添加成功'
+							}
+						}
+						this.changeSnack(msg);
+					
+						let state = this.$sock.lookState();
+					
+						state == -1 ? this.$sock.initWebSocket() : this.wssSave();
+					
+						sessionStorage.removeItem('collocation'); //清空缓存里的rule/api
+					
+						Object.assign(this.$data, this.$options.data());
+					
+						this.hideRule();
+					}
+				}, {
+					hasToken: true
+				});
+			},
+			
+			demAction(obj){//父组件是Dem时执行
+				let json = JSON.stringify({
+					code: 1008,
+					data:[{
+						id:obj.id,
+						data:obj.data
+					}]
+				});		
+				
+				this.$sock.websocketsend(json);
+				
+				Object.assign(this.$data, this.$options.data());
+				
+				this.hideRule();
+			},
+			
+			postRule() { //提交规则
+				
+				let before = this.beforePostRule();
+					
+				let obj = {
+					name: before.title,
+					data: Utils.encrypt(JSON.stringify(before.list))
+				};
+				
+				this.edit ? obj.id = before.list.id : '';
+				
+				this.parentName == 'Rule'?this.ruleAction(obj):this.demAction(obj);
+	
+			}
 		
 		}
 

@@ -12,7 +12,7 @@
 		<v-card class="pa-6" outlined>
 			<v-form ref="form" v-model="valid" lazy-validation>
 				<v-text-field type="text" v-model="ruleName" color="green" outlined dense :rules="[rules.required,rules.isEmpty]"
-				 label="规则名称"></v-text-field>
+				 label="规则名称" :readonly="parentName=='Dem'"></v-text-field>
 		
 				<v-sheet class="mx-auto mb-2">
 					<v-slide-group  v-model="activeRule" show-arrows center-active mandatory>
@@ -66,7 +66,7 @@
 											<span class="black--text  pr-3">计价货币</span>
 											<v-select style="width:120px;" outlined dense v-model="curcy" 
 											color="green" :items="currency" item-text="value"
-											item-color="green"
+											item-color="green" :readonly="parentName=='Dem'"
 											 item-value="id" label="计价货币" single-line></v-select>
 										</div>
 									</v-col>
@@ -370,9 +370,6 @@
 
 
 <script>
-	import {
-		mapActions
-	} from 'vuex';
 	import Utils from '@/plugins/cryAes.js'
 	import { addRuleData } from '@/mixins/addRuleData.js'
 	export default {
@@ -382,124 +379,42 @@
 			}
 		},
 		mixins:[addRuleData],
-		
-		props: {
-			ruleObj: {
-				type: Object,
-				default: () => ({})
-			},
-			edit: {
-				type: Boolean,
-				default: false
-			}
-		},
-		
-		watch: {
-			edit: {
-				handler: 'transPropsData',
-				immediate: true
-			},
-			wssData: {
-				handler(nV, oV) {
-					this.getMessage();
-				},
-				deep: true
-			}
-		},
-
-		computed: {
-			wssData() { //wss传递的消息
-				return this.$store.state.collocationList;
-			}
-		},
+// 		
+// 		watch: {
+// 			edit: {
+// 				handler: 'transPropsData',
+// 				immediate: true
+// 			},
+// 			wssData: {
+// 				handler(nV, oV) {
+// 					this.getMessage();
+// 				},
+// 				deep: true
+// 			}
+// 		},
+// 
+// 		computed: {
+// 			wssData() { //wss传递的消息
+// 				return this.$store.state.collocationList;
+// 			}
+// 		},
 		
 		methods:{
-			...mapActions(['changeLay', 'changeSnack']),
 			
-			getMessage() { //wss传递的消息
-				let result = this.wssData;
-				switch (result.code) {
-					case 20013: //客户端在线
-						this.wssSave();
-						break;
-					
-					default:
-						break;
-				}
-					
-			},
-					
-			wssSave() {
-				let json = JSON.stringify({
-					code: 1006
-				});
-					
-				this.$sock.websocketsend(json);
-			},
-			
-			postRule() { //提交规则
-			
-				let title = this.ruleName.replace(/\s+/g,'');
-				
-				let [R54,R0,R11,R13,R19,R16,R20] = [
-					this.curcy,
-					this.charToUnicode(title),
-					this.jData.R11 ? 1 : 0,
-					this.jData.R13 ? 1 : 0,
-					this.jData.R19 ? 1 : 0,
-					this.jData.R16 ? 1 : 0,
-					this.jData.R20 ? 1 : 0,
-					this.jData.R21 ? 1 : 0,
-					this.jData.R26 ? 1 : 0,
-					this.jData.R31 ? 1 : 0
-				];
-				let list = {
-					...this.jData,
-					R54,R0,R11,R13,R19,R16,R20
-				}
-					
-				for (let i in list) { //数字转成了字符
-					if (typeof(list[i]) == 'number') {
-						list[i] = list[i].toString();
-					}
-				}
-					
-				let obj = {
-					name: title,
-					data: Utils.encrypt(JSON.stringify(list))
-				};
-				
-				this.edit ? obj.id = list.id : '';
-					
-				let url = this.edit ? '/EasWebUser/changeRule' : '/EasWebUser/addRule';
-					
-				$ax.getAjaxData(url, obj, (res) => {
-					this.changeLay(false);
-					if (res.code == 1) {
-						let msg = {
-							state: true,
-							errorText: {
-								type: 'success',
-								text: this.edit ? '编辑成功' : '添加成功'
-							}
-						}
-						this.changeSnack(msg);
-					
-						let state = this.$sock.lookState();
-					
-						state == -1 ? this.$sock.initWebSocket() : this.wssSave();
-					
-						sessionStorage.removeItem('collocation'); //清空缓存里的rule/api
-					
-						Object.assign(this.$data, this.$options.data());
-					
-						this.hideRule();
-					}
-				}, {
-					hasToken: true
-				});
-					
-			}
+			// 
+			// getMessage() { //wss传递的消息
+			// 	let result = this.wssData;
+			// 	switch (result.code) {
+			// 		case 20013: //客户端在线
+			// 			this.wssSave();
+			// 			break;
+			// 		
+			// 		default:
+			// 			break;
+			// 	}
+			// 		
+			// },
+
 		}
 	}
 </script>

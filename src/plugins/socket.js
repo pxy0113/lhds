@@ -73,8 +73,6 @@
 			if(state >= 0){
 				websock.close();
 				state = websock.readyState;
-				// state = -1;
-				// console.log(state)
 			}
 			
 		},
