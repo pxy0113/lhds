@@ -206,6 +206,7 @@
 						list.forEach(item => {
 							item.placeTime = this.$moment(Number(item.placeTime)).format('YYYY-MM-DD HH:mm:ss')
 						})
+
 						this.placeDetail = list;
 						this.detailStep = 1;
 						this.drawer = true;

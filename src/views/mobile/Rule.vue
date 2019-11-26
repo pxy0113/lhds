@@ -92,8 +92,9 @@
 
 <script>
 	import { ruleData }  from '@/mixins/ruleData.js'
+	import {scrollMixins} from '@/mixins/scroll.js'
 	export default {
-		mixins:[ruleData],
+		mixins:[ruleData,scrollMixins],
 		data: () => ({
 			moreObj:{},
 			lookMore:false
@@ -103,10 +104,12 @@
 			closeLay(){//关闭弹出层
 				this.moreObj = {};
 				this.lookMore = false;
+				this.beforeClose();
 			},
 			
 			lookOne(i,item) { //查看折叠的内容
 				this.lookMore = true;
+				this.afterOpen();
 				this.moreObj = {
 					R4:item.R4,
 					R5:item.R5,

@@ -25,9 +25,9 @@
 					</v-list-item>
 					
 					<div v-else >
-						<v-row align="center" justify="space-between" class="px-1">
+						<v-row align="center" justify="start" class="px-1">
 							<v-col v-for="(item,i) in ruleList" :key="i" class="d-flex flex-column" 
-							cols="12" :lg="2" :md="4" :sm="6" :xs="12">
+							cols="12" :lg="3" :md="4" :sm="6" :xs="12">
 										<v-card outlined flat>
 											<v-card-text>
 												<span class="font-weight-bold demo black--text">
@@ -35,13 +35,21 @@
 												</span>/<span style="font-size: 12px;">规则名称</span>
 											</v-card-text>
 											<div style="position: absolute;top: 0; right: 0;
-											width: 50px;height: 50px;overflow: hidden;">
+											width: 50px;height: 50px;overflow: hidden;" >
 											<div class="testB">
-
+												<v-icon style="position: absolute;top: 4px;right: 4px;"
+												@click="delRule(item.id,i)">
+													mdi-close
+												</v-icon>
 											</div>
 											</div>
-												
+											<v-window v-model="item.id">
+												<v-window-item :value="item.id+1">
+													
+												</v-window-item>
+											</v-window>	
 											<v-card-text>
+												  
 												<p class="d-flex justify-space-between align-center">
 													<span class="font-weight-bold">计价货币：</span>
 													<span>{{item.R54==1?'USDT':item.R54==2?'ETH':'BTC'}}</span>
@@ -54,93 +62,19 @@
 													<span class="font-weight-bold">跌幅回调：</span>
 													<span>{{item.R2}}%</span>
 												</p>
-												<p class="d-flex justify-space-between align-center flex-wrap mb-0">
+												<p class="d-flex justify-space-between align-center flex-wrap">
 													<span class="font-weight-bold">建仓金额：</span>
 													<span>{{item.R3}}</span>
 												</p>
 												
-												<p class="text-center pt-2 pb-0 d-flex align-center justify-space-between">
+												<p class="text-center pt-2 mb-0 d-flex align-center justify-space-between">
 													<v-btn outlined small @click="editRule(item)" color="primary">编辑</v-btn>
-													<v-hover v-slot:default="{ hover }">
-														
-														<span>
-															<v-btn small outlined color="green">查看更多</v-btn>
-															<v-expand-transition>
-															  <div
-																v-if="hover"
-																class="d-flex transition-fast-in-fast-out green lighten-2 
-																v-card--reveal white--text overlay flex-column"
-																style="height: 100%"
-															  >
-															  	<p class="d-flex justify-space-between align-center">
-															  		<span class="font-weight-bold">涨幅回调：</span>
-															  		<span>{{item.R5}}% </span>
-															  	</p>
-															  	<p class="d-flex justify-space-between align-center">
-															  		<span class="font-weight-bold">卖出涨幅：</span>
-															  		<span>{{item.R4}}%</span>
-															  	</p>
-															  	<p class="d-flex justify-space-between align-center">
-															  		<span class="font-weight-bold">止损跌幅：</span>
-															  		<span>{{item.R6}}% </span>
-															  	</p>
-															  	<p class="d-flex justify-space-between align-center">
-															  		<span class="font-weight-bold">补仓跌幅：</span>
-															  		<span>{{item.R7}}% </span>
-															  	</p>
-															  	<p class="d-flex justify-space-between align-center flex-wrap">
-															  		<span class="font-weight-bold">补仓总额：</span>
-															  		<span>{{item.R8*item.R9}}</span>
-															  	</p>
-															  	<p class="d-flex justify-space-between align-center mb-0">
-															  		<span class="font-weight-bold">补仓回调：</span>
-															  		<span>{{item.R10}}% </span>
-															  	</p>
-															  </div>
-															</v-expand-transition>
-														</span>
-														
-													</v-hover>
+													<v-btn outlined small @click="lookOne(i,item)" color="green">更多</v-btn>
 												</p>	
 												
 												
 											</v-card-text>
-											<!-- <v-fade-transition>
-											  <v-overlay class="bor"
-												v-if="hover"
-												absolute
-												:opacity="1"
-												
-											  >
-												<div class="font-weight-regular overlay">
-													<p class="d-flex justify-space-between align-center">
-														<span class="font-weight-bold">涨幅回调：</span>
-														<span>{{item.R5}}% </span>
-													</p>
-													<p class="d-flex justify-space-between align-center">
-														<span class="font-weight-bold">卖出涨幅：</span>
-														<span>{{item.R4}}%</span>
-													</p>
-													<p class="d-flex justify-space-between align-center">
-														<span class="font-weight-bold">止损跌幅：</span>
-														<span>{{item.R6}}% </span>
-													</p>
-													<p class="d-flex justify-space-between align-center">
-														<span class="font-weight-bold">补仓跌幅：</span>
-														<span>{{item.R7}}% </span>
-													</p>
-													<p class="d-flex justify-space-between align-center flex-wrap">
-														<span class="font-weight-bold">补仓总额：</span>
-														<span>{{item.R8*item.R9}}</span>
-													</p>
-													<p class="d-flex justify-space-between align-center mb-0">
-														<span class="font-weight-bold">补仓回调：</span>
-														<span>{{item.R10}}% </span>
-													</p>
-
-												</div>
-											  </v-overlay>
-											</v-fade-transition> -->
+											
 										</v-card>
 
 							</v-col>
@@ -152,6 +86,7 @@
 						<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="7"></v-pagination>
 					</div>
 					
+					<common-more :hover="lookMore" :item="moreObj" @closeLay="closeLay" v-if="lookMore"></common-more>
 					
 				</div>
 			</component>
@@ -167,19 +102,42 @@
 			</Avatar>
 
 		</v-fab-transition>
-		<common-addrule v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule":edit="editType" parentName="Rule"
+		<common-addrule v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" :edit="editType" parentName="Rule"
 		></common-addrule>
 	</div>
 </template>
 
 <script>
 	import { ruleData } from '@/mixins/ruleData.js'
+	import {scrollMixins} from '@/mixins/scroll.js'
 	export default {
-		mixins:[ruleData],
+		mixins:[ruleData,scrollMixins],
 		data:() =>({
 			// showIndex: -1, //当前显示的折叠菜单的下标
+			lookMore:false,
+			moreObj:{},
 		}),
 		methods:{
+			closeLay(){//关闭弹出层
+				this.moreObj = {};
+				this.lookMore = false;
+				this.beforeClose();
+			},
+			
+			lookOne(i,item) { //查看折叠的内容
+				this.lookMore = true;
+				this.afterOpen();
+				this.moreObj = {
+					R4:item.R4,
+					R5:item.R5,
+					R6:item.R6,
+					R7:item.R7,
+					R8:item.R8,
+					R9:item.R9,
+					R10:item.R10
+				};
+			},
+			
 // 			lookOne(i,e) { //查看折叠的内容
 // 				this.showIndex == i ? this.showIndex = -1 : this.scrollActions(i,e);
 // 			},
@@ -278,11 +236,5 @@
 		height: 0;
 		border-top: 50px solid #31b968;
 		border-left: 50px solid transparent;
-	}
-	.testB:before{
-		 content: "X";
-		  position: absolute;
-		  top: 0;
-		  right: 0;
 	}
 </style>

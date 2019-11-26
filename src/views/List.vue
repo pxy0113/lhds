@@ -20,7 +20,7 @@
 					>
 					      <template v-slot:activator="{ on }">
 					        <v-text-field hide-details color="green"
-							dense v-model="startTime" label="开始时间" readonly v-on="on">
+							 v-model="startTime" label="开始时间" readonly v-on="on">
 							</v-text-field>
 					      </template>
 						 <v-date-picker v-model="shortStart" no-title scrollable locale="zh-cn" color="green" :day-format="dateF">
@@ -46,7 +46,7 @@
 					>
 					      <template v-slot:activator="{ on }">
 					        <v-text-field hide-details color="green"
-							dense v-model="endTime" label="结束时间" readonly v-on="on" >
+							 v-model="endTime" label="结束时间" readonly v-on="on" >
 							</v-text-field>
 					      </template>
 						 <v-date-picker v-model="shortEnd" no-title scrollable locale="zh-cn" color="green" :day-format="dateF">
@@ -62,7 +62,7 @@
 				 <div class="px-2" 
 				 style="width: 200px;">
 				 	<!-- <span>类别</span> -->
-				 	<v-select v-model="tabIndex" @change="changeTab" dense hide-details color="green" 
+				 	<v-select v-model="tabIndex" @change="changeTab"  hide-details color="green" 
 					label="类别"
 					:items="typeArr" item-text="value"
 				 	 item-color="green" item-value="id"></v-select>
