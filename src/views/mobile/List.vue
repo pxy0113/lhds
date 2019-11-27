@@ -5,22 +5,20 @@
 				
 				<v-menu transition="scroll-y-transition">
 					<template v-slot:activator="{ on }">
-						<Avatar style="background-color: #66BB6A" size="10"></Avatar>
-						<!-- <v-btn tile outlined small  class="ma-0 px-1" style="border: none;font-size: 14px;" v-on="on">
-							{{typeArr[tabIndex].value}}
-							<v-icon right>mdi-menu-down</v-icon>
-						</v-btn> -->
-						 <v-chip
-							 class="pl-2"
-						      outlined
-						      label
-							  v-on="on"
-							   style="border: none;"
-						    >
-							{{typeArr[tabIndex].value}}
-							<v-icon right>mdi-menu-down</v-icon>
-						
-						</v-chip>
+						<span class='borderLeft-bold'>
+							<v-chip
+								 class="pl-2"
+								  outlined
+								  label
+								  v-on="on"
+								   style="border: none;"
+								>
+								{{typeArr[tabIndex].value}}
+								<v-icon right>mdi-menu-down</v-icon>
+								
+							</v-chip>
+						</span>
+						 
 					</template>
 					<v-list class="pa-0">
 					  <v-list-item dense  v-ripple="{ class: 'green--text' }"

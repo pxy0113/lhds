@@ -6,6 +6,19 @@ $green-500: #4caf50 !default;
 	border: none!important;
 }
 
+//标题超出长度省略
+.xy-title-hidden{
+	max-width: 150px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+//标题左边框加粗
+.borderLeft-bold{
+	border-left: 4px solid #66BB6A;
+	line-height: 20px;
+}
 
 //禁止滚动穿透
 .scroll_open{

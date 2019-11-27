@@ -6,12 +6,12 @@
 		<div class="grey lighten-3">
 			<v-form ref="valid" v-model="valid" lazy-validation class="px-6 py-4 white">
 				<div class="d-flex flex-column mb-2">
-					<span style="border-left: 4px solid #66BB6A;" class="pl-2 mb-2 font-weight-bold">规则名称</span>
+					<span class="pl-2 mb-2 font-weight-bold borderLeft-bold">规则名称</span>
 					<v-text-field type="text" v-model="ruleName"
 					class="py-0"
 					color="green" dense :readonly="parentName=='Dem'"></v-text-field>
 				</div>
-				<p style="border-left: 4px solid #66BB6A;" class="pl-2 font-weight-bold">建仓规则</p>
+				<p  class="pl-2 font-weight-bold borderLeft-bold">建仓规则</p>
 				<div class="mobile-grid">
 					<div class="d-flex flex-column">
 						<span class="grey--text">买入跌幅</span>
@@ -98,7 +98,7 @@
 			</v-form>
 			
 			<v-form ref="valid2" v-model="valid2" lazy-validation class="px-6 py-4 white mt-2">
-				<p style="border-left: 4px solid #66BB6A;" class="pl-2 font-weight-bold">平仓规则</p>
+				<p class="pl-2 font-weight-bold borderLeft-bold">平仓规则</p>
 				<div class="mobile-grid">
 					<div class="d-flex flex-column">
 						<span class="grey--text">卖出涨幅</span>
@@ -146,7 +146,7 @@
 			</v-form>
 			
 			<v-form ref="valid3" v-model="valid3" lazy-validation class="px-6 py-4 white mt-2">
-				<p style="border-left: 4px solid #66BB6A;" class="pl-2 font-weight-bold">补仓规则</p>
+				<p class="pl-2 font-weight-bold borderLeft-bold">补仓规则</p>
 				<div class="mobile-grid">
 					<div class="d-flex flex-column">
 						<span class="grey--text">单次补仓跌幅(%)</span>
@@ -200,7 +200,7 @@
 			</v-form>
 		
 			<div class="px-6 py-4 white mt-2">
-				<p style="border-left: 4px solid #66BB6A;" class="pl-2 font-weight-bold">其他规则</p>
+				<p class="pl-2 font-weight-bold borderLeft-bold">其他规则</p>
 				<v-menu transition="scroll-y-transition" v-if="other[0].show||other[1].show||other[2].show">
 					<template v-slot:activator="{ on }">
 						<v-btn tile outlined small color="success" class="ma-0" v-on="on">
@@ -215,10 +215,7 @@
 					  </v-list-item>
 					</v-list>
 				</v-menu>
-				<!-- <div v-for="other in otherList" class="grey lighten-4 pa-2 my-1">
-					<p class="mb-0"><v-icon right small>mdi-close</v-icon></p>
-					{{other.a}}分钟内下跌{{other.b}}%时,{{other.name}}比例变为{{other.c}}%,{{other.d}}分钟后恢复数值
-				</div> -->
+
 				 <v-list two-line > 
 					 <v-list-item class="my-1 grey lighten-4" v-if="otherList[1].a">
 						  <v-list-item-content>
@@ -260,7 +257,7 @@
 			</div>
 			
 			<p class="bottomBtn white mb-0 pb-2">
-				 <v-btn block color="secondary" outlined depressed tile @click="hideRule">取消</v-btn>
+				 <v-btn block color="grey lighten-3"  depressed tile @click="hideRule">取消</v-btn>
 				  <v-btn block color="green" dark  depressed tile @click="mainValid">提交</v-btn>
 			</p>
 		</div>

@@ -2,9 +2,8 @@
 	<div>
 		<div id="vRow" v-if="!showAddRule">
 			<div class=" px-5 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
-				<span class="d-flex align-center">
-					<Avatar style="background-color: #66BB6A" size="10"></Avatar>
-					<span class="pl-2">规则列表</span>
+				<span class="pl-2 borderLeft-bold">
+					规则列表
 				</span>
 				<v-btn small outlined color="green"  @click="newRule" class="ma-1">新增规则</v-btn>
 
@@ -24,63 +23,61 @@
 						<p class="text-center" style="width: 100%;">暂无数据</p>
 					</v-list-item>
 					
-					<div v-else >
-						<v-row align="center" justify="start" class="px-1">
-							<v-col v-for="(item,i) in ruleList" :key="i" class="d-flex flex-column" 
-							cols="12" :lg="3" :md="4" :sm="6" :xs="12">
-										<v-card outlined flat>
-											<v-card-text>
-												<span class="font-weight-bold demo black--text">
-												{{item.R0}}
-												</span>/<span style="font-size: 12px;">规则名称</span>
-											</v-card-text>
-											<div style="position: absolute;top: 0; right: 0;
-											width: 50px;height: 50px;overflow: hidden;" >
-											<div class="testB">
+					<v-row align="center" justify="start" class="px-1" v-else>
+						<v-col v-for="(item,i) in ruleList" :key="i" class="d-flex flex-column" 
+						cols="12" :lg="3" :md="4" :sm="6" :xs="12">
+									<v-card outlined flat>
+										<v-card-text class="d-flex align-center">
+											<div class="font-weight-bold black--text xy-title-hidden">
+											{{item.R0}}
+											</div>/<span style="font-size: 12px;">规则名称</span>
+										</v-card-text>
+
+										<div class="closeIcon">
+											<div class="triangle">
 												<v-icon style="position: absolute;top: 4px;right: 4px;"
+												color="white"
 												@click="delRule(item.id,i)">
 													mdi-close
 												</v-icon>
 											</div>
-											</div>
-											<v-window v-model="item.id">
-												<v-window-item :value="item.id+1">
-													
-												</v-window-item>
-											</v-window>	
-											<v-card-text>
-												  
-												<p class="d-flex justify-space-between align-center">
-													<span class="font-weight-bold">计价货币：</span>
-													<span>{{item.R54==1?'USDT':item.R54==2?'ETH':'BTC'}}</span>
-												</p>
-												<p class="d-flex justify-space-between align-center">
-													<span class="font-weight-bold">买入跌幅：</span>
-													<span>{{item.R1}}%</span>
-												</p>
-												<p class="d-flex justify-space-between align-center">
-													<span class="font-weight-bold">跌幅回调：</span>
-													<span>{{item.R2}}%</span>
-												</p>
-												<p class="d-flex justify-space-between align-center flex-wrap">
-													<span class="font-weight-bold">建仓金额：</span>
-													<span>{{item.R3}}</span>
-												</p>
+										</div>
+										<v-window v-model="item.id">
+											<v-window-item :value="item.id+1">
 												
-												<p class="text-center pt-2 mb-0 d-flex align-center justify-space-between">
-													<v-btn outlined small @click="editRule(item)" color="primary">编辑</v-btn>
-													<v-btn outlined small @click="lookOne(i,item)" color="green">更多</v-btn>
-												</p>	
-												
-												
-											</v-card-text>
+											</v-window-item>
+										</v-window>	
+										<v-card-text>
+											  
+											<p class="d-flex justify-space-between align-center">
+												<span class="font-weight-bold">计价货币：</span>
+												<span>{{item.R54==1?'USDT':item.R54==2?'ETH':'BTC'}}</span>
+											</p>
+											<p class="d-flex justify-space-between align-center">
+												<span class="font-weight-bold">买入跌幅：</span>
+												<span>{{item.R1}}%</span>
+											</p>
+											<p class="d-flex justify-space-between align-center">
+												<span class="font-weight-bold">跌幅回调：</span>
+												<span>{{item.R2}}%</span>
+											</p>
+											<p class="d-flex justify-space-between align-center flex-wrap">
+												<span class="font-weight-bold">建仓金额：</span>
+												<span>{{item.R3}}</span>
+											</p>
 											
-										</v-card>
+											<p class="text-center pt-2 mb-0 d-flex align-center justify-space-between">
+												<v-btn outlined small @click="editRule(item)" color="primary">编辑</v-btn>
+												<v-btn outlined small @click="lookOne(i,item)" color="green">更多</v-btn>
+											</p>	
+											
+											
+										</v-card-text>
+										
+									</v-card>
 
-							</v-col>
-						</v-row>
-						
-					</div>
+						</v-col>
+					</v-row>
 				
 					<div class="text-center mt-5">
 						<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="7"></v-pagination>
@@ -213,16 +210,12 @@
 		/* Internet Explorer 10+ */
 		color: white;
 	}
-
 </style>
 <style>
 	.v-expansion-panel:before{
 		box-shadow:none!important;
 	}
-	.demo{
-		max-width: 150px;
-		overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
-	}
+
 	.v-card--reveal {
 	  align-items: center;
 	  bottom: 0;
@@ -231,10 +224,18 @@
 	  position: absolute;
 	  width: 100%;
 	}
-	.testB{
+	.triangle{
 		width: 0; 
 		height: 0;
 		border-top: 50px solid #31b968;
 		border-left: 50px solid transparent;
+	}
+	.closeIcon{
+		position: absolute;
+		top: 0; 
+		right: 0;
+		width: 50px;
+		height: 50px;
+		overflow: hidden;
 	}
 </style>

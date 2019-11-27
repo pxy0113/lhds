@@ -1,18 +1,13 @@
 <template>
 	<div>
-		<!-- <v-card v-if="!showAddRule" outlined  id="vRow"> -->
 		<div id="vRow" v-if="!showAddRule">
 			<div class=" pl-5 pr-4 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
-				<!-- <Badge color="green" class="grey--text" text="规则列表"></Badge> -->
-				<span class="d-flex align-center">
-					<Avatar style="background-color: #66BB6A" size="10"></Avatar>
-					<span class="pl-2">规则列表</span>
+				<span class="pl-2 borderLeft-bold">
+					规则列表
 				</span>
 				<v-btn outlined small color="green"  @click="newRule" class="ma-1">新增规则</v-btn>
 
 			</div>
-			
-			 <!-- <v-divider></v-divider> -->
 
 			<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
 				<v-skeleton-loader
@@ -34,7 +29,7 @@
 								<div class="d-flex flex-column px-1">
 								  <div class="my-1 d-flex justify-space-between align-center flex-wrap">
 									<div class="d-flex align-center">
-										<div class="font-weight-bold demo">
+										<div class="font-weight-bold xy-title-hidden">
 										{{item.R0}}
 										</div>/<span style="font-size: 12px;">规则名称</span></div>
 										<v-btn small outlined color="green" @click="lookOne(i,item)" style="margin: 0;padding: 0;">
@@ -86,7 +81,7 @@
 
 		</v-fab-transition>
 		<common-mDemForm v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" :edit="editType" parentName="Rule"></common-mDemForm>
-		<!-- <common-addrule v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" ref="AR" :edit="editType"></common-addrule> -->
+		
 	</div>
 </template>
 
@@ -149,9 +144,5 @@
 <style>
 	.v-expansion-panel:before{
 		box-shadow:none!important;
-	}
-	.demo{
-		max-width: 150px;
-		overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
 	}
 </style>
