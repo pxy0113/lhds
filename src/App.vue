@@ -7,10 +7,12 @@
 	
 	<v-overlay :value="overlay" style="z-index: 1000;">
        <v-progress-circular indeterminate size="64" color="white"></v-progress-circular>
+	   
     </v-overlay>
 	
+	
+	
     <core-toolbar  v-if="showBar"/>
-
     <core-view />
 <!-- </v-img> -->
 
@@ -69,6 +71,10 @@
 
 body{
 	background: #f7f7f7!important;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-size-adjust: 100% !important;  
+	text-size-adjust: 100% !important;  
+	-moz-text-size-adjust: 100% !important;
 }
 
 /* Remove in 1.2 */

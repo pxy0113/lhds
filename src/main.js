@@ -31,8 +31,11 @@ import sock from './plugins/socket.js';
 Vue.prototype.$sock = sock;
 
 import moment from 'moment'//导入文件
-
 Vue.prototype.$moment = moment;//赋值使用
+
+import FastClick from 'fastclick';//解决300ms延迟
+FastClick.attach(document.body);
+
 
 moment.locale('zh-cn');//需要汉化
 

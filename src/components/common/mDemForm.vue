@@ -8,7 +8,7 @@
 				<div class="d-flex flex-column mb-2">
 					<span class="pl-2 mb-2 font-weight-bold borderLeft-bold">规则名称</span>
 					<v-text-field type="text" v-model="ruleName"
-					class="py-0"
+					class="py-0" :rules="[rules.required,rules.isEmpty]"
 					color="green" dense :readonly="parentName=='Dem'"></v-text-field>
 				</div>
 				<p  class="pl-2 font-weight-bold borderLeft-bold">建仓规则</p>
