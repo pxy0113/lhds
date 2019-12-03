@@ -2,9 +2,9 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 
-// Components全局引入-?
-import './components'
-
+// Components下的核心组件全局引入
+import './components/core'
+import './components/common'
 // Plugins
 import './plugins'
 
@@ -33,8 +33,8 @@ Vue.prototype.$sock = sock;
 import moment from 'moment'//导入文件
 Vue.prototype.$moment = moment;//赋值使用
 
-import FastClick from 'fastclick';//解决300ms延迟
-FastClick.attach(document.body);
+// import FastClick from 'fastclick';//解决300ms延迟
+// FastClick.attach(document.body);
 
 
 moment.locale('zh-cn');//需要汉化
@@ -46,7 +46,7 @@ import '@mdi/font/css/materialdesignicons.css'
 
 
 //模态框dialog
-import xyDialog from './plugins/xyDialog.js' 
+import xyDialog from './components/other/dialog/index.js' 
 Vue.use(xyDialog)
 
 //按需引入echart的line图

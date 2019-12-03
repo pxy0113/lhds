@@ -1,4 +1,4 @@
-import upSvg from '@/img/up.svg'
+
 	import Utils from '@/plugins/cryAes.js'
 	import {
 		mapActions
@@ -10,8 +10,6 @@ import upSvg from '@/img/up.svg'
 				transition: 'fade-transition',
 
 				loading: true, //控制骨架屏 true表示显示
-
-				upIcon: upSvg,
 
 				editType: false, //新增
 

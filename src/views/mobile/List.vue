@@ -2,8 +2,7 @@
 	<div>
 		<div class="d-flex flex-column" v-resize="draw" id="vRow">
 			<div class=" px-5 py-2 green lighten-5">
-				
-				<v-menu transition="scroll-y-transition">
+				<v-menu transition="scroll-y-transition"> 
 					<template v-slot:activator="{ on }">
 						<span class='borderLeft-bold'>
 							<v-chip
@@ -51,9 +50,9 @@
 			</div>
 
 			<component  :is="transition !== 'None' ? `v-${transition}` : 'div'" hide-on-leave>
-				<v-skeleton-loader v-if="loading" type="article" class="pa-2">
-				</v-skeleton-loader>
-
+				<!-- <v-skeleton-loader v-if="loading" type="article" class="pa-2">
+				</v-skeleton-loader> -->
+				<wait :show="loading" v-if="loading"></wait>
 				<div v-else class="pa-2">
 					<v-list-item three-line v-if="items.length<1" class="xy-tableItem">
 						<p class="text-center" style="width: 100%;">暂无数据</p>
@@ -63,16 +62,12 @@
 					
 					
 					<div class="text-center mt-4 mb-8" v-if="items.length>0">
-						<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="7"></v-pagination>
+						<other-xyPage :page_total="curPage.size" :current_page="curPage.page"
+						 @changePage="inputShow"></other-xyPage>
 					</div>
 				</div>
 			</component>
 
-			<v-fab-transition>
-
-				<Avatar :src="upIcon" v-if="items.length>=5" class="xy-suspend" @click.stop.native="$vuetify.goTo(target, options)">
-				</Avatar>
-			</v-fab-transition>
 		</div>
 
 	</div>
@@ -82,11 +77,13 @@
 <script>
 	import orderList from '@/views/mobile/Order.vue'
 	import tableList from '@/views/mobile/TableList.vue'
+	import wait from '@/components/other/wait/Wait.vue'
 	import { listData } from '@/mixins/listData.js' 
 	export default {
 		components: {
 			orderList,
-			tableList
+			tableList,
+			wait
 		},
 		mixins:[listData],
 		

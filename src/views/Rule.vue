@@ -12,11 +12,7 @@
 			 <v-divider></v-divider>
 
 			<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
-				<v-skeleton-loader
-				v-if="loading"
-				type="article"
-				>
-				</v-skeleton-loader>
+				<wait :show="loading" v-if="loading"></wait>
 				
 				<div v-else>
 					<v-list-item three-line class="xy-borderB" v-if="ruleList.length<1">
@@ -80,7 +76,8 @@
 					</v-row>
 				
 					<div class="text-center mt-5">
-						<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="7"></v-pagination>
+						<other-xyPage :page_total="curPage.size" :current_page="curPage.page"
+						 @changePage="inputShow"></other-xyPage>
 					</div>
 					
 					<common-more :hover="lookMore" :item="moreObj" @closeLay="closeLay" v-if="lookMore"></common-more>
@@ -90,15 +87,6 @@
 
 		</div>
 		
-		<v-fab-transition>
-			<Avatar :src="upIcon" 
-			v-if="(!showAddRule)&&(ruleList.length>=5)"
-			class="xy-suspend" 
-			@click.stop.native="$vuetify.goTo(target, options)"
-			>
-			</Avatar>
-
-		</v-fab-transition>
 		<common-addrule v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" :edit="editType" parentName="Rule"
 		></common-addrule>
 	</div>
@@ -107,8 +95,10 @@
 <script>
 	import { ruleData } from '@/mixins/ruleData.js'
 	import {scrollMixins} from '@/mixins/scroll.js'
+	import wait from '@/components/other/wait/Wait.vue'
 	export default {
 		mixins:[ruleData,scrollMixins],
+		components:{ wait },
 		data:() =>({
 			// showIndex: -1, //当前显示的折叠菜单的下标
 			lookMore:false,

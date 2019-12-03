@@ -2,13 +2,11 @@
 import {
 		mapActions
 	} from 'vuex'
-	import upSvg from '@/img/up.svg'
 	export const listData = {
 		data: () => ({
 			shortStart:'',//pc段端于传递给选择器的字段
 			shortEnd:'',
-			//new
-			
+
 			typeArr: [{
 					id: 0,
 					value: '收益数据'
@@ -22,8 +20,6 @@ import {
 			loading: true, //控制骨架屏 true表示显示
 
 			transition: 'fade-transition',
-
-			upIcon: upSvg,
 
 			urls: [ '/EasWebUser/getClose','/EasWebUser/getPlace'],
 

@@ -1,5 +1,4 @@
 //主页的mixins数据	
-	import upSvg from '@/img/up.svg'
 	import BTC from '@/img/BTC.png';
 	import ETH from '@/img/ETH.png';
 	import USDT from '@/img/USDT.png';
@@ -16,17 +15,7 @@
 				defaultNum: 0, //图表默认显示的天数
 				
 				numArr: [7, 15], //天数数组
-				
-				upIcon:upSvg,
-				
-				target: '#vRow',
-				
-				options: {
-					duration: 1000,
-					offset: 0,
-					easing: 'easeInOutCubic'
-				},
-				
+
 				tableData: {
 					labels: this.getBeforeDay(),
 

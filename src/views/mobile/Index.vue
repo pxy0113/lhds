@@ -70,8 +70,6 @@
 
 		</v-row>
 		<common-ubox class="my-2"></common-ubox>
-		<Avatar :src="upIcon" class="xy-suspend" @click.stop.native="$vuetify.goTo(target, options)">
-		</Avatar>
 
 	</v-container>
 </template>

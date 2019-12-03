@@ -78,8 +78,7 @@
 			 </div>
 		
 			<component :is="transition !== 'None' ? `v-${transition}` : 'div'" hide-on-leave>
-				<v-skeleton-loader v-if="loading" type="article">
-				</v-skeleton-loader>
+				<wait :show="loading" v-if="loading"></wait>
 		
 				<div v-else>
 					<v-list-item three-line v-if="items.length<1" class="xy-tableItem">
@@ -88,16 +87,12 @@
 		
 					<component v-else :is="componentArr[tabIndex]" ref="componentType" :items="items" @hook:mounted="doSomething"></component>
 					<div class="text-center my-4" v-if="items.length>0">
-						<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="7"></v-pagination>
+						<other-xyPage :page_total="curPage.size" :current_page="curPage.page"
+						 @changePage="inputShow"></other-xyPage>
 					</div>
 				</div>
 			</component>
 		
-			<v-fab-transition>
-		
-				<Avatar :src="upIcon" v-if="items.length>=5" class="xy-suspend" @click.stop.native="$vuetify.goTo(target, options)">
-				</Avatar>
-			</v-fab-transition>
 		</div>
 		
 	</div>
@@ -107,12 +102,14 @@
 <script>
 	import orderList from '@/views/OrderList.vue'
 	import tableList from '@/views/TableList.vue'
+	import wait from '@/components/other/wait/Wait.vue'
 	import { listData } from '@/mixins/listData.js' 
 	export default {
 		mixins: [listData],//混入，先执行混入的钩子再执行本页面钩子
 		components: {
 			orderList,
-			tableList
+			tableList,
+			wait
 		},
 		data: () =>({
 			menu:false,

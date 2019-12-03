@@ -13,13 +13,12 @@
 	
 	
     <core-toolbar  v-if="showBar"/>
-    <core-view />
-<!-- </v-img> -->
+    <core-mview />
 
   </v-app>
 </template>
 <script>
-	import xyTip from '@/components/common/xyTip.vue'
+	import xyTip from '@/components/other/tip/xyTip.vue'
 	import { mapActions } from 'vuex';
 	export default{
 			components:{
@@ -68,6 +67,9 @@
 <style lang="scss">
 
 @import '@/styles/index.scss';
+
+//解决使用了fastclick后谷歌报错问题
+// * { touch-action: none; } 
 
 body{
 	background: #f7f7f7!important;

@@ -1,7 +1,7 @@
 <template>
 	<!-- <v-container  fluid grid-list-xl> -->
 		<div>
-				<v-card outlined id="vRow">
+				<v-card outlined id="sRow">
 					
 					<p class="pa-2 ma-0 green lighten-5 d-flex justify-space-between align-center" >
 						<span class="green--text">API列表</span>
@@ -10,11 +10,13 @@
 					</p>
 					<v-divider></v-divider>
 						<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
-							<v-skeleton-loader
+<!-- 							<v-skeleton-loader
 							v-if="loading"
 							type="article"
 							>
-							</v-skeleton-loader>
+							</v-skeleton-loader> -->
+
+							<wait :show="loading" v-if="loading"></wait>
 							
 							<div v-else>
 								<v-list-item three-line class="xy-tableItem" v-if="apiList.length<1">
@@ -68,7 +70,9 @@
 									</v-list-item>
 								</div>
 								<div class="text-center my-2">
-									<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="5"></v-pagination>
+									<!-- <v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="5"></v-pagination> -->
+									<other-xyPage :page_total="curPage.size" :current_page="curPage.page"
+									 @changePage="inputShow"></other-xyPage>
 								</div>
 								
 								
@@ -193,18 +197,22 @@
 	import {
 		mapActions
 	} from 'vuex';
-	import upSvg from '@/img/up.svg'
+	import wait from '@/components/other/wait/Wait.vue'
 	import { scrollMixins } from '@/mixins/scroll.js'
 	export default {
 		mixins:[scrollMixins],
+		components:{
+			wait
+		},
 		data: () => ({
+			testPage:1,
+			testSize:3,
+			
 			transition: 'scale-transition',
 			
 			loading:true,//控制骨架屏 true表示显示
-			
-			upIcon:upSvg,
-			
-			target: '#vRow',
+		
+			target: '#sRow',
 			
 			options: {
 				duration: 1000,
@@ -337,7 +345,7 @@
 				});
 			}
 			
-			this.getApiList();
+			this.getApiList(1);
 		},
 		
 		beforeRouteLeave(to,from,next){//路由离开前断开
@@ -349,7 +357,6 @@
 		},
 		
 		methods: {
-			
 			...mapActions(['changeLay', 'changeSnack']),
 			
 			transUpperCase(data){ //交易对转大写
@@ -358,7 +365,6 @@
 			
 			inputShow(number) { //点击野马
 				this.curPage.page = number;
-				this.$vuetify.goTo(this.target, this.options);//平滑滚动到表头
 				this.getApiList();
 			},
 
@@ -444,7 +450,7 @@
 				    	data:Utils.encrypt(JSON.stringify(Object.assign({},this.news,other)))
 				    }
 					
-					this.changeLay(true);//loading
+					this.changeLay(true);
 				    $ax.getAjaxData('/EasWebUser/addAPI', obj, (res) => {			
 				    	this.changeLay(false);
 				    	if (res.code == 1) {
@@ -485,13 +491,20 @@
 				
 			},
 
-			getApiList(){//获取api列表
+			setLoading(num=2){
+				setTimeout(() =>{
+					this.loading = false;
+					num==2&&this.$vuetify.goTo(this.target, this.options);//平滑滚动到表头
+				},1000)
+			},
+			
+			getApiList(num){//获取api列表
 				this.loading = true;
 				$ax.getAjaxData('/EasWebUser/getAPI', {
 					pageSize:10,
 					pageIndex:this.curPage.page
 				}, (res) => {
-					this.loading = false;
+					this.setLoading(num);
 					if (res.code == 1) {
 						this.apiList = res.data;
 						this.curPage = {

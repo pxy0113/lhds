@@ -1,5 +1,5 @@
 <template>
-	<div id="vRow">
+	<div>
 			<div class=" px-5 py-2 d-flex justify-space-between align-center flex-wrap green lighten-5">
 				<span class="pl-2 borderLeft-bold">
 					托管列表
@@ -26,11 +26,8 @@
 			 <v-divider></v-divider>
 		
 			<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
-				<v-skeleton-loader
-				v-if="loading"
-				type="article"
-				>
-				</v-skeleton-loader>
+				
+				<wait :show="loading" v-if="loading"></wait>
 				
 				<div v-else>
 					<v-list-item three-line class="xy-borderB" v-if="items.length<1">
@@ -111,11 +108,7 @@
 						</v-list-item>
 					
 					</div>
-					<v-fab-transition>
-						<Avatar :src="upIcon" v-if="items.length>=5" class="xy-suspend" @click.stop.native="$vuetify.goTo(target, options)">
-						</Avatar>
 					
-					</v-fab-transition>
 				</div>
 				
 				  
@@ -258,7 +251,7 @@
 
 <script>
 	import Utils from '@/plugins/cryAes.js'
-	import upSvg from '@/img/up.svg'
+	import wait from '@/components/other/wait/Wait.vue'
 	import { scrollMixins } from '@/mixins/scroll.js'
 	import {
 		mapActions
@@ -266,6 +259,7 @@
 	export default {
 		inject: ['theme'],
 		mixins:[scrollMixins],
+		components:{ wait },
 		data() {
 			return {
 				runState:[
@@ -341,15 +335,6 @@
 				currentRule: null,//当前规则
 
 				showAddRule: false,//修改规则对话框
-
-				upIcon: upSvg,
-
-				target: '#vRow',
-				options: {
-					duration: 1000,
-					offset: 0,
-					easing: 'easeInOutCubic'
-				},
 				
 				names2:[],
 				

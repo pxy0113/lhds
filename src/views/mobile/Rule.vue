@@ -10,11 +10,7 @@
 			</div>
 
 			<component :is="transition !== 'None' ? `v-${transition}` : 'div'"  hide-on-leave>
-				<v-skeleton-loader
-				v-if="loading"
-				type="article"
-				>
-				</v-skeleton-loader>
+				<wait :show="loading" v-if="loading"></wait>
 				
 				<div v-else>
 					<v-list-item three-line class="xy-borderB" v-if="ruleList.length<1">
@@ -61,8 +57,9 @@
 					<common-more :hover="lookMore" :item="moreObj" @closeLay="closeLay" v-if="lookMore"></common-more>
 					
 					
-					<div class="text-center mt-5">
-						<v-pagination color="green" v-model="curPage.page" :length="curPage.size" v-on:input="inputShow" :total-visible="7"></v-pagination>
+					<div class="text-center mt-5 mb-1">
+						<other-xyPage :page_total="curPage.size" :current_page="curPage.page"
+						 @changePage="inputShow"></other-xyPage>
 					</div>
 					
 					
@@ -70,16 +67,7 @@
 			</component>
 
 		</div>
-		
-		<v-fab-transition>
-			<Avatar :src="upIcon" 
-			v-if="(!showAddRule)&&(ruleList.length>=5)"
-			class="xy-suspend" 
-			@click.stop.native="$vuetify.goTo(target, options)"
-			>
-			</Avatar>
 
-		</v-fab-transition>
 		<common-mDemForm v-if="showAddRule" @hideRule="hideRule" :ruleObj="currentRule" :edit="editType" parentName="Rule"></common-mDemForm>
 		
 	</div>
@@ -88,12 +76,16 @@
 <script>
 	import { ruleData }  from '@/mixins/ruleData.js'
 	import {scrollMixins} from '@/mixins/scroll.js'
+	import wait from '@/components/other/wait/Wait.vue'
 	export default {
 		mixins:[ruleData,scrollMixins],
 		data: () => ({
 			moreObj:{},
 			lookMore:false
 		}),
+		components:{
+			wait
+		},
 		
 		methods:{
 			closeLay(){//关闭弹出层

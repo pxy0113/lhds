@@ -1,8 +1,9 @@
 <template>
-	 <v-bottom-sheet v-model="sheets">
+	 <v-bottom-sheet v-model="sheets" >
 		  <v-card >
-		  	<div class="blue-grey darken-4  pa-2">
+		  	<div class="blue-grey darken-4  pa-2 d-flex justify-space-between align-center">
 		  		<span class="font-weight-bold white--text ml-5 my-0" style="font-size: 1rem;">下单详情</span>
+				<v-icon @click="sheets=false" color="white">mdi-close</v-icon>
 		  	</div>
 		  		
 		  	<v-list three-line subheader class="pb-0">
@@ -130,6 +131,7 @@
 		},
 		
 		methods:{
+			
 			...mapActions(['changeLay']),
 			
 			openDrawer(id) {
