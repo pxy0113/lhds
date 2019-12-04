@@ -3,7 +3,7 @@
 		  <div class="d-flex align-center justify-center">
 			  <v-icon size="30" :disabled="current_page==1" @click="page--">mdi-chevron-left</v-icon>
 			  <div class="page-grid mx-2">
-				  <input type="text" :value="page" @blur="watchInput"
+				  <input type="number" :value="page" @blur="watchInput"
 				  style="outline: none; border: 1px solid #66BB6A; border-radius: 3px;text-align: center;">
 				  <span>/</span>
 				  <span>{{page_total}}</span>
@@ -44,12 +44,14 @@ export default{
 	},
 	methods:{
 		watchInput(val){
-			if(Number(val.target.value)<= this.page_total){
-				this.page = val.target.value;
+			let data = Number(val.target.value);
+			if(typeof(data)=='number'){
+				if(data!=this.page){
+					this.page = data<=this.page_total?data:this.page_total;
+				}
 			}else{
-				this.page = this.page_total;
+				this.page = 1;
 			}
-			
 		}
 	}
 
