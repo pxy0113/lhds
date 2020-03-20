@@ -14,14 +14,14 @@
 				<p  class="pl-2 font-weight-bold borderLeft-bold">建仓规则</p>
 				<div class="mobile-grid">
 					<div class="d-flex flex-column">
-						<span class="grey--text">买入跌幅</span>
+						<span class="grey--text">买入跌幅(%)</span>
 						<v-text-field type="number" v-model="jData.R1"
 						class="py-0"  :step="0.01" min="0"
 						color="green" :rules="[rules.required,rules.size,rules.percent]"></v-text-field>
 					</div>
 					
 					<div class="d-flex flex-column">
-						<span class="grey--text">涨幅回调</span>
+						<span class="grey--text">跌幅回调(%)</span>
 						<v-text-field type="number" v-model="jData.R2"
 						class="py-0"
 						color="green" dense :step="0.01" min="0"></v-text-field>
@@ -101,21 +101,21 @@
 				<p class="pl-2 font-weight-bold borderLeft-bold">平仓规则</p>
 				<div class="mobile-grid">
 					<div class="d-flex flex-column">
-						<span class="grey--text">卖出涨幅</span>
+						<span class="grey--text">卖出涨幅(%)</span>
 						<v-text-field type="number" v-model="jData.R4"
 						class="py-0" :step="0.01" min="0"
 						color="green" dense  :rules="[rules.required,rules.isEmpty,rules.precent]"></v-text-field>
 					</div>
 					
 					<div class="d-flex flex-column">
-						<span class="grey--text">涨幅回调</span>
+						<span class="grey--text">涨幅回调(%)</span>
 						<v-text-field type="number" v-model="jData.R5"
 						class="py-0"
 						color="green" dense :step="0.01" min="0"></v-text-field>
 					</div>
 					
 					<div class="d-flex flex-column">
-						<span class="grey--text">止损跌幅</span>
+						<span class="grey--text">止损跌幅(%)</span>
 						<v-text-field type="number" v-model="jData.R6" color="green" single-line :step="0.1" min="0" 
 						:rules="[rules.required,rules.isEmpty]"
 						 dense></v-text-field>
@@ -156,7 +156,7 @@
 					</div>
 					
 					<div class="d-flex flex-column">
-						<span class="grey--text">补仓回调</span>
+						<span class="grey--text">补仓回调(%)</span>
 						<v-text-field type="number" v-model="jData.R10" color="green" :step="0.01" min="0"
 						 dense single-line></v-text-field>
 					</div>

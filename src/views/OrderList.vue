@@ -11,7 +11,7 @@
 					</v-card-text>
 					
 					<v-card-text>
-						<p class="d-flex justify-space-between align-center">
+						<p class="d-flex justify-space-between align-center flex-wrap">
 							<span class="font-weight-bold">时间：</span>
 							<span>{{item.placeTime}}</span>
 						</p>

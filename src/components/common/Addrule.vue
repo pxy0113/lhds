@@ -38,7 +38,7 @@
 									<v-col cols="12" :lg="3" :md="3" :sm="3" :xs="6">
 										<div class=" d-flex align-start justify-center flex-column">
 											<span class="black--text pr-3">
-												买入跌幅
+												买入跌幅(%)
 											</span>
 											<v-text-field type="number" v-model="jData.R1" color="green" outlined single-line :step="0.01" min="0" dense
 											 :rules="[rules.required,rules.size,rules.percent]"></v-text-field>
@@ -47,7 +47,7 @@
 									</v-col>
 									<v-col cols="12" :lg="3" :md="3" :sm="3" :xs="6">
 										<div class=" d-flex align-start justify-center flex-column">
-											<span class="black--text  pr-3">涨幅回调</span>
+											<span class="black--text  pr-3">跌幅回调(%)</span>
 											<v-text-field type="number" v-model="jData.R2" color="green" 
 											outlined single-line :step="0.01" min="0" dense
 											></v-text-field>
@@ -140,21 +140,21 @@
 								<v-row>
 									<v-col cols="12" :lg="3" :md="3" :sm="3" :xs="12">
 										<div class=" d-flex align-start justify-center flex-column">
-											<span class="black--text pr-3">卖出涨幅</span>
+											<span class="black--text pr-3">卖出涨幅(%)</span>
 											<v-text-field type="number" v-model="jData.R4" color="green" outlined single-line :step="0.01" min="0"
 											 :rules="[rules.required,rules.isEmpty,rules.precent]" dense></v-text-field>
 										</div>
 									</v-col>
 									<v-col cols="12" :lg="3" :md="3" :sm="3" :xs="12">
 										<div class=" d-flex align-start justify-center flex-column">
-											<span class="black--text  pr-3">涨幅回调</span>
+											<span class="black--text  pr-3">涨幅回调(%)</span>
 											<v-text-field  type="number" v-model="jData.R5" color="green" outlined single-line 
 											:step="0.01" min="0" dense></v-text-field>
 										</div>
 									</v-col>
 									<v-col cols="12" :lg="3" :md="3" :sm="3" :xs="12">
 										<div class=" d-flex align-start justify-center flex-column">
-											<span class="black--text  pr-3">止损跌幅</span>
+											<span class="black--text  pr-3">止损跌幅(%)</span>
 											<v-text-field type="number" v-model="jData.R6" color="green" outlined single-line :step="0.1" min="0" :rules="[rules.required,rules.isEmpty]"
 											 dense></v-text-field>
 										</div>
@@ -209,7 +209,7 @@
 									</v-col>
 									<v-col cols="12" :lg="3" :md="3" :sm="3" :xs="12">
 										<div class=" d-flex align-start justify-center flex-column">
-											<span class="black--text  pr-3">补仓回调</span>
+											<span class="black--text  pr-3">补仓回调(%)</span>
 											<v-text-field type="number" v-model="jData.R10" color="green" outlined single-line :step="0.01" min="0"
 											 dense></v-text-field>
 										</div>

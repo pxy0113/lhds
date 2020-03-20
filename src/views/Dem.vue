@@ -30,10 +30,11 @@
 				<wait :show="loading" v-if="loading"></wait>
 				
 				<div v-else>
+					
 					<v-list-item three-line class="xy-borderB" v-if="items.length<1">
 						<p class="text-center" style="width: 100%;">{{tips}}</p>
 					</v-list-item>
-					
+					 
 					<div v-for="(item,index) in items" :key="index" v-else >
 						<v-list-item three-line class="xy-borderB">
 							<v-list-item-content class="align-self-start">
@@ -90,12 +91,12 @@
 								<div>
 									<v-btn tile outlined small color="success" class="ma-0" @click.prevent.stop="showChip(item)">
 										操作
-										<v-icon right>{{item.show?'mdi-menu-up':'mdi-menu-down'}}</v-icon>
+										<v-icon right>{{currentRId==item.id?'mdi-menu-up':'mdi-menu-down'}}</v-icon>
 									</v-btn>
 								</div>
 					
-								<v-expand-transition v-if="item.show">
-									<v-chip-group active-class="green--text "column class="font-weight-regular">
+								<v-expand-transition v-if="currentRId==item.id">
+									<v-chip-group active-class="green--text " column class="font-weight-regular">
 										<v-chip  @click="onOperation(item)">{{item.isRun==0?'启动':'停止'}}</v-chip>
 										<v-chip  @click="onRemove(item)" :disabled="item.isRun>=1">删除</v-chip>
 										<v-chip  @click="onEdit(item)" :disabled="item.isRun>=1">修改</v-chip>
@@ -113,7 +114,7 @@
 				
 				  
 			</component>
-		
+
 		
 		<v-dialog v-model="showAddRule"  fullscreen hide-overlay transition="dialog-bottom-transition">
 			<component :is="$store.state.currentType=='Desktop'?'common-addrule':'common-mDemForm'" 
@@ -204,22 +205,23 @@
 									 hide-details
 								  ></v-text-field>
 						    </v-card-title>
-						    <v-card-text style="height: 250px;overflow-y: auto;">
+							
+						    <v-card-text style="max-height: 250px;overflow-y: auto;">
 								<v-chip
 								  class="ma-2"
 								  v-if="ruleData.length==0"
 								>
 								  无结果
 								</v-chip>
-
+								
 								<v-chip
 								  class="ma-2"
-								  :color="neighborhoods.indexOf(index)>-1?'green':'grey'"
+								  :color="neighborhoods.indexOf(item)>-1?'green':'grey'"
 								  text-color="white"
 								  v-for="(item,index) in ruleData" :key="index"
 								  @click="addSelect(item,index)"
 								>
-								  <v-avatar left v-if="neighborhoods.indexOf(index)>-1">
+								  <v-avatar left v-if="neighborhoods.indexOf(item)>-1">
 									<v-icon>mdi-checkbox-marked-circle</v-icon>
 								  </v-avatar>
 								  {{item}}
@@ -234,7 +236,7 @@
 						  </v-card>
 
 				</v-card-text>
-		
+
 				<v-card-actions>
 					<div class="flex-grow-1"></div>
 					<v-btn color="success" text @click="closeAddColl">
@@ -311,8 +313,6 @@
 				accountList:[],//选择账户
 				
 				rulesList:[],//选择规则
-
-				neighborhoods:[],//已选择的
 				
 				search:'',
 				
@@ -332,7 +332,9 @@
 				
 				addCollocation:false,//添加托管对话框
 				
-				currentRule: null,//当前规则
+				currentRule: null,//当前要操作的规则的
+				
+				currentRId:0,//当前要操作的规则的id
 
 				showAddRule: false,//修改规则对话框
 				
@@ -342,7 +344,7 @@
 				
 				items: [] ,//托管列表
 				
-				testArr:[]
+				neighborhoods:[]//已选中的
 			}
 		},
 
@@ -382,15 +384,6 @@
 				},
 				deep:true
 			},
-			ruleData(nV){
-				this.neighborhoods = [];
-				this.testArr.forEach(item =>{
-					let idx = nV.indexOf(item);
-					if(idx>-1){
-						this.neighborhoods.push(idx);
-					}
-				});
-			},
 			showSetDialog:{
 				handler(nV,oV){
 					nV&&this.afterOpen();//mixins不允许滚动
@@ -416,7 +409,7 @@
 		},
 
 		methods: {
-			...mapActions(['changeLay']),
+			...mapActions(['changeLay','changeSnack']),
 			
 			toFunction(id){//点击操作列表的项
 				(id==1)&&this.showSetting();
@@ -426,8 +419,6 @@
 			},
 			
 			getExchange(){//获取货币数据
-				this.testArr = [];
-				
 				this.neighborhoods = [];
 				
 				let json = {
@@ -461,23 +452,16 @@
 			},
 			
 			addSelect(name,index){//选中一个交易对
-				let idx = this.neighborhoods.indexOf(index);
-
+				let idx = this.neighborhoods.indexOf(name);
+				
 				if(idx==-1){//不存在则添加
-					this.testArr.push(name);
+					this.neighborhoods.push(name);
 					
-					this.testArr = Array.from(new Set(this.testArr));
-					
-					this.neighborhoods.push(index);
+					this.neighborhoods = Array.from(new Set(this.neighborhoods));
 				}else{
-					let i =this.testArr.indexOf(name);
-
-					if(i>-1){
-						this.testArr.splice(this.testArr.indexOf(name),1);
+					if(idx>-1){
+						this.neighborhoods.splice(this.neighborhoods.indexOf(name),1);
 					}
-					
-					this.neighborhoods.splice(idx,1);
-
 				}
 
 			},
@@ -549,7 +533,6 @@
 			
 			closeAddColl(){//添加托管对话框-关闭
 				this.addCollocation = false;
-				this.testArr = [];
 				this.neighborhoods = [];
 				this.$refs.form.resetValidation();
 			},
@@ -565,6 +548,7 @@
 						let obj = this.fuzzyQuery(this.search);
 						
 						this.ruleData = obj;
+						this.neighborhoods = [];//0215新增
 
 					}else{
 
@@ -574,6 +558,7 @@
 			},
 			
 			fuzzyQuery(keyWord) {//模糊查询
+				keyWord = this.transUpperCase(keyWord);//小写转大写
 			    var reg =  new RegExp(keyWord);
 			    var arr = [];
 				this.names2.forEach(item =>{
@@ -596,15 +581,22 @@
 			cancelSearch(){//取消搜索
 				this.search = '';
 				this.ruleData = this.names2;
+				this.neighborhoods = [];
 			},
 			
 			transUpperCase(data) { //交易对转大写
 				return data.toUpperCase();
 			},
-			
+	
 			showChip(item) { //显示操作面板
-				this.$set(item,'show',!item.show); //取反
-				this.currentRule = item;
+				if(this.currentRId!==0&&this.currentRId==item.id){
+					this.currentRId = 0;
+					this.currentRule = null;
+				}else{
+					this.currentRId = item.id;
+					this.currentRule = item;
+				}
+				
 			},
 
 			onOperation(item){ //改变托管的状态-启动/暂停
@@ -700,12 +692,14 @@
 				}
 
 			},
-			
+
 			addTo(){//添加至托管
 				if (this.$refs.form.validate()) {
 					let arr = [];
+					
 					this.neighborhoods.forEach(item =>{
-						let list = Object.assign({},{symbol:this.names2[item]},this.condition);
+						let list = Object.assign({},
+						{symbol:item},this.condition);
 						arr.push(list);
 					});
 					
@@ -713,7 +707,15 @@
 					
 					this.$sock.websocketsend(code);
 					
-					this.closeAddColl();
+					let msg = {
+						state: true,
+						errorText: {
+							type: 'success',
+							text: '提交成功'
+						}
+					}
+					this.changeSnack(msg);
+					// this.closeAddColl();关闭
 				}
 			},
 			initData(item){//初次收到数据
@@ -724,12 +726,14 @@
 				}
 			},
 			
-			delData(obj){//删除数据时
+			delData(obj){//删除一条托管数据时
 				obj.forEach(item =>{
 
 					this.items.forEach((fil,index) =>{
 						if(fil.id == item.id ){							
 							this.items.splice(index,1);
+							this.currentRule = null;//清空当前选中标识
+							this.currentRId=0;
 						}
 					});
 				
@@ -760,6 +764,8 @@
 				obj.forEach(item =>{
 					this.items.splice(0,0,item);
 				});
+				
+				console.log('又新增啦')
 			},
 			
 			changeData(obj){//数据变化时
@@ -790,8 +796,8 @@
 						break;
 					
 					case 1009:
-					this.neighborhoods = [];//取消选中
-				
+					this.neighborhoods = [];
+					
 					this.addData(result.data);
 						break;
 					

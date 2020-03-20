@@ -9,7 +9,13 @@
 		  	<v-list three-line subheader class="pb-0">
 		  		
 		  		<v-list-item>
-		  			<v-row class="mx-0">
+					<v-row class="mx-0" v-if="show">
+						 <v-progress-circular class="ma-auto"
+						  color="green"
+						  indeterminate
+						></v-progress-circular>
+					</v-row>
+		  			<v-row class="mx-0" v-else>
 						<v-col v-if="placeDetail.length==0">
 							<v-card-text class="blue-grey--text text-center">
 								暂无数据
@@ -85,9 +91,6 @@
 </template>
 
 <script>
-	import {
-		mapActions
-	} from 'vuex';
 	export default {
 		data: () => ({
 			detailStep: 1,
@@ -95,6 +98,8 @@
 			placeDetail: [],
 			
 			operates: ['买入', '卖出', '补仓', '止损'],
+			
+			show:true
 			
 		}),
 		props:{
@@ -131,12 +136,10 @@
 		},
 		
 		methods:{
-			
-			...mapActions(['changeLay']),
-			
+
 			openDrawer(id) {
 				this.placeDetail = [];
-				this.changeLay(true);
+				this.show = true;
 
 				$ax.getAjaxData('/EasWebUser/getPlaceID', {
 					id: id
@@ -152,7 +155,7 @@
 			
 						console.log('错误错误')
 					}
-					this.changeLay(false);
+					this.show = false;
 				}, {
 					hasToken: true
 				});
